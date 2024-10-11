@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "zaowr_polsl_kisiel"
+version = "0.0.1"
+authors = [
+  { name="Maksymilian Kisiel", email="NONE" },
+]
+description = "A small Python package used by me and a friend at the university in the course 'Advanced Image, Video and Motion Analysis'"
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+Homepage = "https://github.com/revalew/zaowr-py-package"
+Issues = "https://github.com/revalew/zaowr-py-package/issues"
