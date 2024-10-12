@@ -19,7 +19,7 @@ PyPI link to the package: <a href="https://pypi.org/project/zaowr-polsl-kisiel/"
 
 4. [Testing the installation](#testing-the-installation)
 
-5. [Automate building and uploading with `Makefile` - DEV Tutorial](#automate-building-and-uploading-with-makefile---dev-tutorial)
+5. [Automation: building and uploading with `Makefile` - DEV Tutorial](#automation-building-and-uploading-with-makefile---dev-tutorial)
 
 6. [Building package - DEV Tutorial based on official DOCS](#building-package---dev-tutorial-based-on-official-docs)
 
@@ -269,7 +269,7 @@ print(calibrationParams["mse"])
 <br/>
 <br/>
 
-## Automate building and uploading with `Makefile` - DEV Tutorial
+## Automation: building and uploading with `Makefile` - DEV Tutorial
 
 In the project directory run <code>make</code>. This command will run the <code>Makefile</code>, which performs actions listed below:
 
@@ -687,4 +687,5 @@ print(calibrationParams["mse"])
 ## Sources
 
 This package has been prepared following [this tutorial](https://packaging.python.org/en/latest/tutorials/packaging-projects/).
+
 The publishing to PyPI was created with [this tutorial](https://packaging.python.org/en/latest/guides/publishing-package-distribution-releases-using-github-actions-ci-cd-workflows/)
