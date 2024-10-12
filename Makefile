@@ -41,5 +41,5 @@ bump-version:
 	read -p "Enter commit message: " commitmsg; \
 	git add .; \
 	git commit -am "$$commitmsg (version $$newversion)"; \
-	git tag -a v$$newversion -m "$$commitmsg" -f; \
+	git tag -fa v$$newversion -m "$$commitmsg"; \
 	git push --follow-tags
