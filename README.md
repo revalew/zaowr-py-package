@@ -35,6 +35,7 @@ PyPI link to the package: <a href="https://pypi.org/project/zaowr-polsl-kisiel/"
 <li> PyPI MAIN
 
 <br/>
+<br/>
 
 ```bash
 python3 -m pip install --upgrade zaowr-polsl-kisiel
@@ -44,6 +45,7 @@ python3 -m pip install --upgrade zaowr-polsl-kisiel
 <br/>
 <li> TestPyPI
 
+<br/>
 <br/>
 
 ```bash
@@ -84,6 +86,7 @@ python3 -m pip uninstall zaowr-polsl-kisiel
 <li> Create project directory and open it (directory where you will create your files and where the venv will be created)
 
 <br/>
+<br/>
 
 ```bash
 testDir=/home/user/test
@@ -103,6 +106,7 @@ cd $testDir
 <li> Create venv
 
 <br/>
+<br/>
 
 ```bash
 python -m venv ENV_NAME
@@ -119,6 +123,7 @@ python -m venv ENV_NAME
 
 <li> Activate the venv (while in the project directory)
 
+<br/>
 <br/>
 
 ```bash
@@ -138,6 +143,7 @@ or
 <li> Install the package from PyPI
 
 <br/>
+<br/>
 
 ```bash
 python3 -m pip install --upgrade zaowr-polsl-kisiel
@@ -149,6 +155,7 @@ python3 -m pip install --upgrade zaowr-polsl-kisiel
 
 <li> <b>(ADDITIONAL COMMAND)</b> If you want to deactivate the currently active venv
 
+<br/>
 <br/>
 
 ```bash
@@ -175,6 +182,7 @@ deactivate
 <li> Activate the venv (while in the project directory) - <b>Skip this step if you are not using a virtual environment</b>
 
 <br/>
+<br/>
 
 ```bash
 source ENV_NAME/bin/activate
@@ -193,6 +201,7 @@ or
 <li> Launch python
 
 <br/>
+<br/>
 
 ```bash
 python3
@@ -205,6 +214,7 @@ python3
 <li> Import the package
 
 <br/>
+<br/>
 
 ```python
 from zaowr_polsl_kisiel import load_calibration
@@ -215,6 +225,7 @@ from zaowr_polsl_kisiel import load_calibration
 
 <li> Locate the file with calibration params or create new file with structure shown below
 
+<br/>
 <br/>
 
 ```json
@@ -246,6 +257,7 @@ from zaowr_polsl_kisiel import load_calibration
 <li> Try reading the params from file
 
 <br/>
+<br/>
 
 ```python
 # remember to provide appropriate path to the calibration params
@@ -259,12 +271,14 @@ calibrationParams = load_calibration("../../tests/calibration_params/calibration
 <li> Display the <code>MSE</code> value to test if the load succeeded
 
 <br/>
+<br/>
 
 ```python
 print(calibrationParams["mse"])
 ```
 
 </li>
+</ul>
 
 <br/>
 <br/>
@@ -289,6 +303,7 @@ At this moment the Makefile is configured to only delete the old release, create
 <li> Test the <code>Makefile</code>
 
 <br/>
+<br/>
 
 ```bash
 make --dry-run
@@ -300,6 +315,7 @@ make --dry-run
 
 <li> Run the <code>Makefile</code>
 
+<br/>
 <br/>
 
 ```bash
@@ -319,6 +335,7 @@ make
 <li> Install pip
 
 <br/>
+<br/>
 
 ```bash
 python3 -m pip install --upgrade pip
@@ -329,6 +346,7 @@ python3 -m pip install --upgrade pip
 
 <li> Prepare files and directories
 
+<br/>
 <br/>
 
 ```bash
@@ -349,6 +367,7 @@ directory_used_for_package/
 <li> Choose build backend (I chose <code>setuptools</code>)
 
 <br/>
+<br/>
 
 ```bash
 python3 -m pip install --upgrade setuptools
@@ -359,6 +378,7 @@ python3 -m pip install --upgrade setuptools
 
 <li> Prepare <code>pyproject.toml</code> file (this package's configuration as an example)
 
+<br/>
 <br/>
 
 ```bash
@@ -409,6 +429,7 @@ Issues = "https://github.com/revalew/zaowr-py-package/issues"
 <li> Prepare <code>LICENSE</code> file (MIT license shown below, more licenses can be found <a href="https://choosealicense.com/" target="_blank">here</a>)
 
 <br/>
+<br/>
 
 ```bash
 Copyright (c) 2018 The Python Packaging Authority
@@ -438,6 +459,7 @@ SOFTWARE.
 <li> Instal the build tool (if you encounter errors see <a href="https://packaging.python.org/en/latest/tutorials/installing-packages/" target="_blank">official tutorial</a>)
 
 <br/>
+<br/>
 
 ```bash
 python3 -m pip install --upgrade build
@@ -451,6 +473,7 @@ python3 -m pip install --upgrade build
 
 <li> Generate distribution archives
 
+<br/>
 <br/>
 
 ```bash
@@ -491,6 +514,7 @@ dist/
 <li> Instal <code>twine</code> to upload the package
 
 <br/>
+<br/>
 
 ```bash
 python3 -m pip install --upgrade twine
@@ -513,6 +537,7 @@ python3 -m pip install --upgrade twine
 <li> PyPI
 
 <br/>
+<br/>
 
 ```bash
 python3 -m twine upload dist/*
@@ -524,6 +549,7 @@ python3 -m twine upload dist/*
 
 <li> TestPyPI
 
+<br/>
 <br/>
 
 ```bash
@@ -547,6 +573,7 @@ python3 -m twine upload --repository testpypi dist/*
 <li> PyPI
 
 <br/>
+<br/>
 
 ```bash
 python3 -m pip install --upgrade zaowr-polsl-kisiel
@@ -558,6 +585,7 @@ python3 -m pip install --upgrade zaowr-polsl-kisiel
 
 <li> TestPyPI
 
+<br/>
 <br/>
 
 ```bash
@@ -587,6 +615,7 @@ python3 -m pip install --upgrade --index-url https://test.pypi.org/simple/ --no-
 <li> Activate the venv (while in the project directory) - <b>Skip this step if you are not using a virtual environment</b>
 
 <br/>
+<br/>
 
 ```bash
 source ENV_NAME/bin/activate
@@ -605,6 +634,7 @@ or
 <li> Launch python
 
 <br/>
+<br/>
 
 ```bash
 python3
@@ -617,6 +647,7 @@ python3
 <li> Import the package
 
 <br/>
+<br/>
 
 ```python
 from zaowr_polsl_kisiel import load_calibration
@@ -627,6 +658,7 @@ from zaowr_polsl_kisiel import load_calibration
 
 <li> Locate the file with calibration params or create new file with structure shown below
 
+<br/>
 <br/>
 
 ```json
@@ -658,6 +690,7 @@ from zaowr_polsl_kisiel import load_calibration
 <li> Try reading the params from file
 
 <br/>
+<br/>
 
 ```python
 # remember to provide appropriate path to the calibration params
@@ -670,6 +703,7 @@ calibrationParams = load_calibration("../../tests/calibration_params/calibration
 
 <li> Display the <code>MSE</code> value to test if the load succeeded
 
+<br/>
 <br/>
 
 ```python
