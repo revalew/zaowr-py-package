@@ -1,8 +1,8 @@
 Metadata-Version: 2.1
 Name: zaowr_polsl_kisiel
-Version: 0.0.1
+Version: 0.0.2
 Summary: A simple Python package used by me and a friend at the university in the course 'Advanced Image, Video and Motion Analysis'
-Author-email: Maksymilian Kisiel <NONE@NONE.PL>
+Author: Maksymilian Kisiel
 Project-URL: Homepage, https://github.com/revalew/zaowr-py-package
 Project-URL: Issues, https://github.com/revalew/zaowr-py-package/issues
 Keywords: polsl,zaowr,2024,IGT,ZAOWR
@@ -430,14 +430,14 @@ python3 -m pip install --upgrade --index-url https://test.pypi.org/simple/ --no-
 
 <br/>
 
+</ul>
+</li>
+
 > [!NOTE]
 >
 > Here we additionally use `--no-deps` flag.
 >
 > Since TestPyPI doesn’t have the same packages as the live PyPI, it’s possible that attempting to install dependencies may fail or install something unexpected.
-
-</ul>
-</li>
 
 <br/>
 

@@ -1,4 +1,4 @@
-import json
+from json import dump as jdump
 
 
 def save_calibration(
@@ -16,4 +16,4 @@ def save_calibration(
         )
 
     with open(calibrationParamsPath, "w", encoding="utf-8") as f:
-        json.dump(calibrationParams, f, ensure_ascii=False, indent=4)
+        jdump(calibrationParams, f, ensure_ascii=False, indent=4)

@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "zaowr_polsl_kisiel"
 dynamic = ["version"]
 authors = [
-  { name="Maksymilian Kisiel", email="NONE@NONE.PL" },
+  { name="Maksymilian Kisiel" },
 ]
 description = "A simple Python package used by me and a friend at the university in the course 'Advanced Image, Video and Motion Analysis'"
 readme = "README.md"

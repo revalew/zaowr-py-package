@@ -1,9 +1,9 @@
-import json
+from typing import Any
+from json import load as jload
+from numpy import array as npArray
 
-import numpy as np
 
-
-def load_calibration(calibrationParamsPath: str) -> dict[str, any]:
+def load_calibration(calibrationParamsPath: str) -> dict[str, Any]:
     """
     Load the camera calibration from specified JSON file
 
@@ -16,7 +16,7 @@ def load_calibration(calibrationParamsPath: str) -> dict[str, any]:
 
         `cameraMatrix` - Camera Matrix, the focal length and optical centre matrix as shown in intrinsic parameters,
 
-        `distortionCoefficients` - Distortion Coefficients: (`k₁`, `k₂`, `p₁`, `p₂`, `k₃`), which include radial (`kₙ`) and tangential (`pₙ`) distortion values,
+        `distortionCoefficients` - Distortion Coefficients: (k<sub>1</sub>, k<sub>2</sub>, p<sub>1</sub>, p<sub>2</sub>, k<sub>3</sub>), which include radial (k<sub>n</sub>) and tangential (p<sub>n</sub>) distortion values,
 
         `rotationVectors` - Rotation Vector, the image pixel rotation angles in radians converted to vector by Rodrigues method,
 
@@ -31,13 +31,13 @@ def load_calibration(calibrationParamsPath: str) -> dict[str, any]:
         )
 
     with open(calibrationParamsPath, "r") as f:
-        jsonDump = json.load(f)
+        jsonDump = jload(f)
 
     calibrationParams = {
         "mse": jsonDump["mse"],
         "rms": jsonDump["rms"],
-        "cameraMatrix": np.array(jsonDump["cameraMatrix"]),
-        "distortionCoefficients": np.array(jsonDump["distortionCoefficients"]),
+        "cameraMatrix": npArray(jsonDump["cameraMatrix"]),
+        "distortionCoefficients": npArray(jsonDump["distortionCoefficients"]),
         "rotationVectors": jsonDump["rotationVectors"],
         "translationVectors": jsonDump["translationVectors"],
     }
