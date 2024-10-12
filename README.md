@@ -4,13 +4,26 @@
 
 This is a **ZAOWR** (Zaawansowana Analiza Obrazu, Wideo i Ruchu, eng. _Advanced Image, Video, and Motion Analysis_) Python package used by me and a friend at the university.
 
-PyPI link to the package
+PyPI link to the package: <a href="https://pypi.org/project/zaowr-polsl-kisiel/" target="_blank">MAIN PyPI</a>, <a href="https://test.pypi.org/project/zaowr-polsl-kisiel/" target="_blank">TEST PyPI</a>.
 
-<ul>
-<li><a href="https://pypi.org/project/zaowr-polsl-kisiel/" target="_blank">MAIN PyPI</a></li>
 <br/>
-<li><a href="https://test.pypi.org/project/zaowr-polsl-kisiel/" target="_blank">TEST PyPI</a></li>
-</ul>
+<br/>
+
+## Table of contents
+
+1. [Installing the package using `pip`](#installing-the-package-using-pip)
+
+2. [Removing the package using `pip`](#removing-the-package-using-pip)
+
+3. [Creating virtual environment and installing the package](#creating-virtual-environment-and-installing-the-package)
+
+4. [Testing the installation](#testing-the-installation)
+
+5. [Automate building and uploading with `Makefile` - DEV Tutorial](#automate-building-and-uploading-with-makefile---dev-tutorial)
+
+6. [Building package - DEV Tutorial based on official DOCS](#building-package---dev-tutorial-based-on-official-docs)
+
+7. [Sources](#sources)
 
 <br/>
 <br/>
@@ -23,37 +36,13 @@ PyPI link to the package
 
 <br/>
 
-<ul>
-
-<li> Linux
-
-<br/>
-
 ```bash
 python3 -m pip install --upgrade zaowr-polsl-kisiel
 ```
 
 </li>
 <br/>
-<li> Windows
-
-<br/>
-
-```bash
-py -m pip install --upgrade zaowr-polsl-kisiel
-```
-
-</li>
-</ul>
-</li>
-<br/>
 <li> TestPyPI
-
-<br/>
-
-<ul>
-
-<li> Linux
 
 <br/>
 
@@ -62,17 +51,7 @@ python3 -m pip install --index-url https://test.pypi.org/simple/ --upgrade zaowr
 ```
 
 </li>
-<br/>
-<li> Windows
 
-<br/>
-
-```bash
-py -m pip install --index-url https://test.pypi.org/simple/ --upgrade zaowr-polsl-kisiel
-```
-
-</li>
-</ul>
 </li>
 </ol>
 
@@ -184,6 +163,108 @@ deactivate
 </li>
 
 </ol>
+
+<br/>
+<br/>
+
+## Testing the installation
+
+<br/>
+
+<ul>
+<li> Activate the venv (while in the project directory) - <b>Skip this step if you are not using a virtual environment</b>
+
+<br/>
+
+```bash
+source ENV_NAME/bin/activate
+```
+
+or
+
+```bash
+. ENV_NAME/bin/activate
+```
+
+</li>
+
+<br/>
+
+<li> Launch python
+
+<br/>
+
+```bash
+python3
+```
+
+</li>
+
+<br/>
+
+<li> Import the package
+
+<br/>
+
+```python
+from zaowr_polsl_kisiel import load_calibration
+```
+
+</li>
+<br/>
+
+<li> Locate the file with calibration params or create new file with structure shown below
+
+<br/>
+
+```json
+{
+	"mse": 5.984166144997382,
+	"rms": 0.5399844606283781,
+	"cameraMatrix": [
+		[1272.011234078766, 0.0, 1058.4537673810164],
+		[0.0, 1266.8726860857762, 617.7592332273604],
+		[0.0, 0.0, 1.0]
+	],
+	"distortionCoefficients": [
+		[-0.39935647747478337, 0.18200290247627665, 0.0020154085712910707, -0.012190829753206725, -0.04648398598417859]
+	],
+	"rotationVectors": [
+		[[0.014376302442723948], [0.1667778841470017], [0.018832348485715023]],
+		[[-0.3405035725192283], [0.526867552280327], [-0.13373157952652456]]
+	],
+	"translationVectors": [
+		[[71.27846898868391], [50.76036240921024], [1400.9402673825555]],
+		[[-476.2081267995082], [-120.35757569213392], [803.862414335442]]
+	]
+}
+```
+
+</li>
+<br/>
+
+<li> Try reading the params from file
+
+<br/>
+
+```python
+# remember to provide appropriate path to the calibration params
+# you can simply create a json file with structure shown above
+calibrationParams = load_calibration("../../tests/calibration_params/calibration_params.json")
+```
+
+</li>
+<br/>
+
+<li> Display the <code>MSE</code> value to test if the load succeeded
+
+<br/>
+
+```python
+print(calibrationParams["mse"])
+```
+
+</li>
 
 <br/>
 <br/>

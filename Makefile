@@ -1,4 +1,4 @@
-.PHONY: all clean bump-version build upload-prod upload-testpypi
+.PHONY: all clean bump-version build upload-prod upload-testpypi push-no-tag
 
 all: clean bump-version
 
@@ -43,3 +43,9 @@ bump-version:
 	git commit -am "$$commitmsg (version $$newversion)"; \
 	git tag -fa v$$newversion -m "$$commitmsg"; \
 	git push --follow-tags
+
+push-no-tag:
+	read -p "Enter commit message: " commitmsg; \
+	git add .; \
+	git commit -am "$$commitmsg"; \
+	git push
