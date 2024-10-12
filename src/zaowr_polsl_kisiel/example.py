@@ -1,46 +1,27 @@
-import numpy as np
-import cv2 as cv
-import glob
-import json
-
-
-
-
-    # undistortion(mtx, dist, type="undistort")
-    # undistortion(mtx, dist, type="remapping")
-
-
-
-
+from load_calibration import load_calibration
 
 if __name__ == "__main__":
     try:
         # main()
-        dump = read_calibration()
-        # corners = dump["corners1"]
-        # corners2 = dump["corners2"]
-        mean_error = dump["mean_error"]
-        ret = dump["ret"]
-        mtx = np.array(dump["mtx"])
-        dist = np.array(dump["dist"])
-        rvecs = dump["rvecs"]
-        tvecs = dump["tvecs"]
+        calibrationParams = load_calibration(
+            "../../tests/calibration_params/calibration_params.json"
+        )
+        print(calibrationParams["mse"])
 
-        undistortion(
-            mtx,
-            dist,
-            "../img/undistort_calibresult_2.png",
-            type="undistort",
-        )
-        undistortion(
-            mtx,
-            dist,
-            "../img/remapping_calibresult_2.png",
-            type="remapping",
-        )
+    except calibrationParamsPathNotProvided:
+        print("\nError loading calibration parameters!\n")
+        raise
+
+    except imgToUndistortPathNotProvided:
+        print("\nError removing distortion from the image!\n")
+        raise
+
+    except undistortedImgPathNotProvided:
+        print("\nError saving undistorted image!\n")
+        raise
 
     except Exception as e:
-        print(e)
+        print(f"\nUnknown error occurred\nError: {e}\n")
+
     finally:
-        cv.destroyAllWindows()
-        print("done")
+        print("Program finshed")

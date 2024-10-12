@@ -11,6 +11,20 @@ def remove_distortion(
     undistortedImgPath: str = "",
     undistortionMethod: str = "undistort",
 ) -> None:
+    """
+    Remove distortion from given image
+
+    :param Any cameraMatrix: Camera Matrix, the focal length and optical centre matrix as shown in intrinsic parameters.
+    :param Any distortionCoefficients: Distortion Coefficients: (`k₁`, `k₂`, `p₁`, `p₂`, `k₃`), which include radial (`kₙ`) and tangential (`pₙ`) distortion values.
+    :param str imgToUndistortPath: Path of the image which we want to undistort.
+    :param bool showImgToUndistort: Decide if you want to show the original image., defaults to False
+    :param bool showUndistortedImg: Decide if you want to show the undistorted image., defaults to False
+    :param bool saveUndistortedImg: Decide if you want to save the undistorted image., defaults to False
+    :param str undistortedImgPath: Path where we want to save the undistorted image., defaults to ""
+    :param str undistortionMethod: Choose the method used for removing distortion (`undistort` or `remapping`)., defaults to "undistort"
+    :raises imgToUndistortPathNotProvided: Raises an error if the path of the image which you want to undistort was not provided or it isn't an instance of a string.
+    :raises undistortedImgPathNotProvided: Raises an error if the path where the undistorted image should be saved was not provided or it isn't an instance of a string.
+    """
 
     if (imgToUndistortPath == "") or (not isinstance(imgToUndistortPath, str)):
         raise imgToUndistortPathNotProvided(

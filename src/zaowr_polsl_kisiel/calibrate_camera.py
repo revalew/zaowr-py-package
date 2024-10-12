@@ -18,6 +18,21 @@ def calibrate_camera(
         0.001,
     ),
 ) -> None:
+    """
+    Calibrate the camera using the provided chessboard images
+
+    :param tuple[int, int] chessBoardSize: Size of the chessboard (corners between two sides of the chessboard) passed as a tuple. First value has to be the WIDTH, and the second value has to be the HEIGHT, e.g.
+
+        Chessboard in the OpenCV documentation `https://docs.opencv.org/4.x/dc/dbb/tutorial_py_calibration.html` has dimensions (6, 9).
+    :param float squareRealDimensions: Real dimensions of the squares on the chessboard, e.g. one square is exactly 28.67mmx28.67mm. Pass ONLY ONE argument - "28.67".
+    :param str calibImgDirPath: Path to the directory containing images with chessboards.
+    :param str globImgExtension: Extension of the chessboard images ("jpg" or "png"), defaults to "png"
+    :param bool saveCalibrationParams: Decide if you want to save the parameters calculated during the calibration process, defaults to False
+    :param str calibrationParamsPath: Path where we want to save the calibration parameters, defaults to ""
+    :param bool displayFoundCorners: Decide if you want to display the calibration images with marked corners found by cv2, defaults to False
+    :param bool displayMSE: Decide if you want to print the MSE of each image during calibration, defaults to False
+    :param tuple[Any, int, float] terminationCriteria: Specify the termination criteria for the process of finding square corners in the subpixels, defaults to ( cv.TERM_CRITERIA_EPS + cv.TERM_CRITERIA_MAX_ITER, 30, 0.001, )
+    """
 
     # termination criteria for images
     # terminationCriteria = (cv.TERM_CRITERIA_EPS + cv.TERM_CRITERIA_MAX_ITER, 30, 0.001)

@@ -415,14 +415,14 @@ python3 -m pip install --upgrade --index-url https://test.pypi.org/simple/ --no-
 
 <br/>
 
+</ul>
+</li>
+
 > [!NOTE]
 >
 > Here we additionally use `--no-deps` flag.
 >
 > Since TestPyPI doesn’t have the same packages as the live PyPI, it’s possible that attempting to install dependencies may fail or install something unexpected.
-
-</ul>
-</li>
 
 <br/>
 

@@ -19,6 +19,7 @@ classifiers = [
 keywords = ["polsl", "zaowr", "2024", "IGT", "ZAOWR"]
 
 [tool.setuptools.dynamic]
+version = {attr = "zaowr_polsl_kisiel.__version__"}  # any module attribute compatible with ast.literal_eval
 dependencies = {file = "requirements.txt"}
 
 [project.urls]
