@@ -99,8 +99,8 @@ jobs:
           gh release create
           '${{ github.ref_name }}'
           --repo '${{ github.repository }}'
-          --notes-from-tag
-        # --notes "Latest package release"
+          --notes "Latest package release ${{ github.ref_name }}"
+        #  --notes-from-tag
 
       - name: Upload artifact signatures to GitHub Release
         env:
