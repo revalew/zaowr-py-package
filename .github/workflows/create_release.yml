@@ -2,12 +2,12 @@ name: Publish Python 🐍 distribution 📦 to GitHub
 
 on:
   push:
-    branches: ['master']
+    # branches: ['master']
     # Pattern matched against refs/tags
     tags:
       - '*' # Push events to every tag not containing /
     # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
+  # workflow_dispatch:
 
 jobs:
   build:
@@ -41,7 +41,7 @@ jobs:
     name: >-
       Publish Python 🐍 distribution 📦 to PyPI
 
-    # if: startsWith(github.ref, 'refs/tags/') # only publish to PyPI on tag pushes
+    if: startsWith(github.ref, 'refs/tags/') # only publish to PyPI on tag pushes
 
     needs:
       - build
