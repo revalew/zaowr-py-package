@@ -1,4 +1,4 @@
-__version__ = "0.0.2"
+__version__ = "$newversion"
 __status__ = "Development"  # Allowed: "Prototype", "Beta", "Stable"
 
 __all__ = [

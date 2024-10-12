@@ -78,9 +78,19 @@ py -m pip install --index-url https://test.pypi.org/simple/ --upgrade zaowr-pols
 
 <br/>
 <br/>
+
+## Removing the package using `pip`
+
 <br/>
 
-## Creating virtual environment for the package
+```bash
+python3 -m pip uninstall zaowr-polsl-kisiel
+```
+
+<br/>
+<br/>
+
+## Creating virtual environment and installing the package
 
 <br/>
 
@@ -92,7 +102,26 @@ py -m pip install --index-url https://test.pypi.org/simple/ --upgrade zaowr-pols
 
 <br/>
 <ol>
-<li> Create project directory (where you create your files and where the venv will be created)
+<li> Create project directory and open it (directory where you will create your files and where the venv will be created)
+
+<br/>
+
+```bash
+testDir=/home/user/test
+```
+
+```bash
+mkdir -p $testDir
+```
+
+```bash
+cd $testDir
+```
+
+<br/>
+
+</li>
+<li> Create venv
 
 <br/>
 
@@ -139,7 +168,7 @@ python3 -m pip install --upgrade zaowr-polsl-kisiel
 
 <br/>
 
-<li> Deactivate the currently active venv
+<li> <b>(ADDITIONAL COMMAND)</b> If you want to deactivate the currently active venv
 
 <br/>
 
@@ -151,12 +180,52 @@ deactivate
 
 <br/>
 
-<li> To reactivate the venv, navigate to the path where you created the venv and source it again (command shown above in section number 2)
+<li> <b>(ADDITIONAL COMMAND)</b> To reactivate the venv, navigate to the path where you created the venv and source it again (command shown above in section number 3)
 </li>
 
 </ol>
 
 <br/>
+<br/>
+
+## Automate building and uploading with `Makefile` - DEV Tutorial
+
+In the project directory run <code>make</code>. This command will run the <code>Makefile</code>, which performs actions listed below:
+
+<ul>
+<li>remove old version of the package,</li>
+<li>ask which version we want to update (major, minor, patch) and increment it automatically, <code>push</code> the changes to GitHub with new tag,</li>
+<li>build a new version,</li>
+<li>upload the package to PyPI,</li>
+<li>upload the package to TestPyPI.</li>
+</ul>
+
+<br/>
+
+<ol>
+<li> Test the <code>Makefile</code>
+
+<br/>
+
+```bash
+make --dry-run
+```
+
+</li>
+
+<br/>
+
+<li> Run the <code>Makefile</code>
+
+<br/>
+
+```bash
+make
+```
+
+</li>
+</ol>
+
 <br/>
 <br/>
 
@@ -216,9 +285,9 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "zaowr_polsl_kisiel"
-dynamic = ["version"]
+dynamic = ["version", "dependencies"]
 authors = [
-{ name="Maksymilian Kisiel", email="NONE@NONE.PL" },
+  { name="Maksymilian Kisiel" },
 ]
 description = "A simple Python package used by me and a friend at the university in the course 'Advanced Image, Video and Motion Analysis'"
 readme = "README.md"
@@ -231,7 +300,8 @@ classifiers = [
 keywords = ["polsl", "zaowr", "2024", "IGT", "ZAOWR"]
 
 [tool.setuptools.dynamic]
-dependencies = {file = "requirements.txt"}
+version = {attr = "zaowr_polsl_kisiel.__version__"}  # any module attribute compatible with ast.literal_eval
+dependencies = {file = ["requirements.txt"]}
 
 [project.urls]
 Homepage = "https://github.com/revalew/zaowr-py-package"
@@ -431,6 +501,24 @@ python3 -m pip install --upgrade --index-url https://test.pypi.org/simple/ --no-
 <br/>
 
 <ul>
+<li> Activate the venv (while in the project directory) - <b>Skip this step if you are not using a virtual environment</b>
+
+<br/>
+
+```bash
+source ENV_NAME/bin/activate
+```
+
+or
+
+```bash
+. ENV_NAME/bin/activate
+```
+
+</li>
+
+<br/>
+
 <li> Launch python
 
 <br/>
@@ -447,9 +535,62 @@ python3
 
 <br/>
 
-```bash
->>> from zaowr_polsl_kisiel.read_calibration import read_calibration
->>> read_calibration()
+```python
+from zaowr_polsl_kisiel import load_calibration
+```
+
+</li>
+<br/>
+
+<li> Locate the file with calibration params or create new file with structure shown below
+
+<br/>
+
+```json
+{
+	"mse": 5.984166144997382,
+	"rms": 0.5399844606283781,
+	"cameraMatrix": [
+		[1272.011234078766, 0.0, 1058.4537673810164],
+		[0.0, 1266.8726860857762, 617.7592332273604],
+		[0.0, 0.0, 1.0]
+	],
+	"distortionCoefficients": [
+		[-0.39935647747478337, 0.18200290247627665, 0.0020154085712910707, -0.012190829753206725, -0.04648398598417859]
+	],
+	"rotationVectors": [
+		[[0.014376302442723948], [0.1667778841470017], [0.018832348485715023]],
+		[[-0.3405035725192283], [0.526867552280327], [-0.13373157952652456]]
+	],
+	"translationVectors": [
+		[[71.27846898868391], [50.76036240921024], [1400.9402673825555]],
+		[[-476.2081267995082], [-120.35757569213392], [803.862414335442]]
+	]
+}
+```
+
+</li>
+<br/>
+
+<li> Try reading the params from file
+
+<br/>
+
+```python
+# remember to provide appropriate path to the calibration params
+# you can simply create a json file with structure shown above
+calibrationParams = load_calibration("../../tests/calibration_params/calibration_params.json")
+```
+
+</li>
+<br/>
+
+<li> Display the <code>MSE</code> value to test if the load succeeded
+
+<br/>
+
+```python
+print(calibrationParams["mse"])
 ```
 
 </li>
@@ -457,7 +598,6 @@ python3
 
 </ol>
 
-<br/>
 <br/>
 <br/>
 
