@@ -1,4 +1,4 @@
-from load_calibration import load_calibration
+from zaowr_polsl_kisiel.load_calibration import load_calibration
 
 if __name__ == "__main__":
     try:
