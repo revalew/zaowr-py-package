@@ -200,6 +200,8 @@ In the project directory run <code>make</code>. This command will run the <code>
 <li>upload the package to TestPyPI.</li>
 </ul>
 
+At this moment the Makefile is configured to only delete the old release, create a new tag and push it to GitHub. The custom workflow handles building and uploading the package on new tag push.
+
 <br/>
 
 <ol>
@@ -604,3 +606,4 @@ print(calibrationParams["mse"])
 ## Sources
 
 This package has been prepared following [this tutorial](https://packaging.python.org/en/latest/tutorials/packaging-projects/).
+The publishing to PyPI was created with [this tutorial](https://packaging.python.org/en/latest/guides/publishing-package-distribution-releases-using-github-actions-ci-cd-workflows/)

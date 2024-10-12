@@ -1,6 +1,6 @@
 .PHONY: all clean bump-version build upload-prod upload-testpypi
 
-all: clean bump-version build upload-prod upload-testpypi
+all: clean bump-version
 
 VERSION_FILE=./src/zaowr_polsl_kisiel/__init__.py
 VERSION=$(shell python3 -c 'import re; f=open("$(VERSION_FILE)"); print(re.search(r"__version__ = \"(.*?)\"", f.read()).group(1))')
