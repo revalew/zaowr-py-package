@@ -36,7 +36,7 @@ bump-version:
 		major) newversion=$$(echo $(VERSION) | awk -F. '{printf "%d.%d.%d", $$1+1, 0, 0}');; \
 		*) echo "Invalid option! Please choose either major, minor, or patch."; exit 1;; \
 	esac; \
-	sed -i 's/__version__ = "$(VERSION)"/__version__ = "$$newversion"/' $(VERSION_FILE); \
+	sed -i "s/__version__ = '$(VERSION)'/__version__ = '$$newversion'/" $(VERSION_FILE); \
 	echo "Version updated to $$newversion"; \
 	read -p "Enter commit message: " commitmsg; \
 	git add .; \
