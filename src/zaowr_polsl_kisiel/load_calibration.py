@@ -1,15 +1,29 @@
-from typing import Any
-from json import load as jload
-from numpy import array as npArray
+from __future__ import annotations
+from typing import TYPE_CHECKING, TypedDict, Any
+
 from .exceptions import CalibrationParamsPathNotProvided
 
+from json import load as jload
+from numpy import array as npArray
 
-def load_calibration(calibrationParamsPath: str) -> dict[str, Any]:
+# To avoid creating a class at runtime, for type-hinting alone.
+if TYPE_CHECKING:
+
+    # Map the `dict` fields here
+    class CalibrationParams(TypedDict):
+        mse: float
+        rms: float
+        cameraMatrix: Any
+        distortionCoefficients: Any
+        rotationVectors: Any
+        translationVectors: Any
+
+def load_calibration(calibrationParamsPath: str) -> CalibrationParams:
     """
     Load the camera calibration from specified JSON file
 
     :param str calibrationParamsPath: Path to the JSON calibration file
-    :return dict[str, Any]: Returns calibration parameters of the camera:
+    :return CalibrationParams dict[str, Any]: Returns calibration parameters of the camera in form of a dict:
 
         `mse` - Mean Square Error,
 

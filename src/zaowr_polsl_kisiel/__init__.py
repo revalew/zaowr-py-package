@@ -1,4 +1,4 @@
-__version__ = "0.0.11"
+__version__ = "0.0.12"
 __status__ = "Development"  # Allowed: "Prototype", "Beta", "Stable"
 
 __all__ = [
@@ -14,9 +14,9 @@ from .save_calibration import save_calibration
 from .load_calibration import load_calibration
 from .remove_distortion import remove_distortion
 
-from .exceptions import (
-    UndistortedImgPathNotProvided,
-    CalibrationImagesNotFound,
-    CalibrationParamsPathNotProvided,
-    ImgToUndistortPathNotProvided,
-)
+# from .exceptions import (
+#     UndistortedImgPathNotProvided,
+#     CalibrationImagesNotFound,
+#     CalibrationParamsPathNotProvided,
+#     ImgToUndistortPathNotProvided,
+# )

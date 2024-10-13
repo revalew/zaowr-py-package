@@ -59,7 +59,7 @@ def remove_distortion(
         dst = dst[y : y + h, x : x + w]
 
         if showUndistortedImg:
-            cv.imshow(dst)
+            cv.imshow("Undistorted image", dst)
             print("\nPress any key to continue...")
             cv.waitKey()
 
@@ -82,7 +82,7 @@ def remove_distortion(
         dst = dst[y : y + h, x : x + w]
 
         if showUndistortedImg:
-            cv.imshow(dst)
+            cv.imshow("Undistorted image", dst)
             print("\nPress any key to continue...")
             cv.waitKey()
 
