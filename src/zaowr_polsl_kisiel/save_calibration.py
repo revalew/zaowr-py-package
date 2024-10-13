@@ -1,4 +1,5 @@
 from json import dump as jdump
+from .exceptions import CalibrationParamsPathNotProvided
 
 
 def save_calibration(
@@ -7,13 +8,11 @@ def save_calibration(
     """
     Save the provided calibration parameters to specified JSON file
 
-    :raises calibrationParamsPathNotProvided: Raises an error if the path was not provided or it isn't an instance of a string.
+    :raises CalibrationParamsPathNotProvided: Raises an error if the path was not provided or it isn't an instance of a string.
     """
 
     if (calibrationParamsPath == "") or (not isinstance(calibrationParamsPath, str)):
-        raise calibrationParamsPathNotProvided(
-            "Path to the calibration file was not provided or it is not a string!\nProvide appropriate path and re-run the program."
-        )
+        raise CalibrationParamsPathNotProvided
 
     with open(calibrationParamsPath, "w", encoding="utf-8") as f:
         jdump(calibrationParams, f, ensure_ascii=False, indent=4)

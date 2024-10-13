@@ -1,5 +1,6 @@
 from typing import Any
 import cv2 as cv
+from .exceptions import ImgToUndistortPathNotProvided, UndistortedImgPathNotProvided
 
 
 def remove_distortion(
@@ -23,21 +24,17 @@ def remove_distortion(
     :param bool saveUndistortedImg: Decide if you want to save the undistorted image., defaults to False
     :param str undistortedImgPath: Path where we want to save the undistorted image., defaults to ""
     :param str undistortionMethod: Choose the method used for removing distortion (`undistort` or `remapping`)., defaults to "undistort"
-    :raises imgToUndistortPathNotProvided: Raises an error if the path of the image which you want to undistort was not provided or it isn't an instance of a string.
-    :raises undistortedImgPathNotProvided: Raises an error if the path where the undistorted image should be saved was not provided or it isn't an instance of a string.
+    :raises ImgToUndistortPathNotProvided: Raises an error if the path of the image which you want to undistort was not provided or it isn't an instance of a string.
+    :raises UndistortedImgPathNotProvided: Raises an error if the path where the undistorted image should be saved was not provided or it isn't an instance of a string.
     """
 
     if (imgToUndistortPath == "") or (not isinstance(imgToUndistortPath, str)):
-        raise imgToUndistortPathNotProvided(
-            "Path to the undistorted image was not provided or it is not a string!\nProvide appropriate path and re-run the program."
-        )
+        raise ImgToUndistortPathNotProvided
 
     if saveUndistortedImg and (
         (undistortedImgPath == "") or (not isinstance(undistortedImgPath, str))
     ):
-        raise undistortedImgPathNotProvided(
-            "Path to save the undistorted image was not provided or it is not a string!\nProvide appropriate path and re-run the program."
-        )
+        raise UndistortedImgPathNotProvided
 
     # "../../../../ZAOWiR Image set - Calibration/Chessboard/Mono 1/cam4/58.png"
     img = cv.imread(imgToUndistortPath)

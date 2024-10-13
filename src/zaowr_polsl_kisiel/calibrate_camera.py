@@ -2,6 +2,7 @@ from typing import Any
 import numpy as np
 import cv2 as cv
 import glob
+from .exceptions import CalibrationImagesNotFound, CalibrationParamsPathNotProvided
 
 
 def calibrate_camera(
@@ -33,6 +34,7 @@ def calibrate_camera(
     :param bool displayFoundCorners: Decide if you want to display the calibration images with marked corners found by cv2, defaults to False
     :param bool displayMSE: Decide if you want to print the MSE of each image during calibration, defaults to False
     :param tuple[Any, int, float] terminationCriteria: Specify the termination criteria for the process of finding square corners in the subpixels, defaults to ( cv.TERM_CRITERIA_EPS + cv.TERM_CRITERIA_MAX_ITER, 30, 0.001, )
+    :raises CalibrationImagesNotFound: Raises an error if the calibration images could not be found in the given path.
     """
 
     # termination criteria for images
@@ -53,6 +55,9 @@ def calibrate_camera(
 
     # e.g. "../../../../ZAOWiR Image set - Calibration/Chessboard/Mono 1/cam4/*.png"
     images = glob.glob(calibImgDirPath + "/*." + globImgExtension)
+
+    if (images == []) or (len(images) == 0):
+        raise CalibrationImagesNotFound
 
     for fileName in images:
         img = cv.imread(fileName)
@@ -118,7 +123,7 @@ def calibrate_camera(
 
             save_calibration(calibrationParams, calibrationParamsPath)
 
-        except calibrationParamsPathNotProvided:
+        except CalibrationParamsPathNotProvided:
             print("\nError occurred while saving the calibration parameters!\n")
             raise
 

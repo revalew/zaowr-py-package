@@ -1,6 +1,7 @@
 from typing import Any
 from json import load as jload
 from numpy import array as npArray
+from .exceptions import CalibrationParamsPathNotProvided
 
 
 def load_calibration(calibrationParamsPath: str) -> dict[str, Any]:
@@ -22,13 +23,11 @@ def load_calibration(calibrationParamsPath: str) -> dict[str, Any]:
 
         `translationVectors` - Translation Vector, the vector depicting shift in pixel values along x and y axis.
 
-    :raises calibrationParamsPathNotProvided: Raises an error if the path was not provided or it isn't an instance of a string.
+    :raises CalibrationParamsPathNotProvided: Raises an error if the path was not provided or it isn't an instance of a string.
     """
 
     if (calibrationParamsPath == "") or (not isinstance(calibrationParamsPath, str)):
-        raise calibrationParamsPathNotProvided(
-            "Path to the calibration file was not provided or it is not a string!\nProvide appropriate path and re-run the program."
-        )
+        raise CalibrationParamsPathNotProvided
 
     with open(calibrationParamsPath, "r") as f:
         jsonDump = jload(f)
