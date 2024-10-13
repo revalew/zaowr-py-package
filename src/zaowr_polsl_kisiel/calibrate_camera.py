@@ -14,6 +14,7 @@ def calibrate_camera(
     calibrationParamsPath: str = "",
     displayFoundCorners: bool = False,
     displayMSE: bool = False,
+    improveSubPix: bool = True,
     terminationCriteria: tuple[Any, int, float] = (
         cv.TERM_CRITERIA_EPS + cv.TERM_CRITERIA_MAX_ITER,
         30,
@@ -33,7 +34,8 @@ def calibrate_camera(
     :param str calibrationParamsPath: Path where we want to save the calibration parameters, defaults to ""
     :param bool displayFoundCorners: Decide if you want to display the calibration images with marked corners found by cv2, defaults to False
     :param bool displayMSE: Decide if you want to print the MSE of each image during calibration, defaults to False
-    :param tuple[Any, int, float] terminationCriteria: Specify the termination criteria for the process of finding square corners in the subpixels, defaults to ( cv.TERM_CRITERIA_EPS + cv.TERM_CRITERIA_MAX_ITER, 30, 0.001, )
+    :param bool improveSubPix: Decide if you want to refine the corners found in the calibration images with sub-pixel precision, defaults to True
+    :param tuple[Any, int, float] terminationCriteria: Specify the termination criteria for the process of finding square corners in the sub-pixels, defaults to ( cv.TERM_CRITERIA_EPS + cv.TERM_CRITERIA_MAX_ITER, 30, 0.001, )
     :raises CalibrationImagesNotFound: Raises an error if the calibration images could not be found in the given path.
     """
 
@@ -72,10 +74,14 @@ def calibrate_camera(
         if ret == True:
             objPoints.append(objP)
 
-            corners2 = cv.cornerSubPix(
-                grayImg, corners1, (11, 11), (-1, -1), terminationCriteria
-            )
-            imgPoints.append(corners2)
+            if improveSubPix:
+                corners2 = cv.cornerSubPix(
+                    grayImg, corners1, (11, 11), (-1, -1), terminationCriteria
+                )
+                imgPoints.append(corners2)
+
+            else:
+                imgPoints.append(corners1)
 
             if displayFoundCorners:
                 # Draw and display the corners
@@ -102,11 +108,10 @@ def calibrate_camera(
             cameraMatrix,
             distortionCoefficients,
         )
-        4
         error = cv.norm(imgPoints[i], imgPoints2, cv.NORM_L2) / len(imgPoints2)
         mse += error
-        if displayMSE:
-            print("\nMean reprojection error: {}", mse / len(objPoints))
+    if displayMSE:
+        print("\nMean reprojection error: {}", mse / len(objPoints))
 
     if saveCalibrationParams:
         try:
