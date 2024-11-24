@@ -1,0 +1,277 @@
+import os
+from time import perf_counter
+from typing import Any
+import numpy as np
+import cv2 as cv
+import glob
+from .exceptions import CalibrationImagesNotFound, CalibrationParamsPathNotProvided, RectifiedImgPathNotProvided, StereoCalibrationParamsPathNotProvided, MissingParameters, RectificationMapsPathNotProvided
+
+# Draw epipolar lines for visualization
+def draw_epilines(img_left: np.ndarray, img_right: np.ndarray,
+                  points_left: np.ndarray, points_right: np.ndarray, F: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+    """
+    Draw epipolar lines on both images based on the fundamental matrix.
+
+    :param img_left: Left image (rectified).
+    :param img_right: Right image (rectified).
+    :param points_left: Points detected in the left image (e.g., corners of the chessboard).
+    :param points_right: Corresponding points in the right image.
+    :param F: Fundamental matrix.
+    :return: Tuple of the modified left and right images with epipolar lines.
+    """
+    # Make copies of the images to avoid modifying originals
+    img_left_with_lines = img_left.copy()
+    img_right_with_lines = img_right.copy()
+
+    # Compute epilines in the right image for points in the left image
+    lines_right = cv.computeCorrespondEpilines(points_left.reshape(-1, 1, 2), 1, F)
+    lines_right = lines_right.reshape(-1, 3)
+
+    # Draw epilines on the right image
+    for r, pt in zip(lines_right, points_left):
+        color = tuple(np.random.randint(0, 255, 3).tolist())
+        x0, y0 = map(int, [0, -r[2] / r[1]])
+        x1, y1 = map(int, [img_right.shape[1], -(r[2] + r[0] * img_right.shape[1]) / r[1]])
+        cv.line(img_right_with_lines, (x0, y0), (x1, y1), color, 2)
+        cv.circle(img_left_with_lines, tuple(pt.ravel()), 5, color, -1)
+
+    # Compute epilines in the left image for points in the right image
+    lines_left = cv.computeCorrespondEpilines(points_right.reshape(-1, 1, 2), 2, F)
+    lines_left = lines_left.reshape(-1, 3)
+
+    # Draw epilines on the left image
+    for r, pt in zip(lines_left, points_right):
+        color = tuple(np.random.randint(0, 255, 3).tolist())
+        x0, y0 = map(int, [0, -r[2] / r[1]])
+        x1, y1 = map(int, [img_left.shape[1], -(r[2] + r[0] * img_left.shape[1]) / r[1]])
+        cv.line(img_left_with_lines, (x0, y0), (x1, y1), color, 2)
+        cv.circle(img_right_with_lines, tuple(pt.ravel()), 5, color, -1)
+
+    return img_left_with_lines, img_right_with_lines
+
+
+def stereo_rectify(
+    calibImgDirPath_left: str,
+    calibImgDirPath_right: str,
+    cameraMatrix_left: np.ndarray = None,
+    cameraMatrix_right: np.ndarray = None,
+    distortionCoefficients_left: np.ndarray = None,
+    distortionCoefficients_right: np.ndarray = None,
+    R: np.ndarray = None,
+    T: np.ndarray = None,
+    F: np.ndarray = None,
+    imgPoints_left: np.ndarray = None,
+    imgPoints_right: np.ndarray = None,
+    whichImage: int = 0,
+    saveRectifiedImages: bool = False,
+    rectifiedImagesDirPath: str = "./rectifiedImages",
+    globImgExtension: str = "png",
+    showRectifiedImages: bool = False,
+    loadStereoCalibrationParams: bool = False,
+    stereoCalibrationParamsPath: str = "",
+    saveRectificationMaps: bool = False,
+    loadRectificationMaps: bool = False,
+    rectificationMapsPath: str = "",
+    testInterpolationMethods: bool = False
+):
+    """
+        Perform stereo rectification on a pair of stereo images and visualize epipolar lines.
+
+        :param str calibImgDirPath_left: Path to the directory containing left camera images for rectification.
+        :param str calibImgDirPath_right: Path to the directory containing right camera images for rectification.
+        :param np.ndarray cameraMatrix_left: Intrinsic matrix of the left camera (3x3). Required if not loading parameters.
+        :param np.ndarray cameraMatrix_right: Intrinsic matrix of the right camera (3x3). Required if not loading parameters.
+        :param np.ndarray distortionCoefficients_left: Distortion coefficients of the left camera.
+        :param np.ndarray distortionCoefficients_right: Distortion coefficients of the right camera.
+        :param np.ndarray R: Rotation matrix (3x3) between the two cameras. Required if not loading parameters.
+        :param np.ndarray T: Translation vector (3x1) between the two cameras. Required if not loading parameters.
+        :param np.ndarray F: Fundamental matrix (3x3) relating the two images. Required for epipolar line visualization.
+        :param np.ndarray imgPoints_left: Image points from the left camera (e.g., corners of the chessboard).
+        :param np.ndarray imgPoints_right: Corresponding image points from the right camera.
+        :param int whichImage: Index of the image pair to use for rectification and visualization (default is 0).
+        :param bool saveRectifiedImages: Whether to save the rectified images to a directory (default is False).
+        :param str rectifiedImagesDirPath: Directory to save rectified images if `saveRectifiedImages` is True.
+        :param str globImgExtension: File extension of input images (default is "png").
+        :param bool showRectifiedImages: Whether to display rectified images with epipolar lines (default is False).
+        :param bool loadStereoCalibrationParams: Whether to load stereo calibration parameters from a file.
+        :param str stereoCalibrationParamsPath: Path to the stereo calibration parameters file.
+        :param bool saveRectificationMaps: Whether to save rectification maps to a file (default is False).
+        :param bool loadRectificationMaps: Whether to load rectification maps from a file (default is False).
+        :param str rectificationMapsPath: Path to save or load rectification maps.
+        :param bool testInterpolationMethods: Whether to test different interpolation methods for rectification.
+
+        :raises CalibrationImagesNotFound: If no calibration images are found in the specified directories.
+        :raises MissingParameters: If required camera parameters are missing and not loaded from a file.
+        :raises RectificationMapsPathNotProvided: If the path for saving/loading rectification maps is not provided.
+        :raises StereoCalibrationParamsPathNotProvided: If the path for stereo calibration parameters is not provided.
+
+        :return: None
+    """
+    images_left = glob.glob(calibImgDirPath_left + "/*." + globImgExtension)
+    images_right = glob.glob(calibImgDirPath_right + "/*." + globImgExtension)
+
+    grayImg_left = cv.cvtColor(cv.imread(images_left[0]), cv.COLOR_BGR2GRAY)
+
+    if (not images_left) or (len(images_left) == 0):
+        raise CalibrationImagesNotFound
+
+    if (not images_right) or (len(images_right) == 0):
+        raise CalibrationImagesNotFound
+
+    # User provided required params and doesn't want to load from file - calculate new rectification maps
+    if not loadStereoCalibrationParams:
+
+        if (not cameraMatrix_left) or (not cameraMatrix_right) or (not distortionCoefficients_left) or (not distortionCoefficients_right) or (not R) or (not T):
+            raise MissingParameters
+
+        # Stereo Rectification
+        R1, R2, P1, P2, Q, roi1, roi2 = cv.stereoRectify(
+            cameraMatrix_left, distortionCoefficients_left, cameraMatrix_right, distortionCoefficients_right,
+            grayImg_left.shape[::-1], R, T
+        )
+
+        if not loadRectificationMaps:
+            # Create rectification maps
+            map1_left, map2_left = cv.initUndistortRectifyMap(cameraMatrix_left, distortionCoefficients_left, R1, P1, grayImg_left.shape[::-1], cv.CV_16SC2)
+
+            map1_right, map2_right = cv.initUndistortRectifyMap(cameraMatrix_right, distortionCoefficients_right, R2, P2, grayImg_left.shape[::-1], cv.CV_16SC2)
+
+    # User provided required calibration params and wants to load them from file to calculate rectification maps
+    else:
+        try:
+            from .load_stereo_calibration import load_stereo_calibration
+            stereoCalibrationParams = load_stereo_calibration(stereoCalibrationParamsPath)
+
+            cameraMatrix_left = stereoCalibrationParams["cameraMatrix_left"]
+            cameraMatrix_right = stereoCalibrationParams["cameraMatrix_right"]
+            distortionCoefficients_left = stereoCalibrationParams["distortionCoefficients_left"]
+            distortionCoefficients_right = stereoCalibrationParams["distortionCoefficients_right"]
+            R = stereoCalibrationParams["rotationMatrix"]
+            T = stereoCalibrationParams["translationVector"]
+            F = stereoCalibrationParams["fundamentalMatrix"]
+
+            # Stereo Rectification
+            R1, R2, P1, P2, Q, roi1, roi2 = cv.stereoRectify(
+                cameraMatrix_left, distortionCoefficients_left, cameraMatrix_right, distortionCoefficients_right,
+                grayImg_left.shape[::-1], R, T
+            )
+
+            if not loadRectificationMaps:
+                # Create rectification maps
+                map1_left, map2_left = cv.initUndistortRectifyMap(cameraMatrix_left, distortionCoefficients_left, R1, P1, grayImg_left.shape[::-1], cv.CV_16SC2)
+
+                map1_right, map2_right = cv.initUndistortRectifyMap(cameraMatrix_right, distortionCoefficients_right, R2, P2, grayImg_left.shape[::-1], cv.CV_16SC2)
+
+        except StereoCalibrationParamsPathNotProvided:
+            print("Error loading stereo calibration parameters!")
+            raise
+
+        except CalibrationParamsPathNotProvided:
+            print("Error loading calibration parameters!")
+            raise
+
+        except Exception as e:
+            print(f"Unknown error occurred\nError: {e}\n")
+
+    # User provided required maps and wants to load them from file
+    if loadRectificationMaps:
+        try:
+            from .load_rectification_maps import load_rectification_maps
+            rectificationMaps = load_rectification_maps(rectificationMapsPath)
+
+            map1_left = rectificationMaps["map1_left"]
+            map2_left = rectificationMaps["map2_left"]
+            map1_right = rectificationMaps["map1_right"]
+            map2_right = rectificationMaps["map2_right"]
+
+        except RectificationMapsPathNotProvided:
+            print("\nError loading rectification maps!\n")
+            raise
+
+    # User wants to save rectification maps
+    if saveRectificationMaps:
+        if (not rectificationMapsPath) or (len(rectificationMapsPath) == 0):
+            raise RectificationMapsPathNotProvided
+
+        try:
+            from .save_calibration import save_calibration
+
+            if (not map1_left) or (not map2_left) or (not map1_right) or (not map2_right):
+                raise MissingParameters
+
+            rectificationParams = {
+                "map1_left": map1_left,
+                "map2_left": map2_left,
+                "map1_right": map1_right,
+                "map2_right": map2_right,
+            }
+
+            save_calibration(rectificationParams, rectificationMapsPath)
+
+        except CalibrationParamsPathNotProvided:
+            print("\nError occurred while saving the calibration parameters!\n")
+            raise
+
+        except Exception as e:
+            print("\nUnknown error occurred\n")
+            raise
+
+    if (not F) or (not imgPoints_left) or (not imgPoints_right):
+        raise MissingParameters
+
+    if testInterpolationMethods:
+        interpolationTypes = [cv.INTER_NEAREST, cv.INTER_LINEAR, cv.INTER_CUBIC, cv.INTER_AREA, cv.INTER_LANCZOS4]
+
+        # Load an example pair of images for rectification
+        img_left = cv.imread(images_left[whichImage])
+        img_right = cv.imread(images_right[whichImage])
+
+        for interpolationType in interpolationTypes:
+            tic_1 = perf_counter()
+            rectified_left = cv.remap(img_left, map1_left, map2_left, interpolationType)
+            tic_2 = perf_counter()
+            rectified_right = cv.remap(img_right, map1_right, map2_right, interpolationType)
+            toc = perf_counter()
+            print(f"Interpolation type: {interpolationType}:\n\tleft_image: {tic_2 - tic_1}\n\tright_image: {toc - tic_2}\n\ttotal: {toc - tic_1}\n")
+
+            rectified_pair = np.hstack((rectified_left, rectified_right))
+
+            cv.imshow('Rectified Stereo Images', rectified_pair)
+            cv.waitKey(0)
+            cv.destroyAllWindows()
+
+    else:
+        # Load an example pair of images for rectification
+        img_left = cv.imread(images_left[whichImage])
+        img_right = cv.imread(images_right[whichImage])
+
+        # Apply rectification to both images
+        rectified_left = cv.remap(img_left, map1_left, map2_left, cv.INTER_LINEAR)
+        rectified_right = cv.remap(img_right, map1_right, map2_right, cv.INTER_LINEAR)
+
+        # Draw epilines using the fundamental matrix F
+        rectified_left_with_lines, rectified_right_with_lines = draw_epilines(
+            rectified_left, rectified_right, imgPoints_left, imgPoints_right, F
+        )
+
+        # Combine the images side-by-side for visualization
+        rectified_pair = np.hstack((rectified_left_with_lines, rectified_right_with_lines))
+
+    # Save the rectified image to a file
+    if saveRectifiedImages:
+        if (not rectifiedImagesDirPath) or (len(rectifiedImagesDirPath) == 0):
+            raise RectifiedImgPathNotProvided
+
+        if not os.path.exists(rectifiedImagesDirPath):
+            os.makedirs(rectifiedImagesDirPath)
+
+        cv.imwrite(os.path.join(rectifiedImagesDirPath, "rectified_left.png"), rectified_left)
+        cv.imwrite(os.path.join(rectifiedImagesDirPath, "rectified_right.png"), rectified_right)
+        cv.imwrite(os.path.join(rectifiedImagesDirPath, "rectified_stereo_pair.png"), rectified_pair)
+
+
+    if showRectifiedImages:
+        cv.imshow('Rectified Stereo Images', rectified_pair)
+        cv.waitKey(0)
+        cv.destroyAllWindows()
+

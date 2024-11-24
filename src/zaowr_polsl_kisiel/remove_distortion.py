@@ -24,6 +24,7 @@ def remove_distortion(
     :param bool saveUndistortedImg: Decide if you want to save the undistorted image., defaults to False
     :param str undistortedImgPath: Path where we want to save the undistorted image., defaults to ""
     :param str undistortionMethod: Choose the method used for removing distortion (`undistort` or `remapping`)., defaults to "undistort"
+
     :raises ImgToUndistortPathNotProvided: Raises an error if the path of the image which you want to undistort was not provided or it isn't an instance of a string.
     :raises UndistortedImgPathNotProvided: Raises an error if the path where the undistorted image should be saved was not provided or it isn't an instance of a string.
     """

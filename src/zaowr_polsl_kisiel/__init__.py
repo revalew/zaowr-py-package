@@ -1,4 +1,4 @@
-__version__ = "0.0.12"
+__version__ = "0.0.13"
 __status__ = "Development"  # Allowed: "Prototype", "Beta", "Stable"
 
 __all__ = [
@@ -7,12 +7,21 @@ __all__ = [
     "load_calibration",
     "remove_distortion",
     "exceptions",
+    "stereo_calibrate",
+    "load_stereo_calibration",
+    "stereo_rectify",
+    "load_rectification_maps"
 ]
 
-from .calibrate_camera import calibrate_camera
-from .save_calibration import save_calibration
-from .load_calibration import load_calibration
-from .remove_distortion import remove_distortion
+from .calibrate_camera import calibrate_camera # calibrate single camera
+from .save_calibration import save_calibration # save calibration parameters (used for all types of params - single, stereo, rectification)
+from .load_calibration import load_calibration # load calibration parameters for single camera
+from .remove_distortion import remove_distortion # remove distortion
+from .stereo_calibrate import stereo_calibration # stereo calibration
+from .stereo_calibrate import calculate_fov # calculate fov
+from .load_stereo_calibration import load_stereo_calibration # load stereo calibration
+from .stereo_rectify import stereo_rectify # rectify stereo image after stereo calibration
+from .load_rectification_maps import load_rectification_maps # load rectification maps
 
 # from .exceptions import (
 #     UndistortedImgPathNotProvided,
