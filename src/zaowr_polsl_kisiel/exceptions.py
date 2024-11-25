@@ -108,3 +108,15 @@ class RectificationMapsPathNotProvided(Exception):
     ):
         self.message = message
         super().__init__(self.message)
+
+class CharucoCalibrationError(Exception):
+    """
+    Error during ChArUco board calibration.
+    """
+
+    def __init__(
+        self,
+        message="Error during ChArUco board calibration. Ensure the images and parameters are correct.",
+    ):
+        self.message = message
+        super().__init__(self.message)

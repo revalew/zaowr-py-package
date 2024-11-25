@@ -11,7 +11,8 @@ __all__ = [
     "load_stereo_calibration",
     "stereo_rectify",
     "load_rectification_maps",
-    "are_params_valid"
+    "are_params_valid",
+    "find_aruco_dict",
 ]
 
 from .calibrate_camera import calibrate_camera # calibrate single camera
@@ -24,3 +25,4 @@ from .load_stereo_calibration import load_stereo_calibration # load stereo calib
 from .stereo_rectify import stereo_rectify # rectify stereo image after stereo calibration
 from .load_rectification_maps import load_rectification_maps # load rectification maps
 from .are_params_valid import are_params_valid # validate calibration parameters stored in files and return them if valid
+from .find_aruco_dict import find_aruco_dict # find aruco dictionary if we don't know it
