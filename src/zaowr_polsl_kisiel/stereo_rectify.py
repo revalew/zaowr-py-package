@@ -7,47 +7,57 @@ import glob
 from .exceptions import CalibrationImagesNotFound, CalibrationParamsPathNotProvided, RectifiedImgPathNotProvided, StereoCalibrationParamsPathNotProvided, MissingParameters, RectificationMapsPathNotProvided
 
 # Draw epipolar lines for visualization
-def draw_epilines(img_left: np.ndarray, img_right: np.ndarray,
-                  points_left: np.ndarray, points_right: np.ndarray, F: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+def draw_epilines_aligned(
+        img_left: np.ndarray,
+        img_right: np.ndarray,
+        num_lines: int = 15,
+        roi_left: tuple = None,
+        roi_right: tuple = None,
+        line_thickness: int = 2,
+        roi_thickness: int = 2
+) -> tuple[np.ndarray, np.ndarray]:
     """
-    Draw epipolar lines on both images based on the fundamental matrix.
+    Draw uniformly spaced horizontal epipolar lines and optional ROI boxes on rectified images.
 
-    :param img_left: Left image (rectified).
-    :param img_right: Right image (rectified).
-    :param points_left: Points detected in the left image (e.g., corners of the chessboard).
-    :param points_right: Corresponding points in the right image.
-    :param F: Fundamental matrix.
-    :return: Tuple of the modified left and right images with epipolar lines.
+    :param img_left: Left rectified image.
+    :param img_right: Right rectified image.
+    :param num_lines: Number of horizontal epipolar lines to draw.
+    :param roi_left: ROI tuple for the left image (x, y, width, height).
+    :param roi_right: ROI tuple for the right image (x, y, width, height).
+    :param line_thickness: Thickness of the epipolar lines.
+    :param roi_thickness: Thickness of the ROI rectangle lines.
+    :return: Tuple of images with horizontal epipolar lines and optional ROIs.
     """
-    # Make copies of the images to avoid modifying originals
     img_left_with_lines = img_left.copy()
     img_right_with_lines = img_right.copy()
 
-    # Compute epilines in the right image for points in the left image
-    lines_right = cv.computeCorrespondEpilines(points_left.reshape(-1, 1, 2), 1, F)
-    lines_right = lines_right.reshape(-1, 3)
+    # Use image dimensions or ROI if available
+    height, width = img_left.shape[:2]
+    roi_left = roi_left if roi_left else (0, 0, width, height)
+    roi_right = roi_right if roi_right else (0, 0, width, height)
 
-    # Draw epilines on the right image
-    for r, pt in zip(lines_right, points_left):
-        color = tuple(np.random.randint(0, 255, 3).tolist())
-        x0, y0 = map(int, [0, -r[2] / r[1]])
-        x1, y1 = map(int, [img_right.shape[1], -(r[2] + r[0] * img_right.shape[1]) / r[1]])
-        cv.line(img_right_with_lines, (x0, y0), (x1, y1), color, 2)
-        cv.circle(img_left_with_lines, tuple(pt.ravel()), 5, color, -1)
+    # Generate y-coordinates for lines within the ROI
+    y_start, y_end = roi_left[1], roi_left[1] + roi_left[3]
+    y_coords = np.linspace(y_start, y_end - 1, num_lines).astype(int)
 
-    # Compute epilines in the left image for points in the right image
-    lines_left = cv.computeCorrespondEpilines(points_right.reshape(-1, 1, 2), 2, F)
-    lines_left = lines_left.reshape(-1, 3)
+    # Draw horizontal epipolar lines
+    for y in y_coords:
+        color = (0, 0, 255)  # Red for lines
+        cv.line(img_left_with_lines, (roi_left[0], y), (roi_left[0] + roi_left[2], y), color, line_thickness)
+        cv.line(img_right_with_lines, (roi_right[0], y), (roi_right[0] + roi_right[2], y), color, line_thickness)
 
-    # Draw epilines on the left image
-    for r, pt in zip(lines_left, points_right):
-        color = tuple(np.random.randint(0, 255, 3).tolist())
-        x0, y0 = map(int, [0, -r[2] / r[1]])
-        x1, y1 = map(int, [img_left.shape[1], -(r[2] + r[0] * img_left.shape[1]) / r[1]])
-        cv.line(img_left_with_lines, (x0, y0), (x1, y1), color, 2)
-        cv.circle(img_right_with_lines, tuple(pt.ravel()), 5, color, -1)
+    # Draw ROI rectangles
+    if roi_left:
+        cv.rectangle(img_left_with_lines, (roi_left[0], roi_left[1]),
+                     (roi_left[0] + roi_left[2], roi_left[1] + roi_left[3]), (0, 255, 0), roi_thickness)
+    if roi_right:
+        cv.rectangle(img_right_with_lines, (roi_right[0], roi_right[1]),
+                     (roi_right[0] + roi_right[2], roi_right[1] + roi_right[3]), (0, 255, 0), roi_thickness)
 
     return img_left_with_lines, img_right_with_lines
+
+
+
 
 
 def stereo_rectify(
@@ -216,7 +226,7 @@ def stereo_rectify(
             print("\nUnknown error occurred\n")
             raise
 
-    if (not F) or (not imgPoints_left) or (not imgPoints_right):
+    if (not F.size) or (not imgPoints_left.size) or (not imgPoints_right.size):
         raise MissingParameters
 
     if testInterpolationMethods:
@@ -250,8 +260,13 @@ def stereo_rectify(
         rectified_right = cv.remap(img_right, map1_right, map2_right, cv.INTER_LINEAR)
 
         # Draw epilines using the fundamental matrix F
-        rectified_left_with_lines, rectified_right_with_lines = draw_epilines(
-            rectified_left, rectified_right, imgPoints_left, imgPoints_right, F
+        rectified_left_with_lines, rectified_right_with_lines = draw_epilines_aligned(
+            rectified_left, rectified_right,
+            num_lines=20,
+            roi_left=roi1,
+            roi_right=roi2,
+            line_thickness=3,
+            roi_thickness=2
         )
 
         # Combine the images side-by-side for visualization

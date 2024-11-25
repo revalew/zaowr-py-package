@@ -1,12 +1,18 @@
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, TypedDict
 import numpy as np
 import cv2 as cv
 import glob
 from .exceptions import CalibrationImagesNotFound, CalibrationParamsPathNotProvided, CalibrationParamsWrongFormat
 
-# To avoid creating a class at runtime, for type-hinting alone.
-if TYPE_CHECKING:
-    from .load_calibration import CalibrationParams
+class CalibrationParams(TypedDict):
+    mse: float
+    rms: float
+    objPoints: Any
+    imgPoints: Any
+    cameraMatrix: Any
+    distortionCoefficients: Any
+    rotationVectors: Any
+    translationVectors: Any
 
 
 def calibrate_camera(

@@ -14,5 +14,5 @@ def save_calibration(
     if (calibrationParamsPath == "") or (not isinstance(calibrationParamsPath, str)):
         raise CalibrationParamsPathNotProvided
 
-    with open(calibrationParamsPath, "w", encoding="utf-8") as f:
-        jdump(calibrationParams, f, ensure_ascii=False, indent=4)
+    with open(calibrationParamsPath, "w", encoding="utf-8") as file:
+        jdump(calibrationParams, file, ensure_ascii=False, indent=4)

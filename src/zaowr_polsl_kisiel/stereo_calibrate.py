@@ -223,8 +223,8 @@ def stereo_calibration(
                 calibrationParams_left = {
                     "mse": mse_left,
                     "rms": rms_left,
-                    "objPoints": objPoints,
-                    "imgPoints": imgPoints_left,
+                    "objPoints": [obj.tolist() for obj in objPoints],
+                    "imgPoints": [img.tolist() for img in imgPoints_left],
                     "cameraMatrix": cameraMatrix_left.tolist(),
                     "distortionCoefficients": distortionCoefficients_left.tolist(),
                     "rotationVectors": [rvec.tolist() for rvec in rotationVectors_left],
@@ -236,8 +236,8 @@ def stereo_calibration(
                 calibrationParams_right = {
                     "mse": mse_right,
                     "rms": rms_right,
-                    "objPoints": objPoints,
-                    "imgPoints": imgPoints_right,
+                    "objPoints": [obj.tolist() for obj in objPoints],
+                    "imgPoints": [img.tolist() for img in imgPoints_right],
                     "cameraMatrix": cameraMatrix_right.tolist(),
                     "distortionCoefficients": distortionCoefficients_right.tolist(),
                     "rotationVectors": [rvec.tolist() for rvec in rotationVectors_right],

@@ -50,8 +50,8 @@ def load_calibration(calibrationParamsPath: str) -> CalibrationParams:
     try:
         mse = jsonDump["mse"]
         rms = jsonDump["rms"]
-        objPoints = jsonDump["objPoints"]
-        imgPoints = jsonDump["imgPoints"]
+        objPoints = npArray(jsonDump["objPoints"])
+        imgPoints = npArray(jsonDump["imgPoints"])
         cameraMatrix = npArray(jsonDump["cameraMatrix"])
         distortionCoefficients = npArray(jsonDump["distortionCoefficients"])
         rotationVectors = jsonDump["rotationVectors"]
@@ -66,10 +66,10 @@ def load_calibration(calibrationParamsPath: str) -> CalibrationParams:
 
         # Rise if the size of the list is 0
         # arr = [] -> (not arr) -> True
-        if (not objPoints) or (not isinstance(objPoints, list)):
+        if (not objPoints.size) or (not isinstance(objPoints, list | npNdArray)):
             raise CalibrationParamsWrongFormat
 
-        if (not imgPoints) or (not isinstance(imgPoints, list)):
+        if (not imgPoints.size) or (not isinstance(imgPoints, list | npNdArray)):
             raise CalibrationParamsWrongFormat
 
         # Rise if the size of the array is 0
