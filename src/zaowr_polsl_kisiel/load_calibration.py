@@ -13,12 +13,12 @@ if TYPE_CHECKING:
     class CalibrationParams(TypedDict):
         mse: float
         rms: float
-        objPoints: Any
-        imgPoints: Any
-        cameraMatrix: Any
-        distortionCoefficients: Any
-        rotationVectors: Any
-        translationVectors: Any
+        objPoints: npNdArray
+        imgPoints: npNdArray
+        cameraMatrix: npNdArray
+        distortionCoefficients: npNdArray
+        rotationVectors: list
+        translationVectors: list
 
 def load_calibration(calibrationParamsPath: str) -> CalibrationParams:
     """
@@ -27,14 +27,14 @@ def load_calibration(calibrationParamsPath: str) -> CalibrationParams:
     :param str calibrationParamsPath: Path to the JSON calibration file
 
     :return: CalibrationParams dict[str, Any] - Returns calibration parameters of the camera in form of a dict:
-        - **mse** - Mean Square Error,
-        - **rms** - The overall RMS re-projection error in floating number format,
-        - **objPoints** - 3D point in real world space,
-        - **imgPoints** - 2D points in image plane,
-        - **cameraMatrix** - Camera Matrix, the focal length and optical centre matrix as shown in intrinsic parameters,
-        - **distortionCoefficients** - Distortion Coefficients: (k<sub>1</sub>, k<sub>2</sub>, p<sub>1</sub>, p<sub>2</sub>, k<sub>3</sub>), which include radial (k<sub>n</sub>) and tangential (p<sub>n</sub>) distortion values,
-        - **rotationVectors** - Rotation Vector, the image pixel rotation angles in radians converted to vector by Rodrigues method,
-        - **translationVectors** - Translation Vector, the vector depicting shift in pixel values along x and y axis.
+        - **mse** (float) - Mean Square Error,
+        - **rms** (float) - The overall RMS re-projection error in floating number format,
+        - **objPoints** (np.ndarray) - 3D point in real world space,
+        - **imgPoints** (np.ndarray) - 2D points in image plane,
+        - **cameraMatrix** (np.ndarray) - Camera Matrix, the focal length and optical centre matrix as shown in intrinsic parameters,
+        - **distortionCoefficients** (np.ndarray) - Distortion Coefficients: (k<sub>1</sub>, k<sub>2</sub>, p<sub>1</sub>, p<sub>2</sub>, k<sub>3</sub>), which include radial (k<sub>n</sub>) and tangential (p<sub>n</sub>) distortion values,
+        - **rotationVectors** (list) - Rotation Vector, the image pixel rotation angles in radians converted to vector by Rodrigues method,
+        - **translationVectors** (list) - Translation Vector, the vector depicting shift in pixel values along x and y axis.
 
     :raises CalibrationParamsPathNotProvided: Raises an error if the path was not provided or it isn't an instance of a string.
     :raises CalibrationParamsWrongFormat: Raises an error if the calibration file is not in the correct format or parameters are empty.

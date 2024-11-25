@@ -9,7 +9,8 @@ def calculate_fov(cameraMatrix: np.ndarray, imageSize: tuple[float, float]):
     Calculate the horizontal and vertical FOV for a given camera.
 
     :param np.ndarray cameraMatrix: Intrinsic camera matrix (3x3).
-    :param imageSize: Tuple containing image width and height (width, height).
+    :param tuple[float, float] imageSize: Tuple containing image width and height (width, height).
+
     :return: tuple[float, float] Horizontal FOV and vertical FOV in degrees.
     """
     fx = cameraMatrix[0, 0]  # Focal length in x-axis

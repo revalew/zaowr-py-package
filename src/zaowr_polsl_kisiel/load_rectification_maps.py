@@ -23,10 +23,10 @@ def load_rectification_maps(rectificationMapsPath: str) -> RectificationMaps:
 
     :param str rectificationMapsPath: Path to the JSON file containing rectification maps.
     :return: Returns a dictionary containing the rectification maps:
-        - **map1_left** - First rectification map for the left camera.
-        - **map2_left** - Second rectification map for the left camera.
-        - **map1_right** - First rectification map for the right camera.
-        - **map2_right** - Second rectification map for the right camera.
+        - **map1_left** (np.ndarray) - First rectification map for the left camera.
+        - **map2_left** (np.ndarray) - Second rectification map for the left camera.
+        - **map1_right** (np.ndarray) - First rectification map for the right camera.
+        - **map2_right** (np.ndarray) - Second rectification map for the right camera.
 
     :raises RectificationMapsPathNotProvided: If the path is missing or not a string.
     :raises CalibrationParamsWrongFormat: If the file does not contain the correct format or parameters.

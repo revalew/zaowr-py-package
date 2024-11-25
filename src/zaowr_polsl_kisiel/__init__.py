@@ -1,4 +1,4 @@
-__version__ = "0.0.14"
+__version__ = "0.0.15"
 __status__ = "Development"  # Allowed: "Prototype", "Beta", "Stable"
 
 __all__ = [
@@ -10,7 +10,8 @@ __all__ = [
     "stereo_calibrate",
     "load_stereo_calibration",
     "stereo_rectify",
-    "load_rectification_maps"
+    "load_rectification_maps",
+    "are_params_valid"
 ]
 
 from .calibrate_camera import calibrate_camera # calibrate single camera
@@ -18,14 +19,8 @@ from .save_calibration import save_calibration # save calibration parameters (us
 from .load_calibration import load_calibration # load calibration parameters for single camera
 from .remove_distortion import remove_distortion # remove distortion
 from .stereo_calibrate import stereo_calibration # stereo calibration
-from .stereo_calibrate import calculate_fov # calculate fov
+from .stereo_calibrate import calculate_fov # calculate fov - horizontal and vertical
 from .load_stereo_calibration import load_stereo_calibration # load stereo calibration
 from .stereo_rectify import stereo_rectify # rectify stereo image after stereo calibration
 from .load_rectification_maps import load_rectification_maps # load rectification maps
-
-# from .exceptions import (
-#     UndistortedImgPathNotProvided,
-#     CalibrationImagesNotFound,
-#     CalibrationParamsPathNotProvided,
-#     ImgToUndistortPathNotProvided,
-# )
+from .are_params_valid import are_params_valid # validate calibration parameters stored in files and return them if valid

@@ -82,7 +82,8 @@ def stereo_rectify(
     saveRectificationMaps: bool = False,
     loadRectificationMaps: bool = False,
     rectificationMapsPath: str = "",
-    testInterpolationMethods: bool = False
+    testInterpolationMethods: bool = False,
+    drawEpipolarLinesParams: tuple[int, int, int] = (15, 2, 2),
 ):
     """
         Perform stereo rectification on a pair of stereo images and visualize epipolar lines.
@@ -109,6 +110,10 @@ def stereo_rectify(
         :param bool loadRectificationMaps: Whether to load rectification maps from a file (default is False).
         :param str rectificationMapsPath: Path to save or load rectification maps.
         :param bool testInterpolationMethods: Whether to test different interpolation methods for rectification.
+        :param tuple[int, int, int] drawEpipolarLinesParams: Parameters for drawing epipolar lines (default is (15, 2, 2)).:
+            - **number of lines** - Number of lines to draw (default is 15).
+            - **line thickness** - Thickness of the lines (default is 2).
+            - **roi rect thickness** - Thickness of the region of interest rectangle around the lines (default is 2).
 
         :raises CalibrationImagesNotFound: If no calibration images are found in the specified directories.
         :raises MissingParameters: If required camera parameters are missing and not loaded from a file.
@@ -231,24 +236,41 @@ def stereo_rectify(
 
     if testInterpolationMethods:
         interpolationTypes = [cv.INTER_NEAREST, cv.INTER_LINEAR, cv.INTER_CUBIC, cv.INTER_AREA, cv.INTER_LANCZOS4]
+        interpolationTypesNames = ["INTER_NEAREST", "INTER_LINEAR", "INTER_CUBIC", "INTER_AREA", "INTER_LANCZOS4"]
+        rectifiedImagesDifferentInterpolations = []
 
         # Load an example pair of images for rectification
         img_left = cv.imread(images_left[whichImage])
         img_right = cv.imread(images_right[whichImage])
 
-        for interpolationType in interpolationTypes:
+        for i, interpolationType in enumerate(interpolationTypes):
             tic_1 = perf_counter()
             rectified_left = cv.remap(img_left, map1_left, map2_left, interpolationType)
             tic_2 = perf_counter()
             rectified_right = cv.remap(img_right, map1_right, map2_right, interpolationType)
             toc = perf_counter()
-            print(f"Interpolation type: {interpolationType}:\n\tleft_image: {tic_2 - tic_1}\n\tright_image: {toc - tic_2}\n\ttotal: {toc - tic_1}\n")
+            print(f"Interpolation type {interpolationTypesNames[i]}:\n\tleft_image: {tic_2 - tic_1}\n\tright_image: {toc - tic_2}\n\ttotal: {toc - tic_1}\n")
 
-            rectified_pair = np.hstack((rectified_left, rectified_right))
+            # Draw epilines using the fundamental matrix F
+            rectified_left_with_lines, rectified_right_with_lines = draw_epilines_aligned(
+                rectified_left,
+                rectified_right,
+                num_lines=drawEpipolarLinesParams[0],
+                roi_left=roi1,
+                roi_right=roi2,
+                line_thickness=drawEpipolarLinesParams[1],
+                roi_thickness=drawEpipolarLinesParams[2]
+            )
 
-            cv.imshow('Rectified Stereo Images', rectified_pair)
-            cv.waitKey(0)
-            cv.destroyAllWindows()
+            # Combine the images side-by-side for visualization
+            rectified_pair = np.hstack((rectified_left_with_lines, rectified_right_with_lines))
+
+            rectifiedImagesDifferentInterpolations.append(rectified_pair)
+
+            if showRectifiedImages:
+                cv.imshow(f'Rectified Stereo Image: {interpolationTypesNames[i]}', rectified_pair)
+                cv.waitKey(0)
+                cv.destroyAllWindows()
 
     else:
         # Load an example pair of images for rectification
@@ -261,16 +283,22 @@ def stereo_rectify(
 
         # Draw epilines using the fundamental matrix F
         rectified_left_with_lines, rectified_right_with_lines = draw_epilines_aligned(
-            rectified_left, rectified_right,
-            num_lines=20,
+            rectified_left,
+            rectified_right,
+            num_lines=drawEpipolarLinesParams[0],
             roi_left=roi1,
             roi_right=roi2,
-            line_thickness=3,
-            roi_thickness=2
+            line_thickness=drawEpipolarLinesParams[1],
+            roi_thickness=drawEpipolarLinesParams[2]
         )
 
         # Combine the images side-by-side for visualization
         rectified_pair = np.hstack((rectified_left_with_lines, rectified_right_with_lines))
+
+        if showRectifiedImages:
+            cv.imshow('Rectified Stereo Image', rectified_pair)
+            cv.waitKey(0)
+            cv.destroyAllWindows()
 
     # Save the rectified image to a file
     if saveRectifiedImages:
@@ -280,13 +308,11 @@ def stereo_rectify(
         if not os.path.exists(rectifiedImagesDirPath):
             os.makedirs(rectifiedImagesDirPath)
 
-        cv.imwrite(os.path.join(rectifiedImagesDirPath, "rectified_left.png"), rectified_left)
-        cv.imwrite(os.path.join(rectifiedImagesDirPath, "rectified_right.png"), rectified_right)
-        cv.imwrite(os.path.join(rectifiedImagesDirPath, "rectified_stereo_pair.png"), rectified_pair)
+        if testInterpolationMethods and (len(rectifiedImagesDifferentInterpolations) > 0):
+            for i, rectified_pair in enumerate(rectifiedImagesDifferentInterpolations):
+                cv.imwrite(os.path.join(rectifiedImagesDirPath, f"rectified_pair_{interpolationTypesNames[i]}.png"), rectified_pair)
 
-
-    if showRectifiedImages:
-        cv.imshow('Rectified Stereo Images', rectified_pair)
-        cv.waitKey(0)
-        cv.destroyAllWindows()
-
+        else:
+            cv.imwrite(os.path.join(rectifiedImagesDirPath, "rectified_left.png"), rectified_left)
+            cv.imwrite(os.path.join(rectifiedImagesDirPath, "rectified_right.png"), rectified_right)
+            cv.imwrite(os.path.join(rectifiedImagesDirPath, "rectified_stereo_pair.png"), rectified_pair)

@@ -4,15 +4,18 @@ import cv2 as cv
 import glob
 from .exceptions import CalibrationImagesNotFound, CalibrationParamsPathNotProvided, CalibrationParamsWrongFormat
 
-class CalibrationParams(TypedDict):
-    mse: float
-    rms: float
-    objPoints: Any
-    imgPoints: Any
-    cameraMatrix: Any
-    distortionCoefficients: Any
-    rotationVectors: Any
-    translationVectors: Any
+# To avoid creating a class at runtime, for type-hinting alone.
+if TYPE_CHECKING:
+    # Map the `dict` fields here
+    class CalibrationParams(TypedDict):
+        mse: float
+        rms: float
+        objPoints: Any
+        imgPoints: Any
+        cameraMatrix: Any
+        distortionCoefficients: Any
+        rotationVectors: Any
+        translationVectors: Any
 
 
 def calibrate_camera(
@@ -50,7 +53,7 @@ def calibrate_camera(
     :param bool showListOfImagesWithChessboardFound: Decide if you want to show the list of images with chessboard found, defaults to False
     :param tuple[Any, int, float] terminationCriteria: Specify the termination criteria for the process of finding square corners in the sub-pixels, defaults to ( cv.TERM_CRITERIA_EPS + cv.TERM_CRITERIA_MAX_ITER, 30, 0.001)
 
-    :return: CalibrationParams dict[str, Any] - Returns calibration parameters of the camera in form of a dict:
+    :return: None | CalibrationParams dict[str, Any] - Returns calibration parameters of the camera in form of a dict:
         - **mse** - Mean Square Error,
         - **rms** - The overall RMS re-projection error in floating number format,
         - **objPoints** - 3D point in real world space,

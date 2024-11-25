@@ -8,6 +8,8 @@ def save_calibration(
     """
     Save the provided calibration parameters to specified JSON file
 
+    :return: None
+
     :raises CalibrationParamsPathNotProvided: Raises an error if the path was not provided or it isn't an instance of a string.
     """
 
