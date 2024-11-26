@@ -1,7 +1,7 @@
 # TODO list
 
 1. Mono calibration:
-   - [] Calibration with Charuco pattern,
+   - [x] Calibration with Charuco pattern,
    - [x] List of images where the pattern was properly detected,
    - [x] Update the params class,
 

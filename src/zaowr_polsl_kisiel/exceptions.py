@@ -116,7 +116,7 @@ class CharucoCalibrationError(Exception):
 
     def __init__(
         self,
-        message="Error during ChArUco board calibration. Ensure the images and parameters are correct.",
+        message="Error during ChArUco board calibration. Ensure the images and parameters are correct, especially the board size.",
     ):
         self.message = message
         super().__init__(self.message)

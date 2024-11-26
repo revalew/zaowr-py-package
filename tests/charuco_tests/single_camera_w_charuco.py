@@ -6,8 +6,8 @@ if __name__ == "__main__":
 
     import zaowr_polsl_kisiel as zw
 
-    charucoCalibration = False
-    undistortImg = False
+    charucoCalibration = True
+    undistortImg = True
 
     if charucoCalibration:
 

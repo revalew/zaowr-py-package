@@ -1,4 +1,4 @@
-import json
+from json import load as jload
 from typing import Any
 
 from .load_calibration import load_calibration
@@ -14,7 +14,7 @@ def are_params_valid(path: str) -> tuple[bool, dict[str, Any] | None]:
     """
     try:
         with open(path, 'r') as file:
-            data = json.load(file)
+            data = jload(file)
 
         # Detect and validate calibration parameters
         if "cameraMatrix" in data and "distortionCoefficients" in data:
