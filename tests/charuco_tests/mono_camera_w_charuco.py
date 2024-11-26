@@ -27,7 +27,7 @@ if __name__ == "__main__":
                 displayFoundCorners=False,
                 globImgExtension="jpg",
                 useCharuco=True,
-                arucoDictName="DICT_6X6_50",
+                charucoDictName="DICT_6X6_50",
                 markerLength=34.0,
             )
 
