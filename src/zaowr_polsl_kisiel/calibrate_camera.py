@@ -52,7 +52,7 @@ def calibrate_camera(
     :param str charucoDictName: The name of the ArUco dictionary to use when `useCharuco` is True. Defaults to "DICT_6X6_250".
     :param float markerLength: The length of the ArUco marker side in real-world units. Only applicable if `useCharuco`
         is True. Defaults to 20.0.
-    :param bool displayIds: If True and `useCharuco` is enabled, displays marker IDs alongside detected corners of the chessboard (ids on markers are always shown). Defaults to False.
+    :param bool displayIds: If True and `useCharuco` is enabled, displays corner IDs alongside detected corners of the chessboard (ids on markers are always shown). Defaults to False.
 
     :return: None
 

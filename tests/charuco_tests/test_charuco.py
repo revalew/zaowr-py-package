@@ -1,9 +1,14 @@
-'''So my final python-version working without the contrib library:
+'''
+
+https://forum.opencv.org/t/aruco-module-essential-functions-not-implemented-in-python-in-opencv-4-10-0/18949/10
+
+So my final python-version working without the contrib library:
 This took me definitly way too long.
 
 So the final issue: Be careful, when setting up the board via cv.aruco.CharucoBoard()! This needs the right setting. Especially switching the row and column size from e.g. (11, 8) to (8, 11) may result in problems.
 
-Standalone code:'''
+Standalone code:
+'''
 
 
 from typing import NamedTuple
