@@ -7,7 +7,7 @@
 
 2. Stereo calibration:
    - [x] Calculate FOV,
-   - [] Calibration with Charuco pattern,
+   - [x] Calibration with Charuco pattern,
    - [x] Add corresponding lines after calibration,
    - [x] Add docstrings,
    - [x] Add exception handling,
