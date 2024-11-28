@@ -18,8 +18,8 @@ def calculate_fov(cameraMatrix: np.ndarray, imageSize: tuple[float, float]):
     fy = cameraMatrix[1, 1]  # Focal length in y-axis
     width, height = imageSize
 
-    fov_horizontal = 2 * np.arctan(width / (2 * fx)) * (180 / np.pi)  # Convert radians to degrees
-    fov_vertical = 2 * np.arctan(height / (2 * fy)) * (180 / np.pi)  # Convert radians to degrees
+    fov_horizontal = 2 * np.arctan2(width, (2 * fx)) * (180 / np.pi)  # Convert radians to degrees
+    fov_vertical = 2 * np.arctan2(height, (2 * fy)) * (180 / np.pi)  # Convert radians to degrees
 
     return fov_horizontal, fov_vertical
 

@@ -1,4 +1,4 @@
-__version__ = "0.0.20"
+__version__ = "0.0.21"
 __status__ = "Development"  # Allowed: "Prototype", "Beta", "Stable"
 
 __all__ = [

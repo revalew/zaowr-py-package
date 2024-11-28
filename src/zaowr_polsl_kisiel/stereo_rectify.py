@@ -36,15 +36,25 @@ def draw_epilines_aligned(
     roi_left = roi_left if roi_left else (0, 0, width, height)
     roi_right = roi_right if roi_right else (0, 0, width, height)
 
-    # Generate y-coordinates for lines within the ROI
-    y_start, y_end = roi_left[1], roi_left[1] + roi_left[3]
+    # # Generate y-coordinates for lines within the ROI
+    # y_start, y_end = roi_left[1], roi_left[1] + roi_left[3]
+    # y_coords = np.linspace(y_start, y_end - 1, num_lines).astype(int)
+    #
+    # # Draw horizontal epipolar lines
+    # for y in y_coords:
+    #     color = (0, 0, 255)  # Red for lines
+    #     cv.line(img_left_with_lines, (roi_left[0], y), (roi_left[0] + roi_left[2], y), color, line_thickness)
+    #     cv.line(img_right_with_lines, (roi_right[0], y), (roi_right[0] + roi_right[2], y), color, line_thickness)
+
+    # Determine vertical range for lines based on ROI or full image height
+    y_start, y_end = (roi_left[1], roi_left[1] + roi_left[3]) if roi_left else (0, height)
     y_coords = np.linspace(y_start, y_end - 1, num_lines).astype(int)
 
-    # Draw horizontal epipolar lines
+    # Draw horizontal epipolar lines across full width
     for y in y_coords:
         color = (0, 0, 255)  # Red for lines
-        cv.line(img_left_with_lines, (roi_left[0], y), (roi_left[0] + roi_left[2], y), color, line_thickness)
-        cv.line(img_right_with_lines, (roi_right[0], y), (roi_right[0] + roi_right[2], y), color, line_thickness)
+        cv.line(img_left_with_lines, (0, y), (width, y), color, line_thickness)
+        cv.line(img_right_with_lines, (0, y), (width, y), color, line_thickness)
 
     # Draw ROI rectangles
     if roi_left:
