@@ -11,19 +11,21 @@ PyPI link to the package: [MAIN PyPI](https://pypi.org/project/zaowr-polsl-kisie
 
 1. [Linux tutorial](../README.md)
 
-2. [Installing the package on Windows using `pip`](#installing-the-package-on-windows-using-pip)
+2. [RTFM - Use Cases for zaowr_polsl_kisiel and the importance of docstrings](./USE_CASES.md)
 
-3. [Removing the package on Windows using `pip`](#removing-the-package-on-windows-using-pip)
+3. [Installing the package on Windows using `pip`](#installing-the-package-on-windows-using-pip)
 
-4. [Creating virtual environment and installing the package](#creating-virtual-environment-and-installing-the-package)
+4. [Removing the package on Windows using `pip`](#removing-the-package-on-windows-using-pip)
 
-5. [Testing the installation](#testing-the-installation)
+5. [Creating virtual environment and installing the package](#creating-virtual-environment-and-installing-the-package)
 
-6. [TODO for tracking issues / backlog / progress](./TODO.md)
+6. [Testing the installation](#testing-the-installation)
 
-7. [Code requirements](#code-requirements)
+7. [TODO for tracking issues / backlog / progress](./TODO.md)
 
-8. [Sources](#sources)
+8. [Code requirements](#code-requirements)
+
+9. [Sources](#sources)
 
 <br/>
 <br/>
@@ -31,6 +33,13 @@ PyPI link to the package: [MAIN PyPI](https://pypi.org/project/zaowr-polsl-kisie
 ## Linux tutorial
 
 The Linux tutorial can be found [here](../README.md)
+
+<br/>
+<br/>
+
+## RTFM - Use Cases for zaowr_polsl_kisiel and the importance of docstrings
+
+[RTFM here](./USE_CASES.md)
 
 <br/>
 <br/>

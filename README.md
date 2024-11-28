@@ -13,23 +13,25 @@ PyPI link to the package: <a href="https://pypi.org/project/zaowr-polsl-kisiel/"
 
 1. [Windows tutorial](./docs/WINDOWS.md)
 
-2. [Installing the package on Linux using `pip`](#installing-the-package-on-linux-using-pip)
+2. [RTFM - Use Cases for zaowr_polsl_kisiel and the importance of docstrings](./docs/USE_CASES.md)
 
-3. [Removing the package on Linux using `pip`](#removing-the-package-on-linux-using-pip)
+3. [Installing the package on Linux using `pip`](#installing-the-package-on-linux-using-pip)
 
-4. [Creating virtual environment and installing the package](#creating-virtual-environment-and-installing-the-package)
+4. [Removing the package on Linux using `pip`](#removing-the-package-on-linux-using-pip)
 
-5. [Testing the installation](#testing-the-installation)
+5. [Creating virtual environment and installing the package](#creating-virtual-environment-and-installing-the-package)
 
-6. [Automation: building and uploading with `Makefile` - DEV Tutorial](./docs/DEV_TUTORIAL.md#automation-building-and-uploading-with-makefile---dev-tutorial)
+6. [Testing the installation](#testing-the-installation)
 
-7. [Building package - DEV Tutorial based on official DOCS](./docs/DEV_TUTORIAL.md#building-package---dev-tutorial-based-on-official-docs)
+7. [Automation: building and uploading with `Makefile` - DEV Tutorial](./docs/DEV_TUTORIAL.md#automation-building-and-uploading-with-makefile---dev-tutorial)
 
-8. [TODO for tracking issues / backlog / progress](./docs/TODO.md) 
+8. [Building package - DEV Tutorial based on official DOCS](./docs/DEV_TUTORIAL.md#building-package---dev-tutorial-based-on-official-docs)
 
-9. [Code requirements](#code-requirements)
+9. [TODO for tracking issues / backlog / progress](./docs/TODO.md) 
 
-10. [Sources](#sources)
+10. [Code requirements](#code-requirements)
+
+11. [Sources](#sources)
 
 <br/>
 <br/>
@@ -37,6 +39,13 @@ PyPI link to the package: <a href="https://pypi.org/project/zaowr-polsl-kisiel/"
 ## Windows tutorial
 
 The Windows tutorial can be found [here](./docs/WINDOWS.md)
+
+<br/>
+<br/>
+
+## RTFM - Use Cases for zaowr_polsl_kisiel and the importance of docstrings
+
+[RTFM here](./docs/USE_CASES.md)
 
 <br/>
 <br/>
