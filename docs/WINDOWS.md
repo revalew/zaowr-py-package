@@ -207,43 +207,12 @@ from zaowr_polsl_kisiel import load_calibration
 </li>
 <br/>
 
-<li> Locate the file with calibration params or create new file with structure shown below
+<li> Locate the file with calibration params in tests folder and download it (link below)
 
 <br/>
 <br/>
 
-```json
-{
-    "mse": 5.984166144997382,
-    "rms": 0.5399844606283781,
-    "objPoints": [
-        [1272.011234078766, 0.0, 1058.4537673810164],
-        [0.0, 1266.8726860857762, 617.7592332273604],
-        [0.0, 0.0, 1.0]
-    ],
-    "imgPoints": [
-        [1272.011234078766, 0.0, 1058.4537673810164],
-        [0.0, 1266.8726860857762, 617.7592332273604],
-        [0.0, 0.0, 1.0]
-    ],
-    "cameraMatrix": [
-        [1272.011234078766, 0.0, 1058.4537673810164],
-        [0.0, 1266.8726860857762, 617.7592332273604],
-        [0.0, 0.0, 1.0]
-    ],
-    "distortionCoefficients": [
-        [-0.39935647747478337, 0.18200290247627665, 0.0020154085712910707, -0.012190829753206725, -0.04648398598417859]
-    ],
-    "rotationVectors": [
-        [[0.014376302442723948], [0.1667778841470017], [0.018832348485715023]],
-        [[-0.3405035725192283], [0.526867552280327], [-0.13373157952652456]]
-    ],
-    "translationVectors": [
-        [[71.27846898868391], [50.76036240921024], [1400.9402673825555]],
-        [[-476.2081267995082], [-120.35757569213392], [803.862414335442]]
-    ]
-}
-```
+[`../tests/calibration_params/calibration_params.json`](../tests/calibration_params/calibration_params.json)
 
 </li>
 <br/>
@@ -255,7 +224,6 @@ from zaowr_polsl_kisiel import load_calibration
 
 ```python
 # remember to provide the appropriate path to the calibration params
-# you can simply create a json file with the structure shown above
 calibrationParams = load_calibration("C:\\path\\to\\calibration_params.json")
 ```
 

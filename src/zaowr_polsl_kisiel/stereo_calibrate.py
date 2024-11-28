@@ -133,6 +133,8 @@ def stereo_calibration(
                     if imgSize is None:
                         imgSize = grayImg_left.shape[::-1]
 
+                    print(f"Processing LEFT image from set no.{i + 1}. ({images_left[i]})")
+
                     charucoCorners_left, charucoIds_left, arucoCorners_left, arucoIds_left = charucoDetector.detectBoard(grayImg_left)
 
                     if (
@@ -146,6 +148,8 @@ def stereo_calibration(
                         img_right = cv.imread(images_right[i])
                         grayImg_right = cv.cvtColor(img_right, cv.COLOR_BGR2GRAY)
 
+                        print(f"Processing RIGHT image from set no.{i + 1}. ({images_right[i]})")
+
                         charucoCorners_right, charucoIds_right, arucoCorners_right, arucoIds_right = charucoDetector.detectBoard(grayImg_right)
 
                         if (
@@ -155,7 +159,7 @@ def stereo_calibration(
                                 or (arucoIds_right is None) or (len(arucoIds_right) <= 4)
                                 # found less than 4 markers
                         ):
-                            print(f"Skipped image set no.{i+1} due to insufficient Charuco markers.")
+                            print(f"Skipped image set no.{i+1} due to insufficient Charuco markers in RIGHT image.")
                             continue
 
 
@@ -209,6 +213,9 @@ def stereo_calibration(
 
                         # objPoints.append(objectPoints_left)
                         imgPoints_right.append(imagePoints_right)
+
+                    else:
+                        print(f"Skipped image set no.{i + 1} due to insufficient Charuco markers in LEFT image.")
 
 
                 if len(objPoints) < 1:
@@ -333,20 +340,30 @@ def stereo_calibration(
                 img_left = cv.imread(images_left[i])
                 grayImg_left = cv.cvtColor(img_left, cv.COLOR_BGR2GRAY)
 
+                print(f"Processing LEFT image from set no.{i + 1}. ({images_left[i]})")
+
                 # Find the chess board corners
                 ret_left, corners_left = cv.findChessboardCorners(
                     grayImg_left, (chessBoardSize[0], chessBoardSize[1]), None
                 )
 
+                if not ret_left:
+                    print(f"Skipped image set no.{i + 1} because corners were not found in LEFT image.")
+                    continue
+
                 # If found, add object points, image points (after refining them)
                 if ret_left:
                     img_right = cv.imread(images_right[i])
                     grayImg_right = cv.cvtColor(img_right, cv.COLOR_BGR2GRAY)
+
+                    print(f"Processing RIGHT image from set no.{i + 1}. ({images_right[i]})")
+
                     ret_right, corners_right = cv.findChessboardCorners(
                         grayImg_right, (chessBoardSize[0], chessBoardSize[1]), None
                     )
 
                     if not ret_right:
+                        print(f"Skipped image set no.{i+1}  because corners were not found in RIGHT image.")
                         continue
 
                     # chessboardFound[i] = f"L: {images_left[i]},  R: {images_right[i]}"

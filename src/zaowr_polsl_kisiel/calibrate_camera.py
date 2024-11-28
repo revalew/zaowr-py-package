@@ -107,6 +107,8 @@ def calibrate_camera(
                 if imgSize is None:
                     imgSize = grayImg.shape[::-1]
 
+                print(f"Processing image {fileName}.")
+
                 charucoCorners, charucoIds, arucoCorners, arucoIds = charucoDetector.detectBoard(grayImg)
 
                 if (
@@ -137,6 +139,9 @@ def calibrate_camera(
                     chessboardFound.append(fileName)
                     objPoints.append(objectPoints)
                     imgPoints.append(imagePoints)
+
+                else:
+                    print(f"Skipped image {fileName} due to insufficient Charuco markers.")
 
 
             if len(objPoints) < 1:
@@ -222,10 +227,16 @@ def calibrate_camera(
             if imgSize is None:
                 imgSize = grayImg.shape[::-1]
 
+            print(f"Processing image {fileName}.")
+
             # Find the chess board corners
             ret, corners1 = cv.findChessboardCorners(
                 grayImg, (chessBoardSize[0], chessBoardSize[1]), None
             )
+
+            if not ret:
+                print(f"Skipped image {fileName} because corners were not found.")
+                continue
 
             # If found, add object points, image points (after refining them)
             if ret:
