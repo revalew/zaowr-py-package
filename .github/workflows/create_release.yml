@@ -85,12 +85,30 @@ jobs:
           name: python-package-distributions
           path: dist/
 
+      #######################################
+      # Added this section for compatibility
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install compatible cryptography version
+        run: pip install 'cryptography<44'
+
       - name: Sign the dists with Sigstore
         uses: sigstore/gh-action-sigstore-python@v2.1.1
         with:
           inputs: >-
             ./dist/*.tar.gz
             ./dist/*.whl
+      #######################################
+
+#      - name: Sign the dists with Sigstore
+#        uses: sigstore/gh-action-sigstore-python@v2.1.1
+#        with:
+#          inputs: >-
+#            ./dist/*.tar.gz
+#            ./dist/*.whl
 
       - name: Create GitHub Release
         env:
