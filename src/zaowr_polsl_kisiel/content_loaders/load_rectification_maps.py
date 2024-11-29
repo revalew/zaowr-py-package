@@ -1,7 +1,7 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING, TypedDict, Any
 
-from ..exceptions.exceptions import RectificationMapsPathNotProvided, CalibrationParamsWrongFormat
+from ..custom_exceptions.exceptions import RectificationMapsPathNotProvided, CalibrationParamsWrongFormat
 
 from json import load as jload
 from numpy import array as npArray
@@ -11,6 +11,18 @@ from numpy import ndarray as npNdArray
 if TYPE_CHECKING:
     # Map the `dict` fields here
     class RectificationMaps(TypedDict):
+        """
+        A dictionary structure defining the rectification maps for stereo image rectification.
+
+        Keys:
+            - **map1_left** (np.ndarray): The first rectification map for the left camera.
+
+            - **map2_left** (np.ndarray): The second rectification map for the left camera.
+
+            - **map1_right** (np.ndarray): The first rectification map for the right camera.
+
+            - **map2_right** (np.ndarray): The second rectification map for the right camera.
+        """
         map1_left: npNdArray
         map2_left: npNdArray
         map1_right: npNdArray

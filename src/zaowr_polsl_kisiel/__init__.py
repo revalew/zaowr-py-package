@@ -8,7 +8,7 @@ Modules:
 
 - `content_loaders`: Functions to load and validate calibration data from files.
 
-- `exceptions`: Custom exceptions for error handling.
+- `custom_exceptions`: Custom exceptions for error handling.
 
 - `image_processing`: Utilities for image rectification and distortion removal.
 
@@ -29,7 +29,7 @@ Major: Informatics, master degree
 Specialization: Interactive Three-Dimensional Graphics (IGT, pol. Interaktywna Grafika Trójwymiarowa, https://www.polsl.pl/rau6/en/igt-specjalization/)
 """
 
-__version__ = "0.0.23"
+__version__ = "0.0.24"
 __status__ = "Development"  # Allowed: "Prototype", "Beta", "Stable"
 
 __all__ = [
@@ -41,14 +41,17 @@ __all__ = [
 ]
 
 # IMPORT SUBMODULES
+from . import calibration
 from .calibration import (
     calibrate_camera, # calibrate single camera
     stereo_calibration, # stereo calibration
     calculate_fov, # calculate fov - horizontal and vertical
 )
 
-from .exceptions import exceptions # exceptions
+from . import custom_exceptions
+from .custom_exceptions import exceptions # custom_exceptions
 
+from . import content_loaders
 from .content_loaders import (
     are_params_valid, # validate calibration parameters stored in files and return them if valid
     save_calibration, # save calibration parameters (used for all types of params - single, stereo, rectification)
@@ -57,12 +60,13 @@ from .content_loaders import (
     load_rectification_maps, # load rectification maps
 )
 
+from . import image_processing
 from .image_processing import (
     remove_distortion, # remove distortion from single image
     stereo_rectify, # rectify stereo image after stereo calibration
 )
 
+from . import tools
 from .tools import (
     find_aruco_dict # find aruco dictionary if we don't know
 )
-

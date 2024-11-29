@@ -85,6 +85,12 @@ jobs:
           name: python-package-distributions
           path: dist/
 
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Fetch all history to include tags
+          path: repo      # Checkout into a subdirectory named "repo"
+
       #######################################
       # Added this section for compatibility
       - name: Set up Python
@@ -103,16 +109,10 @@ jobs:
             ./dist/*.whl
       #######################################
 
-#      - name: Sign the dists with Sigstore
-#        uses: sigstore/gh-action-sigstore-python@v2.1.1
-#        with:
-#          inputs: >-
-#            ./dist/*.tar.gz
-#            ./dist/*.whl
-
       - name: Fetch commit messages
         id: get_commits
         run: |
+          cd repo
           PREVIOUS_TAG=$(git describe --tags --abbrev=0 HEAD^)
           echo "Previous tag: $PREVIOUS_TAG"
           echo "PREVIOUS_TAG=$PREVIOUS_TAG" >> $GITHUB_ENV

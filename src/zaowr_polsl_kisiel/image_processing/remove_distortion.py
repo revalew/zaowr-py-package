@@ -1,7 +1,7 @@
 import os
 from typing import Any
 import cv2 as cv
-from ..exceptions.exceptions import ImgToUndistortPathNotProvided, UndistortedImgPathNotProvided
+from ..custom_exceptions.exceptions import ImgToUndistortPathNotProvided, UndistortedImgPathNotProvided
 
 
 def remove_distortion(

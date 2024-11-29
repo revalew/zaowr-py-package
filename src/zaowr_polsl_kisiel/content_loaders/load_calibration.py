@@ -1,7 +1,7 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING, TypedDict, Any
 
-from ..exceptions.exceptions import CalibrationParamsPathNotProvided, CalibrationParamsWrongFormat
+from ..custom_exceptions.exceptions import CalibrationParamsPathNotProvided, CalibrationParamsWrongFormat
 
 from json import load as jload
 from numpy import array as npArray
@@ -11,6 +11,29 @@ from numpy import ndarray as npNdArray
 if TYPE_CHECKING:
     # Map the `dict` fields here
     class CalibrationParams(TypedDict):
+        """
+        A dictionary structure defining the parameters of camera calibration.
+
+        Keys:
+            - **mse** (float): Mean Square Error of the calibration process.
+
+            - **rms** (float): The overall RMS re-projection error.
+
+            - **objPoints** (np.ndarray): 3D points in the real-world coordinate space.
+
+            - **imgPoints** (np.ndarray): 2D points in the image plane.
+
+            - **cameraMatrix** (np.ndarray): The intrinsic camera matrix.
+
+            - **distortionCoefficients** (np.ndarray): Radial and tangential distortion coefficients:
+                - k1, k2, k3 (radial),
+
+                - p1, p2 (tangential).
+
+            - **rotationVectors** (list): Camera orientation per view (rotation).
+
+            - **translationVectors** (list): Camera position per view (translation).
+        """
         mse: float
         rms: float
         objPoints: npNdArray

@@ -9,7 +9,7 @@ from colorama import Fore, Style, init as colorama_init #, Back
 from sys import stdout
 from os.path import basename
 
-from ..exceptions.exceptions import CalibrationImagesNotFound, CalibrationParamsPathNotProvided, CalibrationParamsWrongFormat, StereoCalibrationParamsPathNotProvided, CharucoCalibrationError
+from ..custom_exceptions.exceptions import CalibrationImagesNotFound, CalibrationParamsPathNotProvided, CalibrationParamsWrongFormat, StereoCalibrationParamsPathNotProvided, CharucoCalibrationError
 
 colorama_init(autoreset=True)
 

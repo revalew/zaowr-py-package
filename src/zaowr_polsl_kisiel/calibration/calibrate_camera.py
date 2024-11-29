@@ -10,7 +10,7 @@ from sys import stdout
 from os.path import basename
 
 
-from ..exceptions.exceptions import CalibrationImagesNotFound, CalibrationParamsPathNotProvided, CharucoCalibrationError
+from ..custom_exceptions.exceptions import CalibrationImagesNotFound, CalibrationParamsPathNotProvided, CharucoCalibrationError
 
 colorama_init(autoreset=True)
 

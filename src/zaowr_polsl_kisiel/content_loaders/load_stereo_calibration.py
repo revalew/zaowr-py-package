@@ -1,7 +1,7 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING, TypedDict, Any
 
-from ..exceptions.exceptions import StereoCalibrationParamsPathNotProvided, CalibrationParamsWrongFormat
+from ..custom_exceptions.exceptions import StereoCalibrationParamsPathNotProvided, CalibrationParamsWrongFormat
 
 from json import load as jload
 from numpy import array as npArray
@@ -11,6 +11,45 @@ from numpy import ndarray as npNdArray
 if TYPE_CHECKING:
     # Map the `dict` fields here
     class StereoCalibrationParams(TypedDict):
+        """
+        A dictionary structure defining the parameters for stereo camera calibration.
+
+        Keys:
+            - **reprojectionError** (float): The overall re-projection error for the stereo calibration process.
+
+            - **fov_left** (tuple[float, float]): The field of view (FOV) for the left camera as a tuple:
+                - The horizontal FOV (in degrees).
+
+                - The vertical FOV (in degrees).
+
+            - **fov_right** (tuple[float, float]): The field of view (FOV) for the right camera as a tuple:
+                - The horizontal FOV (in degrees).
+
+                - The vertical FOV (in degrees).
+
+            - **baseline** (float): The distance (in meters) between the optical centers of the two cameras.
+
+            - **cameraMatrix_left** (np.ndarray): The intrinsic camera matrix for the left camera.
+
+            - **distortionCoefficients_left** (np.ndarray): The distortion coefficients for the left camera:
+                - **k1, k2, k3** (radial),
+                - **p1, p2** (tangential).
+
+            - **cameraMatrix_right** (np.ndarray): The intrinsic camera matrix for the right camera.
+
+            - **distortionCoefficients_right** (np.ndarray): The distortion coefficients for the right camera:
+                - **k1, k2, k3** (radial),
+
+                - **p1, p2** (tangential).
+
+            - **rotationMatrix** (np.ndarray): The rotation matrix that aligns the right camera's coordinate system with the left camera's coordinate system.
+
+            - **translationVector** (np.ndarray): The translation vector representing the position of the right camera relative to the left camera in 3D space.
+
+            - **essentialMatrix** (np.ndarray): The essential matrix, encoding the relative pose of the two cameras.
+
+            - **fundamentalMatrix** (np.ndarray): The fundamental matrix, describing the epipolar geometry of the stereo pair.
+        """
         reprojectionError: float
         fov_left: tuple[float, float]
         fov_right: tuple[float, float]

@@ -21,4 +21,4 @@ __all__ = [
 ]
 
 from .calibrate_camera import calibrate_camera  # calibrate single camera
-from .stereo_calibrate import stereo_calibration, calculate_fov  # stereo calibration and FOV
+from .stereo_calibration import stereo_calibration, calculate_fov  # stereo calibration and FOV

@@ -1,5 +1,5 @@
 """
-The `exceptions` module defines custom exceptions used throughout the package.
+The `custom_exceptions` module defines custom exceptions used throughout the package.
 
 Exceptions:
 
@@ -33,4 +33,4 @@ __all__ = [
     "exceptions",
 ]
 
-import exceptions
+from . import exceptions

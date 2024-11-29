@@ -1,7 +1,7 @@
 import os
 from json import dump as jdump
 from typing import Any
-from ..exceptions.exceptions import CalibrationParamsPathNotProvided
+from ..custom_exceptions.exceptions import CalibrationParamsPathNotProvided
 
 
 def save_calibration(

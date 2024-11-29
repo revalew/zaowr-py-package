@@ -8,7 +8,7 @@ import numpy as np
 from colorama import Fore, Style, init as colorama_init  # , Back
 from tqdm import tqdm  # progress bar
 
-from ..exceptions.exceptions import CalibrationImagesNotFound, CalibrationParamsPathNotProvided, RectifiedImgPathNotProvided, \
+from ..custom_exceptions.exceptions import CalibrationImagesNotFound, CalibrationParamsPathNotProvided, RectifiedImgPathNotProvided, \
     StereoCalibrationParamsPathNotProvided, MissingParameters, RectificationMapsPathNotProvided
 
 colorama_init(autoreset=True)

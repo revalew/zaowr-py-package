@@ -23,10 +23,35 @@
 
 ### Docstrings
 
-In Python, docstrings are a way to provide documentation for your functions, classes, and modules. They are a way to explain what your code does, what each parameter does, and how to use it. 
+Using Python Docstrings to Enhance Understanding
 
-To read the 
+In Python, docstrings are a way to provide documentation for your functions, classes, and modules. They explain what your code does, what each parameter does, what is returned and how to use it. They are written between triple quotes (""") and are often used to explain the purpose of a function, class, or module.
 
+<ul>
+<li> In IDEs or Text Editors: Many modern Integrated Development Environments (IDEs) and text editors, such as PyCharm, Visual Studio Code, or Jupyter Notebook, allow you to hover your mouse over a function to see its description provided by the docstring. Similarly, hovering over a parameter will display information about what that parameter does (if it is described in the docstring).
+
+</li>
+<br/>
+<li> In the Terminal: You can read docstrings in the terminal using the help() function, which prints the docstring to the console.
+
+<br/>
+<br/>
+
+```python
+import zaowr_polsl_kisiel as zw
+
+# Display documentation for the entire module
+help(zw)
+
+# Accessing submodule's documentation
+help(zw.calibration)
+
+# Display detailed documentation for a specific function
+help(zw.calibrate_camera)
+```
+
+</li>
+</ul>
 <br/>
 <br/>
 
