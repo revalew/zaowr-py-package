@@ -221,7 +221,7 @@ from zaowr_polsl_kisiel import load_calibration
 <br/>
 <br/>
 
-[`../tests/calibration_params/calibration_params.json`](../tests/calibration_params/calibration_params.json)
+[`../tests/misc/calibration_params/calibration_params.json`](../tests/misc/calibration_params/calibration_params.json)
 
 </li>
 <br/>

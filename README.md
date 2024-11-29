@@ -250,7 +250,7 @@ from zaowr_polsl_kisiel import load_calibration
 <br/>
 <br/>
 
-[`./tests/calibration_params/calibration_params.json`](./tests/calibration_params/calibration_params.json)
+[`./tests/misc/calibration_params/calibration_params.json`](tests/misc/calibration_params/calibration_params.json)
 
 </li>
 <br/>
@@ -262,7 +262,7 @@ from zaowr_polsl_kisiel import load_calibration
 
 ```python
 # remember to provide appropriate path to the calibration params
-calibrationParams = load_calibration("../../tests/calibration_params/calibration_params.json")
+calibrationParams = load_calibration("/path/to/calibration_params.json")
 ```
 
 </li>
