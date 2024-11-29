@@ -118,10 +118,26 @@ jobs:
           echo "PREVIOUS_TAG=$PREVIOUS_TAG" >> $GITHUB_ENV
           
           # Fetch commit messages only, excluding commit IDs
-          COMMITS=$(git log $PREVIOUS_TAG..HEAD --pretty=format:"- %s")
+          COMMITS=$(git log $PREVIOUS_TAG..HEAD --pretty=format:"%s")
           echo "Commit messages between $PREVIOUS_TAG and current tag:"
           echo "$COMMITS"
-          echo "COMMITS=$COMMITS" >> $GITHUB_ENV
+          
+          # Initialize formatted commits variable
+          FORMATTED_COMMITS=""
+          COUNTER=1
+          
+          # Process each commit
+          while read -r commit; do
+            FORMATTED_COMMITS+="\n- commit ${COUNTER}:\n"
+            IFS=';' read -ra SUBCOMMITS <<< "$commit"
+            for subcommit in "${SUBCOMMITS[@]}"; do
+              FORMATTED_COMMITS+="  - ${subcommit}\n"
+            done
+            ((COUNTER++))
+          done <<< "$COMMITS"
+
+          echo "FORMATTED_COMMITS=$FORMATTED_COMMITS" >> $GITHUB_ENV
+          echo -e "$FORMATTED_COMMITS"
 
       - name: Create GitHub Release
         env:
@@ -132,8 +148,9 @@ jobs:
           --repo '${{ github.repository }}'
           --notes "Latest package release ${{ github.ref_name }}
           
-          ## Commit Messages
-          ${{ env.COMMITS }}"
+          ## Changes:
+          
+          ${{ env.FORMATTED_COMMITS }}"
         #  --notes-from-tag
 
       - name: Upload artifact signatures to GitHub Release
