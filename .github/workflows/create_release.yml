@@ -128,16 +128,19 @@ jobs:
           
           # Process each commit
           while read -r commit; do
-            FORMATTED_COMMITS+="\n- commit ${COUNTER}:\n"
+            FORMATTED_COMMITS+=$'\n'"- commit ${COUNTER}:"
             IFS=';' read -ra SUBCOMMITS <<< "$commit"
             for subcommit in "${SUBCOMMITS[@]}"; do
-              FORMATTED_COMMITS+="  - ${subcommit}\n"
+              # Remove version pattern (e.g., "(version X.Y.Z)")
+              CLEANED_SUBCOMMIT=$(echo "$subcommit" | sed -E 's/\s*\(version [0-9]+\.[0-9]+\.[0-9]+\)//g')
+              FORMATTED_COMMITS+=$'\n'"  - ${CLEANED_SUBCOMMIT}"
             done
             ((COUNTER++))
           done <<< "$COMMITS"
 
-          echo "FORMATTED_COMMITS=$FORMATTED_COMMITS" >> $GITHUB_ENV
-          echo -e "$FORMATTED_COMMITS"
+          echo "FORMATTED_COMMITS<<EOF" >> $GITHUB_ENV
+          echo -e "$FORMATTED_COMMITS" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
 
       - name: Create GitHub Release
         env:
