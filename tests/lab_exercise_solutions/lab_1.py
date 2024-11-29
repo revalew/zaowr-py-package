@@ -54,12 +54,12 @@ if __name__ == "__main__":
         cameraMatrix=cameraMatrix1,
         distortionCoefficients=distortionCoef1,
         imgToUndistortPath=imgToUndistort,
-        showUndistortedImg=True,
+        showUndistortedImg=False,
     )
 
     zw.remove_distortion(
         cameraMatrix=cameraMatrix2,
         distortionCoefficients=distortionCoef2,
         imgToUndistortPath=imgToUndistort,
-        showUndistortedImg=True,
+        showUndistortedImg=False,
     )

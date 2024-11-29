@@ -1,6 +1,7 @@
 import cv2
 from cv2 import aruco
-def find_aruco_dict(imgPath):
+from tqdm import tqdm # progress bar
+def find_aruco_dict(imgPath) -> None:
     ARUCO_DICT = {
         "DICT_4X4_50": aruco.DICT_4X4_50,
         "DICT_4X4_100": aruco.DICT_4X4_100,
@@ -24,10 +25,11 @@ def find_aruco_dict(imgPath):
         "DICT_APRILTAG_36h10": aruco.DICT_APRILTAG_36h10,
         "DICT_APRILTAG_36h11": aruco.DICT_APRILTAG_36h11
     }
-    print("[INFO] loading image...")
+    tqdm.write("[INFO] loading image...", nolock=True)
     image = cv2.imread(imgPath)
+    dictsFound = []
     # loop over the types of ArUco dictionaries
-    for (arucoName, arucoDict) in ARUCO_DICT.items():
+    for arucoName, arucoDict in tqdm(ARUCO_DICT.items(), desc="Processing ArUco dictionaries...", dynamic_ncols=True, bar_format="{l_bar}{bar}{r_bar}", colour="green"):
         # load the ArUCo dictionary, grab the ArUCo parameters, and attempt to detect the markers for the current dictionary
         arucoDict = aruco.getPredefinedDictionary(arucoDict)
         arucoParams = aruco.DetectorParameters()
@@ -35,5 +37,9 @@ def find_aruco_dict(imgPath):
         (corners, ids, rejected) = detector.detectMarkers(image)
         # if at least one ArUco marker was detected display the ArUco name to our terminal
         if len(corners) > 0:
-            print("[INFO] detected {} markers for '{}'".format(
+            dictsFound.append("[INFO] detected {} markers for '{}'".format(
                 len(corners), arucoName))
+            # tqdm.write("[INFO] detected {} markers for '{}'".format(len(corners), arucoName), nolock=True)
+
+    for dictFound in dictsFound:
+        tqdm.write(dictFound, nolock=True)

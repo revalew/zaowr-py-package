@@ -1,3 +1,4 @@
+import os
 from typing import Any
 import cv2 as cv
 from .exceptions import ImgToUndistortPathNotProvided, UndistortedImgPathNotProvided
@@ -27,8 +28,8 @@ def remove_distortion(
 
     :return: None
 
-    :raises ImgToUndistortPathNotProvided: Raises an error if the path of the image which you want to undistort was not provided or it isn't an instance of a string.
-    :raises UndistortedImgPathNotProvided: Raises an error if the path where the undistorted image should be saved was not provided or it isn't an instance of a string.
+    :raises ImgToUndistortPathNotProvided: Raises an error if the path of the image which you want to undistort was not provided, or it isn't an instance of a string.
+    :raises UndistortedImgPathNotProvided: Raises an error if the path where the undistorted image should be saved was not provided, or it isn't an instance of a string.
     """
 
     if (imgToUndistortPath == "") or (not isinstance(imgToUndistortPath, str)):
@@ -66,9 +67,6 @@ def remove_distortion(
             print("\nPress any key to continue...")
             cv.waitKey()
 
-        if saveUndistortedImg:
-            cv.imwrite(undistortedImgPath, dst)
-
     elif undistortionMethod == "remapping":
         mapx, mapy = cv.initUndistortRectifyMap(
             cameraMatrix,
@@ -89,5 +87,12 @@ def remove_distortion(
             print("\nPress any key to continue...")
             cv.waitKey()
 
-        if saveUndistortedImg:
-            cv.imwrite(undistortedImgPath, dst)
+    if saveUndistortedImg:
+        if not os.path.exists(undistortedImgPath):
+            os.makedirs(undistortedImgPath)
+
+        file_name, file_extension = os.path.splitext(os.path.basename(imgToUndistortPath))
+
+        new_file_name = f"{file_name}_undistorted{file_extension}"
+
+        cv.imwrite(os.path.join(undistortedImgPath, new_file_name), dst)

@@ -3,6 +3,7 @@ import numpy as np
 import cv2 as cv
 from cv2 import aruco
 import glob
+from tqdm import tqdm # progress bar
 from .exceptions import CalibrationImagesNotFound, CalibrationParamsPathNotProvided, CharucoCalibrationError
 
 
@@ -100,14 +101,14 @@ def calibrate_camera(
             imgSize = None
             chessboardFound = []
 
-            for fileName in images:
+            for fileName in tqdm(images, desc="Processing images...", dynamic_ncols=True, bar_format="{l_bar}{bar}{r_bar}", colour="green"):
                 img = cv.imread(fileName)
                 grayImg = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
 
                 if imgSize is None:
                     imgSize = grayImg.shape[::-1]
 
-                print(f"Processing image {fileName}.")
+                # tqdm.write(f"\n\nProcessing image {fileName}.", nolock=True)
 
                 charucoCorners, charucoIds, arucoCorners, arucoIds = charucoDetector.detectBoard(grayImg)
 
@@ -140,8 +141,8 @@ def calibrate_camera(
                     objPoints.append(objectPoints)
                     imgPoints.append(imagePoints)
 
-                else:
-                    print(f"Skipped image {fileName} due to insufficient Charuco markers.")
+                # else:
+#                     tqdm.write(f"\nSkipped image {fileName} due to insufficient Charuco markers.\n", nolock=True)
 
 
             if len(objPoints) < 1:
@@ -220,14 +221,14 @@ def calibrate_camera(
         imgSize = None
         chessboardFound = [] # list of images with chessboard detected properly
 
-        for fileName in images:
+        for fileName in tqdm(images, desc="Processing images...", dynamic_ncols=True, bar_format="{l_bar}{bar}{r_bar}", colour="green"):
             img = cv.imread(fileName)
             grayImg = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
 
             if imgSize is None:
                 imgSize = grayImg.shape[::-1]
 
-            print(f"Processing image {fileName}.")
+#             tqdm.write(f"\n\nProcessing image {fileName}.", nolock=True)
 
             # Find the chess board corners
             ret, corners1 = cv.findChessboardCorners(
@@ -235,7 +236,7 @@ def calibrate_camera(
             )
 
             if not ret:
-                print(f"Skipped image {fileName} because corners were not found.")
+#                 tqdm.write(f"\nSkipped image {fileName} because corners were not found.\n", nolock=True)
                 continue
 
             # If found, add object points, image points (after refining them)

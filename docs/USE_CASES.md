@@ -111,6 +111,8 @@ After importing the package we can use the function to check if the calibration 
 
 If the parameters are valid, the function returns `True` and the parameters as a `tuple[bool, dict[str, Any]]` and if they are not valid, the function returns `False` and `None`. If validation fails, an error will be raised.
 
+This function **WILL NOT** provide type hints for the returned dictionary (as opposed to the `load_calibration`, `load_rectification_maps`, and `load_stereo_calibration` functions).
+
 To check if the parameters are valid, we have to specify the path to the file where we saved them.
 
 If the file does not exist, an error will be raised and the function will return `False` and `None` but the program will not exit.
@@ -183,7 +185,7 @@ After importing the package we can use the function to remove distortion from an
 
 To remove distortion from an image, we have to specify the camera matrix, distortion coefficients, and the path to the image to be undistorted. The calibration params must be valid, and we can use the `are_params_valid` function to check if they are valid and load them.
 
-If we want to save the undistorted image, we also have to specify the path to the file where we want to save it and enable the `saveUndistortedImg` parameter.
+If we want to save the undistorted image, we also have to specify the path to the directory where we want to save it and enable the `saveUndistortedImg` parameter. The file will be saved with the name `{original_image_name}_undistorted{original_file_extension}`. If the directory does not exist, it will be created.
 
 <br/>
 <br/>
@@ -195,7 +197,7 @@ calibrationFile = "./tests/calibration_params/calibration_params.json"
 
 imgToUndistort = "./tests/undistorted/distorted.png"
 
-undistortedImgPath = "./tests/undistorted/undistorted.png"
+undistortedImgPath = "./tests/undistorted/"
 
 sub_valid, calibrationParams1 = zw.are_params_valid(calibrationFile)
 
@@ -417,7 +419,7 @@ def stereo_rectify(
 
 After importing the package we can use the function to rectify the stereo images. As a result, we get 3 files with stereo rectified images.
 
-To properly rectify the stereo images, we have to specify the paths to the left and right calibration images, as well as the paths to the stereo, left and right calibration parameters and the path to the directory where we want to save the rectified images.
+To properly rectify the stereo images, we have to specify the paths to the left and right calibration images, as well as the paths to the stereo, left and right calibration parameters and the path to the directory where we want to save the rectified images. If the directory for rectified images does not exist, it will be created.
 
 Best practices are to calibrate the stereo camera first and then rectify the images. We can load the stereo calibration parameters in the main function and pass them to the `stereo_rectify` function, or we can pass the paths to the stereo calibration parameters and enable the `loadStereoCalibrationParams` parameter. 
 
@@ -547,6 +549,8 @@ def load_calibration(calibrationParamsPath: str) -> CalibrationParams
 
 After importing the package we can use the function to load the calibration parameters from a JSON file and return them as a `dict[str, Any]`.
 
+This function will provide type hints for the returned dictionary.
+
 <br/>
 <br/>
 
@@ -594,6 +598,8 @@ def load_rectification_maps(rectificationMapsPath: str) -> RectificationMaps
 <li> Example usage
 
 After importing the package we can use the function to load the rectification maps from a JSON file and return them as a `dict[str, Any]`.
+
+This function will provide type hints for the returned dictionary.
 
 <br/>
 <br/>
@@ -651,6 +657,8 @@ def load_stereo_calibration(calibrationParamsPath: str) -> StereoCalibrationPara
 
 After importing the package we can use the function to load the stereo calibration parameters from a JSON file and return them as a `dict[str, Any]`.
 
+This function will provide type hints for the returned dictionary.
+
 <br/>
 <br/>
 
@@ -694,6 +702,8 @@ def save_calibration(
 <li> Example usage
 
 After importing the package we can use the function to save the calibration parameters to a JSON file OR use it to save the dictionary to a JSON file.
+
+If the directory in the `calibrationParamsPath` does not exist, it will be created.
 
 <br/>
 <br/>

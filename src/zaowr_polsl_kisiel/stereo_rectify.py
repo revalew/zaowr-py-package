@@ -4,6 +4,7 @@ from typing import Any
 import numpy as np
 import cv2 as cv
 import glob
+from tqdm import tqdm # progress bar
 from .exceptions import CalibrationImagesNotFound, CalibrationParamsPathNotProvided, RectifiedImgPathNotProvided, StereoCalibrationParamsPathNotProvided, MissingParameters, RectificationMapsPathNotProvided
 
 # Draw epipolar lines for visualization
@@ -253,7 +254,13 @@ def stereo_rectify(
         img_left = cv.imread(images_left[whichImage])
         img_right = cv.imread(images_right[whichImage])
 
-        for i, interpolationType in enumerate(interpolationTypes):
+        for i, interpolationType in enumerate(tqdm(
+                        interpolationTypes,
+                        desc="Testing interpolation methods...",
+                        dynamic_ncols=True,
+                        bar_format="{l_bar}{bar}{r_bar}",
+                        colour="green",
+                )):
             tic_1 = perf_counter()
             rectified_left = cv.remap(img_left, map1_left, map2_left, interpolationType)
             tic_2 = perf_counter()
@@ -274,6 +281,7 @@ def stereo_rectify(
 
             # Combine the images side-by-side for visualization
             rectified_pair = np.hstack((rectified_left_with_lines, rectified_right_with_lines))
+            # rectified_pair = np.hstack((rectified_left, rectified_right))
 
             rectifiedImagesDifferentInterpolations.append(rectified_pair)
 

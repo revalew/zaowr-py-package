@@ -3,6 +3,7 @@ import numpy as np
 import cv2 as cv
 from cv2 import aruco
 import glob
+from tqdm import tqdm # progress bar
 from .exceptions import CalibrationImagesNotFound, CalibrationParamsPathNotProvided, CalibrationParamsWrongFormat, StereoCalibrationParamsPathNotProvided, CharucoCalibrationError
 
 def calculate_fov(cameraMatrix: np.ndarray, imageSize: tuple[float, float]):
@@ -126,14 +127,20 @@ def stereo_calibration(
                 imgSize = None
                 chessboardFound = {}
 
-                for i, _ in enumerate(images_left):
+                for i, _ in enumerate(tqdm(
+                        images_left,
+                        desc="Processing image sets...",
+                        dynamic_ncols=True,
+                        bar_format="{l_bar}{bar}{r_bar}",
+                        colour="green",
+                )):
                     img_left = cv.imread(images_left[i])
                     grayImg_left = cv.cvtColor(img_left, cv.COLOR_BGR2GRAY)
 
                     if imgSize is None:
                         imgSize = grayImg_left.shape[::-1]
 
-                    print(f"Processing LEFT image from set no.{i + 1}. ({images_left[i]})")
+                    # tqdm.write(f"\n\nProcessing LEFT image from set no.{i + 1}. ({images_left[i]})", nolock=True)
 
                     charucoCorners_left, charucoIds_left, arucoCorners_left, arucoIds_left = charucoDetector.detectBoard(grayImg_left)
 
@@ -148,7 +155,7 @@ def stereo_calibration(
                         img_right = cv.imread(images_right[i])
                         grayImg_right = cv.cvtColor(img_right, cv.COLOR_BGR2GRAY)
 
-                        print(f"Processing RIGHT image from set no.{i + 1}. ({images_right[i]})")
+#                         tqdm.write(f"\nProcessing RIGHT image from set no.{i + 1}. ({images_right[i]})", nolock=True)
 
                         charucoCorners_right, charucoIds_right, arucoCorners_right, arucoIds_right = charucoDetector.detectBoard(grayImg_right)
 
@@ -159,7 +166,7 @@ def stereo_calibration(
                                 or (arucoIds_right is None) or (len(arucoIds_right) <= 4)
                                 # found less than 4 markers
                         ):
-                            print(f"Skipped image set no.{i+1} due to insufficient Charuco markers in RIGHT image.")
+#                             tqdm.write(f"\nSkipped image set no.{i+1} due to insufficient Charuco markers in RIGHT image.\n", nolock=True)
                             continue
 
 
@@ -214,8 +221,8 @@ def stereo_calibration(
                         # objPoints.append(objectPoints_left)
                         imgPoints_right.append(imagePoints_right)
 
-                    else:
-                        print(f"Skipped image set no.{i + 1} due to insufficient Charuco markers in LEFT image.")
+                    # else:
+#                         tqdm.write(f"\nSkipped image set no.{i + 1} due to insufficient Charuco markers in LEFT image.\n", nolock=True)
 
 
                 if len(objPoints) < 1:
@@ -336,11 +343,17 @@ def stereo_calibration(
             imgPoints_right = []  # 2d points in image plane.
             chessboardFound = {} # list of images with chessboard detected properly
 
-            for i, _ in enumerate(images_left):
+            for i, _ in enumerate(tqdm(
+                    images_left,
+                    desc="Processing image sets...",
+                    dynamic_ncols=True,
+                    bar_format="{l_bar}{bar}{r_bar}",
+                    colour="green",
+            )):
                 img_left = cv.imread(images_left[i])
                 grayImg_left = cv.cvtColor(img_left, cv.COLOR_BGR2GRAY)
 
-                print(f"Processing LEFT image from set no.{i + 1}. ({images_left[i]})")
+#                 tqdm.write(f"\n\nProcessing LEFT image from set no.{i + 1}. ({images_left[i]})", nolock=True)
 
                 # Find the chess board corners
                 ret_left, corners_left = cv.findChessboardCorners(
@@ -348,7 +361,7 @@ def stereo_calibration(
                 )
 
                 if not ret_left:
-                    print(f"Skipped image set no.{i + 1} because corners were not found in LEFT image.")
+#                     tqdm.write(f"\nSkipped image set no.{i + 1} because corners were not found in LEFT image.\n", nolock=True)
                     continue
 
                 # If found, add object points, image points (after refining them)
@@ -356,14 +369,14 @@ def stereo_calibration(
                     img_right = cv.imread(images_right[i])
                     grayImg_right = cv.cvtColor(img_right, cv.COLOR_BGR2GRAY)
 
-                    print(f"Processing RIGHT image from set no.{i + 1}. ({images_right[i]})")
+#                     tqdm.write(f"\nProcessing RIGHT image from set no.{i + 1}. ({images_right[i]})", nolock=True)
 
                     ret_right, corners_right = cv.findChessboardCorners(
                         grayImg_right, (chessBoardSize[0], chessBoardSize[1]), None
                     )
 
                     if not ret_right:
-                        print(f"Skipped image set no.{i+1}  because corners were not found in RIGHT image.")
+#                         tqdm.write(f"\nSkipped image set no.{i+1}  because corners were not found in RIGHT image.\n", nolock=True)
                         continue
 
                     # chessboardFound[i] = f"L: {images_left[i]},  R: {images_right[i]}"
