@@ -1,6 +1,9 @@
 if __name__ == "__main__":
     from zaowr_polsl_kisiel import stereo_calibration, stereo_rectify, are_params_valid
 
+    stereoRectify = True
+    testInterpolationMethods = True
+
     left_cam = r"/run/media/maks/Dokumenty 2/Studia/Infa Magister/Infa sem 2/ZAOWR Zaawansowana Analiza Obrazu, Wideo i Ruchu/ZAOWiR Image set - Calibration/Chessboard/Stereo 2/cam1/"
     # left_cam = r"/run/media/maks/Dokumenty 2/Studia/Infa Magister/Infa sem 2/ZAOWR Zaawansowana Analiza Obrazu, Wideo i Ruchu/ZAOWiR Image set - Calibration/Chessboard/Stereo 2/cam2/"
     # right_cam = r"/run/media/maks/Dokumenty 2/Studia/Infa Magister/Infa sem 2/ZAOWR Zaawansowana Analiza Obrazu, Wideo i Ruchu/ZAOWiR Image set - Calibration/Chessboard/Stereo 2/cam3/"
@@ -41,30 +44,33 @@ if __name__ == "__main__":
         if not left_valid or not right_valid or not stereo_valid:
             raise RuntimeError("Calibration failed. Parameters are still invalid.")
 
-    # hover over function parameters to see what they do (if names are not enough...)
-    stereo_rectify(
-        calibImgDirPath_left=left_cam,
-        calibImgDirPath_right=right_cam,
-        imgPoints_left=params_left["imgPoints"],
-        imgPoints_right=params_right["imgPoints"],
-        loadStereoCalibrationParams=True,
-        stereoCalibrationParamsPath=stereo_cam_params,
-        saveRectifiedImages=True,
-        rectifiedImagesDirPath=rectified_images_dir,
-        whichImage=0,
-        drawEpipolarLinesParams=(20, 3, 2)
-    )
+    if stereoRectify:
+        # hover over function parameters to see what they do (if names are not enough...)
+        if testInterpolationMethods:
+            stereo_rectify(
+                calibImgDirPath_left=left_cam,
+                calibImgDirPath_right=right_cam,
+                imgPoints_left=params_left["imgPoints"],
+                imgPoints_right=params_right["imgPoints"],
+                loadStereoCalibrationParams=True,
+                stereoCalibrationParamsPath=stereo_cam_params,
+                testInterpolationMethods=True,
+                saveRectifiedImages=True,
+                rectifiedImagesDirPath=rectified_images_dir,
+                whichImage=0,
+                drawEpipolarLinesParams=(20, 3, 2)
+            )
 
-    stereo_rectify(
-        calibImgDirPath_left=left_cam,
-        calibImgDirPath_right=right_cam,
-        imgPoints_left=params_left["imgPoints"],
-        imgPoints_right=params_right["imgPoints"],
-        loadStereoCalibrationParams=True,
-        stereoCalibrationParamsPath=stereo_cam_params,
-        testInterpolationMethods=True,
-        saveRectifiedImages=True,
-        rectifiedImagesDirPath=rectified_images_dir,
-        whichImage=0,
-        drawEpipolarLinesParams=(20, 3, 2)
-    )
+        else:
+            stereo_rectify(
+                calibImgDirPath_left=left_cam,
+                calibImgDirPath_right=right_cam,
+                imgPoints_left=params_left["imgPoints"],
+                imgPoints_right=params_right["imgPoints"],
+                loadStereoCalibrationParams=True,
+                stereoCalibrationParamsPath=stereo_cam_params,
+                saveRectifiedImages=True,
+                rectifiedImagesDirPath=rectified_images_dir,
+                whichImage=0,
+                drawEpipolarLinesParams=(20, 3, 2)
+            )

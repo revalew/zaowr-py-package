@@ -1,7 +1,11 @@
 # RTFM - Use Cases for zaowr_polsl_kisiel and the importance of docstrings
 
+<br/>
+<br/>
+
 ## Table of Contents
 
+1. [`Docstrings`](#docstrings)
 1. [`calibrate_camera()`](#calibrate_camera)
 2. [`are_params_valid()`](#are_params_valid)
 3. [`remove_distortion()`](#remove_distortion)
@@ -17,7 +21,16 @@
 <br/>
 <br/>
 
-## `calibrate_camera()`
+### Docstrings
+
+In Python, docstrings are a way to provide documentation for your functions, classes, and modules. They are a way to explain what your code does, what each parameter does, and how to use it. 
+
+To read the 
+
+<br/>
+<br/>
+
+### `calibrate_camera()`
 
 <ol>
 <li> Function definition
@@ -91,7 +104,7 @@ zw.calibrate_camera(
 <br/>
 <br/>
 
-## `are_params_valid()`
+### `are_params_valid()`
 
 <ol>
 <li> Function definition
@@ -156,7 +169,7 @@ if not sub_valid:
 <br/>
 <br/>
 
-## `remove_distortion()`
+### `remove_distortion()`
 
 <ol>
 <li> Function definition
@@ -220,7 +233,7 @@ if sub_valid:
 <br/>
 <br/>
 
-## `stereo_calibration()`
+### `stereo_calibration()`
 
 <ol>
 <li> Function definition
@@ -323,7 +336,7 @@ if not left_valid or not right_valid or not stereo_valid:
 <br/>
 <br/>
 
-## `calculate_fov()`
+### `calculate_fov()`
 
 <ol>
 <li> Function definition
@@ -377,7 +390,7 @@ if sub_valid:
 <br/>
 <br/>
 
-## `stereo_rectify()`
+### `stereo_rectify()`
 
 <ol>
 <li> Function definition
@@ -472,7 +485,7 @@ if left_valid and right_valid and stereo_valid:
 <br/>
 <br/>
 
-## `find_aruco_dict()`
+### `find_aruco_dict()`
 
 <ol>
 <li> Function definition
@@ -521,7 +534,7 @@ zw.find_aruco_dict(imgPath)
 <br/>
 <br/>
 
-## `load_calibration()`
+### `load_calibration()`
 
 <ol>
 <li> Function definition
@@ -533,12 +546,13 @@ zw.find_aruco_dict(imgPath)
 class CalibrationParams(TypedDict):
     mse: float
     rms: float
-    objPoints: npNdArray
-    imgPoints: npNdArray
-    cameraMatrix: npNdArray
-    distortionCoefficients: npNdArray
+    objPoints: np.ndarray
+    imgPoints: np.ndarray
+    cameraMatrix: np.ndarray
+    distortionCoefficients: np.ndarray
     rotationVectors: list
     translationVectors: list
+
 
 def load_calibration(calibrationParamsPath: str) -> CalibrationParams
 ```
@@ -575,7 +589,7 @@ rms = calibrationParams1["rms"]
 <br/>
 <br/>
 
-## `load_rectification_maps()`
+### `load_rectification_maps()`
 
 <ol>
 <li> Function definition
@@ -585,10 +599,11 @@ rms = calibrationParams1["rms"]
 
 ```python
 class RectificationMaps(TypedDict):
-    map1_left: npNdArray
-    map2_left: npNdArray
-    map1_right: npNdArray
-    map2_right: npNdArray
+    map1_left: np.ndarray
+    map2_left: np.ndarray
+    map1_right: np.ndarray
+    map2_right: np.ndarray
+
 
 def load_rectification_maps(rectificationMapsPath: str) -> RectificationMaps
 ```
@@ -625,7 +640,7 @@ map2_left = rectificationMaps["map2_left"]
 <br/>
 <br/>
 
-## `load_stereo_calibration()`
+### `load_stereo_calibration()`
 
 <ol>
 <li> Function definition
@@ -639,14 +654,15 @@ class StereoCalibrationParams(TypedDict):
     fov_left: tuple[float, float]
     fov_right: tuple[float, float]
     baseline: float
-    cameraMatrix_left: npNdArray
-    distortionCoefficients_left: npNdArray
-    cameraMatrix_right: npNdArray
-    distortionCoefficients_right: npNdArray
-    rotationMatrix: npNdArray
-    translationVector: npNdArray
-    essentialMatrix: npNdArray
-    fundamentalMatrix: npNdArray
+    cameraMatrix_left: np.ndarray
+    distortionCoefficients_left: np.ndarray
+    cameraMatrix_right: np.ndarray
+    distortionCoefficients_right: np.ndarray
+    rotationMatrix: np.ndarray
+    translationVector: np.ndarray
+    essentialMatrix: np.ndarray
+    fundamentalMatrix: np.ndarray
+
 
 def load_stereo_calibration(calibrationParamsPath: str) -> StereoCalibrationParams
 ```
@@ -683,7 +699,7 @@ fov_left = stereoParams["fov_left"]
 <br/>
 <br/>
 
-## `save_calibration()`
+### `save_calibration()`
 
 <ol>
 <li> Function definition
@@ -693,7 +709,7 @@ fov_left = stereoParams["fov_left"]
 
 ```python
 def save_calibration(
-    calibrationParams: dict[str, list], calibrationParamsPath: str
+    calibrationParams: dict[str, list | Any], calibrationParamsPath: str
 ) -> None
 ```
 

@@ -110,6 +110,19 @@ jobs:
 #            ./dist/*.tar.gz
 #            ./dist/*.whl
 
+      - name: Fetch commit messages
+        id: get_commits
+        run: |
+          PREVIOUS_TAG=$(git describe --tags --abbrev=0 HEAD^)
+          echo "Previous tag: $PREVIOUS_TAG"
+          echo "PREVIOUS_TAG=$PREVIOUS_TAG" >> $GITHUB_ENV
+          
+          # Fetch commit messages only, excluding commit IDs
+          COMMITS=$(git log $PREVIOUS_TAG..HEAD --pretty=format:"- %s")
+          echo "Commit messages between $PREVIOUS_TAG and current tag:"
+          echo "$COMMITS"
+          echo "COMMITS=$COMMITS" >> $GITHUB_ENV
+
       - name: Create GitHub Release
         env:
           GITHUB_TOKEN: ${{ github.token }}
@@ -117,7 +130,10 @@ jobs:
           gh release create
           '${{ github.ref_name }}'
           --repo '${{ github.repository }}'
-          --notes "Latest package release ${{ github.ref_name }}"
+          --notes "Latest package release ${{ github.ref_name }}
+          
+          ## Commit Messages
+          ${{ env.COMMITS }}"
         #  --notes-from-tag
 
       - name: Upload artifact signatures to GitHub Release

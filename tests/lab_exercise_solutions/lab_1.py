@@ -1,6 +1,8 @@
 if __name__ == "__main__":
     import zaowr_polsl_kisiel as zw
 
+    removeDistortion = False
+
     calibrationFile = "/run/media/maks/Dokumenty 2/Studia/Infa Magister/Infa sem 2/ZAOWR Zaawansowana Analiza Obrazu, Wideo i Ruchu/zaowr_py_package/tests/calibration_params/calibration_params.json"
     calibrationFileNoSubPix = "/run/media/maks/Dokumenty 2/Studia/Infa Magister/Infa sem 2/ZAOWR Zaawansowana Analiza Obrazu, Wideo i Ruchu/zaowr_py_package/tests/calibration_params/calibration_params_no_subpix.json"
 
@@ -19,6 +21,7 @@ if __name__ == "__main__":
             saveCalibrationParams=True,
             calibrationParamsPath=calibrationFile,
             displayFoundCorners=False,
+            showListOfImagesWithChessboardFound=False
         )
 
         sub_valid, calibrationParams1 = zw.are_params_valid(calibrationFile)
@@ -42,24 +45,26 @@ if __name__ == "__main__":
         if not sub_valid:
             raise RuntimeError("Calibration failed. Parameters are still invalid.")
 
-    # calibrationParams1 = zw.load_calibration(calibrationFile)
-    cameraMatrix1 = calibrationParams1["cameraMatrix"]
-    distortionCoef1 = calibrationParams1["distortionCoefficients"]
 
-    # calibrationParams2 = zw.load_calibration(calibrationFileNoSubPix)
-    cameraMatrix2 = calibrationParams2["cameraMatrix"]
-    distortionCoef2 = calibrationParams2["distortionCoefficients"]
+    if removeDistortion:
+        # calibrationParams1 = zw.load_calibration(calibrationFile)
+        cameraMatrix1 = calibrationParams1["cameraMatrix"]
+        distortionCoef1 = calibrationParams1["distortionCoefficients"]
 
-    zw.remove_distortion(
-        cameraMatrix=cameraMatrix1,
-        distortionCoefficients=distortionCoef1,
-        imgToUndistortPath=imgToUndistort,
-        showUndistortedImg=False,
-    )
+        # calibrationParams2 = zw.load_calibration(calibrationFileNoSubPix)
+        cameraMatrix2 = calibrationParams2["cameraMatrix"]
+        distortionCoef2 = calibrationParams2["distortionCoefficients"]
 
-    zw.remove_distortion(
-        cameraMatrix=cameraMatrix2,
-        distortionCoefficients=distortionCoef2,
-        imgToUndistortPath=imgToUndistort,
-        showUndistortedImg=False,
-    )
+        zw.remove_distortion(
+            cameraMatrix=cameraMatrix1,
+            distortionCoefficients=distortionCoef1,
+            imgToUndistortPath=imgToUndistort,
+            showUndistortedImg=False,
+        )
+
+        zw.remove_distortion(
+            cameraMatrix=cameraMatrix2,
+            distortionCoefficients=distortionCoef2,
+            imgToUndistortPath=imgToUndistort,
+            showUndistortedImg=False,
+        )
