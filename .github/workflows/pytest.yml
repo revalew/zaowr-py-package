@@ -10,6 +10,9 @@ on:
 
 jobs:
   test:
+    name: >-
+      Test Python 🐍 distribution 📦 with pytest
+
     runs-on: ubuntu-latest
 
     steps:
@@ -31,4 +34,4 @@ jobs:
     - name: Run tests
       run: |
         source .venv/bin/activate
-        pytest --maxfail=5 --disable-warnings ./tests/unit_tests
+        pytest --maxfail=5 --disable-warnings -v ./tests/unit_tests
