@@ -43,7 +43,7 @@ import zaowr_polsl_kisiel as zw
 # Display documentation for the entire module
 help(zw)
 
-# Accessing submodule's documentation
+# Display specific submodule's documentation
 help(zw.calibration)
 
 # Display detailed documentation for a specific function

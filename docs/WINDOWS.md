@@ -11,21 +11,23 @@ PyPI link to the package: [MAIN PyPI](https://pypi.org/project/zaowr-polsl-kisie
 
 1. [Linux tutorial](../README.md)
 
-2. [RTFM - Use Cases for zaowr_polsl_kisiel and the importance of docstrings](./USE_CASES.md)
+2. [RTFM - Use Cases for zaowr_polsl_kisiel and the importance of docstrings](./USAGE.md)
 
 3. [Installing the package on Windows using `pip`](#installing-the-package-on-windows-using-pip)
 
 4. [Removing the package on Windows using `pip`](#removing-the-package-on-windows-using-pip)
 
-5. [Creating virtual environment and installing the package](#creating-virtual-environment-and-installing-the-package)
+5. [Installing extras (optional dependencies for the package - development)](#installing-extras-optional-dependencies-for-the-package---development)
 
-6. [Testing the installation](#testing-the-installation)
+6. [Creating virtual environment and installing the package](#creating-virtual-environment-and-installing-the-package)
 
-7. [TODO for tracking issues / backlog / progress](./TODO.md)
+7. [Testing the installation](#testing-the-installation)
 
-8. [Code requirements](#code-requirements)
+8. [TODO for tracking issues / backlog / progress](./TODO.md)
 
-9. [Sources](#sources)
+9. [Code requirements](#code-requirements)
+
+10. [Sources](#sources)
 
 <br/>
 <br/>
@@ -39,7 +41,16 @@ The Linux tutorial can be found [here](../README.md)
 
 ## RTFM - Use Cases for zaowr_polsl_kisiel and the importance of docstrings
 
-[RTFM here](./USE_CASES.md)
+### [RTFM here](./USAGE.md)
+
+<br/>
+
+> [!IMPORTANT]
+> It is really important to understand how to use the package.
+>
+> The manual explains the use cases and tells you how to use docstrings.
+>
+> More examples (exact lab solutions) can be found [here](../tests/lab_exercise_solutions/)
 
 <br/>
 <br/>
@@ -81,6 +92,15 @@ py -m pip install --index-url https://test.pypi.org/simple/ --upgrade zaowr-pols
 
 ```cmd
 py -m pip uninstall zaowr-polsl-kisiel
+```
+
+<br/>
+<br/>
+
+## Installing extras (optional dependencies for the package - development)
+
+```bash
+py -m pip install --upgrade "zaowr-polsl-kisiel[dev]"
 ```
 
 <br/>
@@ -167,8 +187,6 @@ ENV_NAME\Scripts\activate
 </li>
 
 </ol>
-
-
 
 <br/>
 <br/>
@@ -263,7 +281,6 @@ The code fulfills all the requirements necessary to pass the course. Detailed de
 
 ## Sources
 
-This package has been prepared following [this tutorial](https://packaging.python.org/en/latest/tutorials/packaging-projects/).
+This package has been prepared following [this tutorial](https://packaging.python.org/en/latest/tutorials/packaging-projects/)
 
-The publishing to PyPI was created with [this tutorial](https://packaging.python.org/en/latest/guides/publishing-package-distribution-releases-using-github-actions-ci-cd-workflows/).
-```
+The publishing to PyPI was created with [this tutorial](https://packaging.python.org/en/latest/guides/publishing-package-distribution-releases-using-github-actions-ci-cd-workflows/)

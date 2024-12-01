@@ -73,6 +73,12 @@ def calibrate_camera(
     - This function handles both traditional chessboard calibration and ChArUco board calibration.
     - For best results, use well-lit images with clear chessboard or marker visibility.
     """
+    if chessBoardSize[0] <= 0 or chessBoardSize[1] <= 0:
+        raise ValueError("Invalid chessBoardSize. Both dimensions must be positive integers.")
+
+    if squareRealDimensions <= 0:
+        raise ValueError("Invalid squareRealDimensions. It must be a positive float.")
+
     # e.g. "../../../../ZAOWiR Image set - Calibration/Chessboard/Mono 1/cam4/*.png"
     images = glob.glob(calibImgDirPath + "/*." + globImgExtension)
 
@@ -130,41 +136,45 @@ def calibrate_camera(
                 charucoCorners, charucoIds, arucoCorners, arucoIds = charucoDetector.detectBoard(grayImg)
 
                 if (
-                        (charucoCorners is not None) and (len(charucoCorners) > 0)
-                        and (charucoIds is not None) and (len(charucoIds) > 0)
-                        and (arucoCorners is not None) and (len(arucoCorners) > 0)
-                        and (arucoIds is not None) and (len(arucoIds) > 0)
+                        (charucoCorners is None) or (len(charucoCorners) <= 0)
+                        or (charucoIds is None) or (len(charucoIds) <= 0)
+                        or (arucoCorners is None) or (len(arucoCorners) <= 0)
+                        or (arucoIds is None) or (len(arucoIds) <= 4)
                 ):
-                    tqdm.write(Fore.GREEN + f"Success!", nolock=True, file=stdout)
-                    if displayFoundCorners:
-                        if displayIds:
-                            imgWithMarkers = aruco.drawDetectedMarkers(img, arucoCorners, arucoIds)
-
-                            # show ids (e.g. id=1) next to the detected corners
-                            charucoCorners_filtered = [corner for corner, id in zip(charucoCorners, charucoIds) if id is not None]
-                            imgWithMarkers = aruco.drawDetectedCornersCharuco(imgWithMarkers, np.array(charucoCorners_filtered), np.array(charucoIds))
-
-                        else:
-                            imgWithMarkers = aruco.drawDetectedMarkers(img, arucoCorners, arucoIds)
-                            # dont show ids (e.g. id=1) next to the detected corners
-                            imgWithMarkers = aruco.drawDetectedCornersCharuco(imgWithMarkers, np.array(charucoCorners), None)
-
-                        cv.imshow("Detected ChArUco Markers", imgWithMarkers)
-                        cv.waitKey(0)
-
-                    objectPoints, imagePoints = board.matchImagePoints(charucoCorners, charucoIds)
-
-                    chessboardFound.append(baseFileName)
-                    objPoints.append(objectPoints)
-                    imgPoints.append(imagePoints)
-
-                else:
                     tqdm.write(Fore.RED + f"Skipped image '{baseFileName}' due to insufficient ChArUco markers.", nolock=True, file=stdout)
                     chessboardSkipped.append(baseFileName)
+                    continue
+
+                tqdm.write(Fore.GREEN + f"Success!", nolock=True, file=stdout)
+                if displayFoundCorners:
+                    if displayIds:
+                        imgWithMarkers = aruco.drawDetectedMarkers(img, arucoCorners, arucoIds)
+
+                        # show ids (e.g. id=1) next to the detected corners
+                        charucoCorners_filtered = [corner for corner, id in zip(charucoCorners, charucoIds) if id is not None]
+                        imgWithMarkers = aruco.drawDetectedCornersCharuco(imgWithMarkers, np.array(charucoCorners_filtered), np.array(charucoIds))
+
+                    else:
+                        imgWithMarkers = aruco.drawDetectedMarkers(img, arucoCorners, arucoIds)
+                        # dont show ids (e.g. id=1) next to the detected corners
+                        imgWithMarkers = aruco.drawDetectedCornersCharuco(imgWithMarkers, np.array(charucoCorners), None)
+
+                    cv.imshow("Detected ChArUco Markers", imgWithMarkers)
+                    cv.waitKey(0)
+
+                objectPoints, imagePoints = board.matchImagePoints(charucoCorners, charucoIds)
+
+                chessboardFound.append(baseFileName)
+                objPoints.append(objectPoints)
+                imgPoints.append(imagePoints)
+
 
 
             if len(objPoints) < 1:
                 raise CharucoCalibrationError
+
+            if not objPoints or not imgPoints:
+                raise ValueError("No valid chessboard patterns found in the provided images.")
 
             print(Fore.GREEN + "\nCalibrating camera...")
             rms, cameraMatrix, distortionCoefficients, rotationVectors, translationVectors = cv.calibrateCamera(
@@ -284,6 +294,9 @@ def calibrate_camera(
                 )
                 cv.imshow("Current Image", img)
                 cv.waitKey(500)
+
+        if not objPoints or not imgPoints:
+            raise ValueError("No valid chessboard patterns found in the provided images.")
 
         # overall RMS re-projection error, camera matrix, distortion coefficients, rotation vectors, translation vectors
         print(Fore.GREEN + "\nCalibrating camera...")

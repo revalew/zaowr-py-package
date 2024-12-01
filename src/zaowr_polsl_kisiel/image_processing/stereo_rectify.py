@@ -9,7 +9,7 @@ from colorama import Fore, Style, init as colorama_init  # , Back
 from tqdm import tqdm  # progress bar
 
 from ..custom_exceptions.exceptions import CalibrationImagesNotFound, CalibrationParamsPathNotProvided, RectifiedImgPathNotProvided, \
-    StereoCalibrationParamsPathNotProvided, MissingParameters, RectificationMapsPathNotProvided
+    StereoCalibrationParamsPathNotProvided, MissingParameters, RectificationMapsPathNotProvided, StereoRectificationError
 
 colorama_init(autoreset=True)
 
@@ -35,6 +35,9 @@ def draw_epilines_aligned(
     :param roi_thickness: Thickness of the ROI rectangle lines.
     :return: Tuple of images with horizontal epipolar lines and optional ROIs.
     """
+    if img_left[0].shape != img_right[0].shape:
+        raise StereoRectificationError("Images must have the same dimensions")
+
     img_left_with_lines = img_left.copy()
     img_right_with_lines = img_right.copy()
 
@@ -139,25 +142,36 @@ def stereo_rectify(
     images_left = glob.glob(calibImgDirPath_left + "/*." + globImgExtension)
     images_right = glob.glob(calibImgDirPath_right + "/*." + globImgExtension)
 
-    grayImg_left = cv.cvtColor(cv.imread(images_left[0]), cv.COLOR_BGR2GRAY)
-
     if (not images_left) or (len(images_left) == 0):
         raise CalibrationImagesNotFound
 
     if (not images_right) or (len(images_right) == 0):
         raise CalibrationImagesNotFound
 
+    grayImg_left = cv.cvtColor(cv.imread(images_left[0]), cv.COLOR_BGR2GRAY)
+
     # User provided required params and doesn't want to load from file - calculate new rectification maps
     if not loadStereoCalibrationParams:
 
-        if (not cameraMatrix_left) or (not cameraMatrix_right) or (not distortionCoefficients_left) or (not distortionCoefficients_right) or (not R) or (not T):
+        if (
+                cameraMatrix_left is None or
+                cameraMatrix_right is None or
+                distortionCoefficients_left is None or
+                distortionCoefficients_right is None or
+                R is None or
+                T is None
+        ):
             raise MissingParameters
 
-        # Stereo Rectification
-        R1, R2, P1, P2, Q, roi1, roi2 = cv.stereoRectify(
-            cameraMatrix_left, distortionCoefficients_left, cameraMatrix_right, distortionCoefficients_right,
-            grayImg_left.shape[::-1], R, T
-        )
+        try:
+            # Stereo Rectification
+            R1, R2, P1, P2, Q, roi1, roi2 = cv.stereoRectify(
+                cameraMatrix_left, distortionCoefficients_left, cameraMatrix_right, distortionCoefficients_right,
+                grayImg_left.shape[::-1], R, T
+            )
+
+        except cv.error as e:
+            raise StereoRectificationError(f"Error in stereo rectification process: {str(e)}")
 
         if not loadRectificationMaps:
             # Create rectification maps
@@ -253,8 +267,8 @@ def stereo_rectify(
             print(Fore.RED + "\nUnknown error occurred\n")
             raise
 
-    if (not F.size) or (not imgPoints_left.size) or (not imgPoints_right.size):
-        raise MissingParameters
+    if F is None or imgPoints_left is None or imgPoints_right is None:
+        raise MissingParameters("F, imgPoints_left, and imgPoints_right must not be None")
 
     if testInterpolationMethods:
         interpolationTypes = [cv.INTER_NEAREST, cv.INTER_LINEAR, cv.INTER_CUBIC, cv.INTER_AREA, cv.INTER_LANCZOS4]
@@ -264,6 +278,9 @@ def stereo_rectify(
         # Load an example pair of images for rectification
         img_left = cv.imread(images_left[whichImage])
         img_right = cv.imread(images_right[whichImage])
+
+        if img_left.shape != img_right.shape:
+            raise StereoRectificationError("Images must have the same dimensions")
 
         for i, interpolationType in enumerate(tqdm(
                     interpolationTypes,
@@ -307,6 +324,9 @@ def stereo_rectify(
         # Load an example pair of images for rectification
         img_left = cv.imread(images_left[whichImage])
         img_right = cv.imread(images_right[whichImage])
+
+        if img_left.shape != img_right.shape:
+            raise StereoRectificationError("Images must have the same dimensions")
 
         # Apply rectification to both images
         rectified_left = cv.remap(img_left, map1_left, map2_left, cv.INTER_LINEAR)

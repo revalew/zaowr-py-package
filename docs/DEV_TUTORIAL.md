@@ -96,19 +96,19 @@ python3 -m pip install --upgrade setuptools
 <br/>
 <br/>
 
-```bash
+```toml
 [build-system]
 requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "zaowr_polsl_kisiel"
-dynamic = ["version", "dependencies"]
+license = {file = "LICENSE"}
+dynamic = ["version", "readme", "dependencies", "optional-dependencies"]
 authors = [
   { name="Maksymilian Kisiel" },
 ]
 description = "A simple Python package used by me and a friend at the university in the course 'Advanced Image, Video and Motion Analysis'"
-readme = "README.md"
 requires-python = ">=3.8"
 classifiers = [
     "Programming Language :: Python :: 3",
@@ -119,11 +119,15 @@ keywords = ["polsl", "zaowr", "2024", "IGT", "ZAOWR"]
 
 [tool.setuptools.dynamic]
 version = {attr = "zaowr_polsl_kisiel.__version__"}  # any module attribute compatible with ast.literal_eval
+readme = {file = ["README.md", "./docs/WINDOWS.md", "./docs/USAGE.md"], content-type = "text/markdown"}
 dependencies = {file = ["requirements.txt"]}
+optional-dependencies.dev = {file = ["dev-requirements.txt"]}
 
 [project.urls]
-Homepage = "https://github.com/revalew/zaowr-py-package"
+Repository = "https://github.com/revalew/zaowr-py-package"
 Issues = "https://github.com/revalew/zaowr-py-package/issues"
+Changelog = "https://github.com/revalew/zaowr-py-package/releases"
+Documentation = "https://github.com/revalew/zaowr-py-package/blob/master/docs/USAGE.md"
 ```
 
 </li>
@@ -134,6 +138,8 @@ Issues = "https://github.com/revalew/zaowr-py-package/issues"
 > `requirements.txt` file listed as "dependencies" was created using `pip freeze > requirements.txt` command
 >
 > which was executed in active python `venv` prepared for this uni course.
+> 
+> Examine the file [here](../requirements.txt) and adjust it if needed.
 >
 > Check my tutorial on managing venvs [here](https://github.com/revalew/Python-Venv).
 
@@ -146,7 +152,7 @@ Issues = "https://github.com/revalew/zaowr-py-package/issues"
 <br/>
 <br/>
 
-```bash
+```
 Copyright (c) 2018 The Python Packaging Authority
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -371,43 +377,12 @@ from zaowr_polsl_kisiel import load_calibration
 </li>
 <br/>
 
-<li> Locate the file with calibration params or create new file with structure shown below
+<li> Locate the file with calibration params in tests folder and download it (link below)
 
 <br/>
 <br/>
 
-```json
-{
-    "mse": 5.984166144997382,
-    "rms": 0.5399844606283781,
-    "objPoints": [
-        [1272.011234078766, 0.0, 1058.4537673810164],
-        [0.0, 1266.8726860857762, 617.7592332273604],
-        [0.0, 0.0, 1.0]
-    ],
-    "imgPoints": [
-        [1272.011234078766, 0.0, 1058.4537673810164],
-        [0.0, 1266.8726860857762, 617.7592332273604],
-        [0.0, 0.0, 1.0]
-    ],
-    "cameraMatrix": [
-        [1272.011234078766, 0.0, 1058.4537673810164],
-        [0.0, 1266.8726860857762, 617.7592332273604],
-        [0.0, 0.0, 1.0]
-    ],
-    "distortionCoefficients": [
-        [-0.39935647747478337, 0.18200290247627665, 0.0020154085712910707, -0.012190829753206725, -0.04648398598417859]
-    ],
-    "rotationVectors": [
-        [[0.014376302442723948], [0.1667778841470017], [0.018832348485715023]],
-        [[-0.3405035725192283], [0.526867552280327], [-0.13373157952652456]]
-    ],
-    "translationVectors": [
-        [[71.27846898868391], [50.76036240921024], [1400.9402673825555]],
-        [[-476.2081267995082], [-120.35757569213392], [803.862414335442]]
-    ]
-}
-```
+[`../tests/misc/calibration_params/calibration_params.json`](../tests/misc/calibration_params/calibration_params.json)
 
 </li>
 <br/>
@@ -419,8 +394,7 @@ from zaowr_polsl_kisiel import load_calibration
 
 ```python
 # remember to provide appropriate path to the calibration params
-# you can simply create a json file with structure shown above
-calibrationParams = load_calibration("../../tests/calibration_params/calibration_params.json")
+calibrationParams = load_calibration("/path/to/calibration_params.json")
 ```
 
 </li>
@@ -436,6 +410,17 @@ print(calibrationParams["mse"])
 ```
 
 </li>
+
+</ul>
 </li>
 
 </ol>
+
+<br/>
+<br/>
+
+## Sources
+
+This package has been prepared following [this tutorial](https://packaging.python.org/en/latest/tutorials/packaging-projects/)
+
+The publishing to PyPI was created with [this tutorial](https://packaging.python.org/en/latest/guides/publishing-package-distribution-releases-using-github-actions-ci-cd-workflows/)

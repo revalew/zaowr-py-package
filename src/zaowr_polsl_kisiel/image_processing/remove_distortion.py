@@ -1,12 +1,13 @@
 import os
 from typing import Any
 import cv2 as cv
+from numpy import ndarray as npNdArray
 from ..custom_exceptions.exceptions import ImgToUndistortPathNotProvided, UndistortedImgPathNotProvided
 
 
 def remove_distortion(
-    cameraMatrix: Any,
-    distortionCoefficients: Any,
+    cameraMatrix: npNdArray,
+    distortionCoefficients: npNdArray,
     imgToUndistortPath: str,
     showImgToUndistort: bool = False,
     showUndistortedImg: bool = False,
@@ -32,16 +33,18 @@ def remove_distortion(
     :raises UndistortedImgPathNotProvided: Raises an error if the path where the undistorted image should be saved was not provided, or it isn't an instance of a string.
     """
 
-    if (imgToUndistortPath == "") or (not isinstance(imgToUndistortPath, str)):
+    if (imgToUndistortPath == "") or (not isinstance(imgToUndistortPath, str)) or not imgToUndistortPath:
         raise ImgToUndistortPathNotProvided
 
     if saveUndistortedImg and (
-        (undistortedImgPath == "") or (not isinstance(undistortedImgPath, str))
+        (undistortedImgPath == "") or (not isinstance(undistortedImgPath, str)) or not undistortedImgPath
     ):
         raise UndistortedImgPathNotProvided
 
     # "../../../../ZAOWiR Image set - Calibration/Chessboard/Mono 1/cam4/58.png"
     img = cv.imread(imgToUndistortPath)
+    if img is None:
+        raise ValueError(f"Failed to load image from path: {imgToUndistortPath}")
 
     if showImgToUndistort:
         cv.imshow("Current Image", img)
@@ -87,9 +90,12 @@ def remove_distortion(
             print("\nPress any key to continue...")
             cv.waitKey()
 
+    else:
+        raise ValueError(f"Invalid undistortion method: {undistortionMethod}. Use 'undistort' or 'remapping'.")
+
     if saveUndistortedImg:
         if not os.path.exists(undistortedImgPath):
-            os.makedirs(undistortedImgPath)
+            os.makedirs(undistortedImgPath, exist_ok=True)
 
         file_name, file_extension = os.path.splitext(os.path.basename(imgToUndistortPath))
 

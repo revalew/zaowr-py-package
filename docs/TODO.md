@@ -20,3 +20,7 @@
    - [x] Add function to validate / load params stored in files,
    - [x] Add requirements based on the tasks provided,
    - [x] Add directory with lab solutions,
+   - [x] Divide code into modules,
+   - [x] Add docstrings to all functions, classes and modules,
+   - [x] Unit tests for core functions,
+   - [] Unit tests for content loaders ???,

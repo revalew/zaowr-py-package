@@ -93,6 +93,9 @@ def stereo_calibration(
     :raises StereoCalibrationParamsPathNotProvided: If the path to save stereo calibration parameters is not provided when required.
     :raises CharucoCalibrationError: If ChArUco board calibration fails due to insufficient markers being detected.
     """
+    if chessBoardSize[0] <= 0 or chessBoardSize[1] <= 0:
+        raise ValueError("Chessboard dimensions must be greater than zero")
+
     # e.g. "../../../../ZAOWiR Image set - Calibration/Chessboard/Mono 1/cam4/*.png"
     images_left = glob.glob(calibImgDirPath_left + "/*." + globImgExtension)
     images_right = glob.glob(calibImgDirPath_right + "/*." + globImgExtension)
@@ -155,88 +158,93 @@ def stereo_calibration(
                     charucoCorners_left, charucoIds_left, arucoCorners_left, arucoIds_left = charucoDetector.detectBoard(grayImg_left)
 
                     if (
-                            ((charucoCorners_left is not None) or (len(charucoCorners_left) > 0)
-                            or (charucoIds_left is not None) or (len(charucoIds_left) > 0)
-                            or (arucoCorners_left is not None) or (len(arucoCorners_left) > 0)
-                            or (arucoIds_left is not None)) and (len(arucoIds_left) > 4)
-                            # found more than 4 markers
+                            (charucoCorners_left is None) or (len(charucoCorners_left) <= 0)
+                            or (charucoIds_left is None) or (len(charucoIds_left) <= 0)
+                            or (arucoCorners_left is None) or (len(arucoCorners_left) <= 0)
+                            or (arucoIds_left is None) or (len(arucoIds_left) <= 4)
                     ):
-                        tqdm.write(Fore.GREEN + f"Success!", nolock=True, file=stdout)
-
-                        baseFileName_right = basename(images_right[i])
-                        img_right = cv.imread(images_right[i])
-                        grayImg_right = cv.cvtColor(img_right, cv.COLOR_BGR2GRAY)
-
-                        tqdm.write(Fore.GREEN + f"Processing RIGHT image from set no.{i + 1} ({baseFileName_right}).", nolock=True, file=stdout)
-
-                        charucoCorners_right, charucoIds_right, arucoCorners_right, arucoIds_right = charucoDetector.detectBoard(grayImg_right)
-
-                        if (
-                                (charucoCorners_right is None) or (len(charucoCorners_right) <= 0)
-                                or (charucoIds_right is None) or (len(charucoIds_right) <= 0)
-                                or (arucoCorners_right is None) or (len(arucoCorners_right) <= 0)
-                                or (arucoIds_right is None) or (len(arucoIds_right) <= 4)
-                                # found less than 4 markers
-                        ):
-                            tqdm.write(Fore.RED + f"Skipped image set no.{i+1} due to insufficient ChArUco markers in RIGHT image ({baseFileName_left}).", nolock=True, file=stdout)
-                            chessboardSkipped.append(baseFileName_left)
-                            continue
-
-                        tqdm.write(Fore.GREEN + f"Success!", nolock=True, file=stdout)
-                        # chessboardFound[f"{i}_L"] = baseFileName_left
-                        # chessboardFound[f"{i}_R"] = baseFileName_right
-                        chessboardFound.append(baseFileName_left)
-
-                        if displayFoundCorners:
-                            if displayIds:
-                                # LEFT
-                                imgWithMarkers_left = aruco.drawDetectedMarkers(img_left, arucoCorners_left, arucoIds_left)
-
-                                # show ids (e.g. id=1) next to the detected corners
-                                charucoCornersFiltered_left = [corner for corner, id in zip(charucoCorners_left, charucoIds_left) if id is not None]
-                                imgWithMarkers_left = aruco.drawDetectedCornersCharuco(imgWithMarkers_left, np.array(charucoCornersFiltered_left), np.array(charucoIds_left))
-
-                                # RIGHT
-                                imgWithMarkers_right = aruco.drawDetectedMarkers(img_right, arucoCorners_right, arucoIds_right)
-
-                                # show ids (e.g. id=1) next to the detected corners
-                                charucoCornersFiltered_right = [corner for corner, id in zip(charucoCorners_right, charucoIds_right) if id is not None]
-                                imgWithMarkers_right = aruco.drawDetectedCornersCharuco(imgWithMarkers_right, np.array(charucoCornersFiltered_right), np.array(charucoIds_right))
-
-                            else:
-                                # LEFT
-                                imgWithMarkers_left = aruco.drawDetectedMarkers(img_left, arucoCorners_left, arucoIds_left)
-                                # dont show ids (e.g. id=1) next to the detected corners
-                                imgWithMarkers_left = aruco.drawDetectedCornersCharuco(imgWithMarkers_left, np.array(charucoCorners_left), None)
-
-                                # RIGHT
-                                imgWithMarkers_right = aruco.drawDetectedMarkers(img_right, arucoCorners_right, arucoIds_right)
-                                # dont show ids (e.g. id=1) next to the detected corners
-                                imgWithMarkers_right = aruco.drawDetectedCornersCharuco(imgWithMarkers_right, np.array(charucoCorners_right), None)
-
-                            cv.imshow("Detected ChArUco Markers in LEFT Image", imgWithMarkers_left)
-                            cv.waitKey(500)
-
-                            cv.imshow("Detected ChArUco Markers in RIGHT Image", imgWithMarkers_right)
-                            cv.waitKey(500)
-
-                        cv.destroyAllWindows()
-
-                        # LEFT
-                        objectPoints_left, imagePoints_left = board.matchImagePoints(charucoCorners_left, charucoIds_left)
-
-                        objPoints.append(objectPoints_left)
-                        imgPoints_left.append(imagePoints_left)
-
-                        # RIGHT
-                        objectPoints_right, imagePoints_right = board.matchImagePoints(charucoCorners_right, charucoIds_right)
-
-                        # objPoints.append(objectPoints_left)
-                        imgPoints_right.append(imagePoints_right)
-
-                    else:
-                        tqdm.write(Fore.RED + f"Skipped image set no.{i + 1} due to insufficient ChArUco markers in LEFT image ({baseFileName_left}).", nolock=True, file=stdout)
+                        tqdm.write(
+                            Fore.RED
+                            + f"Skipped image set no.{i + 1} due to insufficient ChArUco markers in LEFT image ({baseFileName_left}).",
+                            nolock=True,
+                            file=stdout,
+                        )
                         chessboardSkipped.append(baseFileName_left)
+                        continue
+
+                    tqdm.write(Fore.GREEN + f"Success!", nolock=True, file=stdout)
+
+                    baseFileName_right = basename(images_right[i])
+                    img_right = cv.imread(images_right[i])
+                    grayImg_right = cv.cvtColor(img_right, cv.COLOR_BGR2GRAY)
+
+                    tqdm.write(Fore.GREEN + f"Processing RIGHT image from set no.{i + 1} ({baseFileName_right}).", nolock=True, file=stdout)
+
+                    charucoCorners_right, charucoIds_right, arucoCorners_right, arucoIds_right = charucoDetector.detectBoard(grayImg_right)
+
+                    if (
+                            (charucoCorners_right is None) or (len(charucoCorners_right) <= 0)
+                            or (charucoIds_right is None) or (len(charucoIds_right) <= 0)
+                            or (arucoCorners_right is None) or (len(arucoCorners_right) <= 0)
+                            or (arucoIds_right is None) or (len(arucoIds_right) <= 4)
+                            # found less than 4 markers
+                    ):
+                        tqdm.write(Fore.RED + f"Skipped image set no.{i+1} due to insufficient ChArUco markers in RIGHT image ({baseFileName_left}).", nolock=True, file=stdout)
+                        chessboardSkipped.append(baseFileName_left)
+                        continue
+
+                    tqdm.write(Fore.GREEN + f"Success!", nolock=True, file=stdout)
+                    # chessboardFound[f"{i}_L"] = baseFileName_left
+                    # chessboardFound[f"{i}_R"] = baseFileName_right
+                    chessboardFound.append(baseFileName_left)
+
+                    if displayFoundCorners:
+                        if displayIds:
+                            # LEFT
+                            imgWithMarkers_left = aruco.drawDetectedMarkers(img_left, arucoCorners_left, arucoIds_left)
+
+                            # show ids (e.g. id=1) next to the detected corners
+                            charucoCornersFiltered_left = [corner for corner, id in zip(charucoCorners_left, charucoIds_left) if id is not None]
+                            imgWithMarkers_left = aruco.drawDetectedCornersCharuco(imgWithMarkers_left, np.array(charucoCornersFiltered_left), np.array(charucoIds_left))
+
+                            # RIGHT
+                            imgWithMarkers_right = aruco.drawDetectedMarkers(img_right, arucoCorners_right, arucoIds_right)
+
+                            # show ids (e.g. id=1) next to the detected corners
+                            charucoCornersFiltered_right = [corner for corner, id in zip(charucoCorners_right, charucoIds_right) if id is not None]
+                            imgWithMarkers_right = aruco.drawDetectedCornersCharuco(imgWithMarkers_right, np.array(charucoCornersFiltered_right), np.array(charucoIds_right))
+
+                        else:
+                            # LEFT
+                            imgWithMarkers_left = aruco.drawDetectedMarkers(img_left, arucoCorners_left, arucoIds_left)
+                            # dont show ids (e.g. id=1) next to the detected corners
+                            imgWithMarkers_left = aruco.drawDetectedCornersCharuco(imgWithMarkers_left, np.array(charucoCorners_left), None)
+
+                            # RIGHT
+                            imgWithMarkers_right = aruco.drawDetectedMarkers(img_right, arucoCorners_right, arucoIds_right)
+                            # dont show ids (e.g. id=1) next to the detected corners
+                            imgWithMarkers_right = aruco.drawDetectedCornersCharuco(imgWithMarkers_right, np.array(charucoCorners_right), None)
+
+                        cv.imshow("Detected ChArUco Markers in LEFT Image", imgWithMarkers_left)
+                        cv.waitKey(500)
+
+                        cv.imshow("Detected ChArUco Markers in RIGHT Image", imgWithMarkers_right)
+                        cv.waitKey(500)
+
+                    cv.destroyAllWindows()
+
+                    # LEFT
+                    objectPoints_left, imagePoints_left = board.matchImagePoints(charucoCorners_left, charucoIds_left)
+
+                    objPoints.append(objectPoints_left)
+                    imgPoints_left.append(imagePoints_left)
+
+                    # RIGHT
+                    objectPoints_right, imagePoints_right = board.matchImagePoints(charucoCorners_right, charucoIds_right)
+
+                    # objPoints.append(objectPoints_left)
+                    imgPoints_right.append(imagePoints_right)
+
 
 
                 if len(objPoints) < 1:

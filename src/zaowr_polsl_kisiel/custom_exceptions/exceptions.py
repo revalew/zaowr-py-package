@@ -116,6 +116,13 @@ class RectifiedImgPathNotProvided(Exception):
         self.message = message
         super().__init__(self.message)
 
+class StereoRectificationError(Exception):
+    """
+    Raised when there is an issue with stereo rectification.
+    """
+    def __init__(self, message="Error in stereo rectification process"):
+        super().__init__(message)
+
 class MissingParameters(Exception):
     """
     Some parameters are missing in the function call.
