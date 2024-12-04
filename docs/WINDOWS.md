@@ -11,7 +11,7 @@ PyPI link to the package: [MAIN PyPI](https://pypi.org/project/zaowr-polsl-kisie
 
 1. [Linux tutorial](../README.md)
 
-2. [RTFM - Use Cases for zaowr_polsl_kisiel and the importance of docstrings](./USAGE.md)
+2. [RTFM - Use Cases for zaowr_polsl_kisiel and the importance of docstrings](#rtfm---use-cases-for-zaowr_polsl_kisiel-and-the-importance-of-docstrings)
 
 3. [Installing the package on Windows using `pip`](#installing-the-package-on-windows-using-pip)
 
@@ -41,7 +41,23 @@ The Linux tutorial can be found [here](../README.md)
 
 ## RTFM - Use Cases for zaowr_polsl_kisiel and the importance of docstrings
 
-### [RTFM here](./USAGE.md)
+<ol>
+<li>
+<div style="font-size: 22px">
+
+[RTFM v1 here](./USAGE.md) (custom-made explanations with examples)
+
+</div>
+</li>
+<li>
+<div style="font-size: 22px">
+
+[RTFM v2 here](https://revalew.github.io/zaowr-py-package) (auto-generated documentation with `pdoc`)
+
+</div>
+</li>
+</ol>
+<br/>
 
 <br/>
 

@@ -1,0 +1,80 @@
+# https://pdoc.dev/docs/pdoc.html#deploying-to-github-pages
+# https://github.com/mitmproxy/pdoc/blob/main/.github/workflows/docs.yml
+
+# 1. Enable GitHub Actions and GitHub Pages for your project.
+# 2. In the GitHub Pages settings, select GitHub Actions as your build and deployment source.
+# 3. Add the following workflow to your repository:
+
+name: Generate documentation using pdoc
+
+# Trigger the workflow when new tagged commits are pushed to the branch.
+on:
+  push:
+#    branches:
+#      - master
+
+    # Alternatively: trigger only for tags.
+    tags:
+      - '*' # Push events to every tag not containing /
+
+# Restrict permissions for CI jobs to enhance security.
+permissions:
+  contents: read
+
+jobs:
+  # Build the documentation and upload the static HTML files as an artifact.
+  build:
+    name: >-
+      Generate Python 🐍 documentation 📚 with pdoc
+
+    runs-on: ubuntu-latest
+    steps:
+      # Step: Check out the repository code.
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Step: Set up Python environment.
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      # Install dependencies, including pdoc.
+      - name: Install dependencies
+        run: |
+          python -m venv .venv
+          source .venv/bin/activate
+          pip install --upgrade pip
+#          pip install -e .[dev]
+          pip install pdoc # already installed in [dev] but we only need pdoc as the package is provided explicitly as "src/zaowr_polsl_kisiel/"
+
+      # Generate documentation using pdoc and save it in docs/pdoc/.
+      - name: Generate documentation
+        run: |
+          source .venv/bin/activate
+          pdoc --output-dir docs/pdoc src/zaowr_polsl_kisiel/
+
+      # Upload the generated documentation as an artifact.
+      - name: Upload documentation artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs/pdoc/
+
+  # Deploy the documentation artifact to GitHub Pages.
+  # This is a separate job to limit permissions for the deployment step.
+  deploy:
+    name: >-
+      Upload documentation 📚 to GitHub Pages 🌐📲
+
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write  # Grant write permission for GitHub Pages.
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      # Step: Deploy the documentation to GitHub Pages.
+      - id: deployment
+        uses: actions/deploy-pages@v4

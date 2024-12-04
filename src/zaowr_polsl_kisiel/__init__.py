@@ -68,5 +68,6 @@ from .image_processing import (
 
 from . import tools
 from .tools import (
-    find_aruco_dict # find aruco dictionary if we don't know
+    find_aruco_dict, # find aruco dictionary if we don't know
+    measure_perf, # measure performance
 )
