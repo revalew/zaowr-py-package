@@ -2,8 +2,10 @@ name: Test package using pytest
 
 on:
   push:
-    branches:
-      - master
+#    branches:
+#      - master
+    tags:
+      - '*' # Push events to every tag not containing /
   pull_request:
     branches:
       - master
