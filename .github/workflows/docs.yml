@@ -45,6 +45,7 @@ jobs:
           python -m venv .venv
           source .venv/bin/activate
           pip install --upgrade pip
+          pip install -e .[dev]
           pip install pdoc
         # already installed in [dev] but we only need pdoc as the package is provided explicitly as "src/zaowr_polsl_kisiel/"
         # pip install -e .[dev]
