@@ -16,7 +16,19 @@
    - [x] Separate functions for rectification etc.,
    - [x] Add different interpolation methods and option to save those images,
 
-3. Misc.:
+3. Disparity maps:
+   - [] UPDATE THE DOCS!
+   - [] Check for bugs,
+   - [] Check if anything can be simplified,
+   - [x] Calculate disparity map,
+   - [x] Add different algorithms for disparity map calculation,
+   - [x] Calculate color difference map,
+   - [x] Add docstrings,
+   - [x] Add exception handling,
+   - [x] Save / Load configuration,
+   - [x] Add code requirements,
+
+4. Misc.:
    - [x] Add function to validate / load params stored in files,
    - [x] Add requirements based on the tasks provided,
    - [x] Add directory with lab solutions,

@@ -1,7 +1,8 @@
 import os
-from typing import Any
+
 import cv2 as cv
 from numpy import ndarray as npNdArray
+
 from ..custom_exceptions.exceptions import ImgToUndistortPathNotProvided, UndistortedImgPathNotProvided
 
 
@@ -18,8 +19,8 @@ def remove_distortion(
     """
     Remove distortion from given image
 
-    :param Any cameraMatrix: Camera Matrix, the focal length and optical centre matrix as shown in intrinsic parameters.
-    :param Any distortionCoefficients: Distortion Coefficients: (`k₁`, `k₂`, `p₁`, `p₂`, `k₃`), which include radial (`kₙ`) and tangential (`pₙ`) distortion values.
+    :param npNdArray cameraMatrix: Camera Matrix, the focal length and optical centre matrix as shown in intrinsic parameters.
+    :param npNdArray distortionCoefficients: Distortion Coefficients: (`k₁`, `k₂`, `p₁`, `p₂`, `k₃`), which include radial (`kₙ`) and tangential (`pₙ`) distortion values.
     :param str imgToUndistortPath: Path of the image which we want to undistort.
     :param bool showImgToUndistort: Decide if you want to show the original image., defaults to False
     :param bool showUndistortedImg: Decide if you want to show the undistorted image., defaults to False

@@ -6,13 +6,13 @@ Modules:
 
 - `calibration`: Tools for camera and stereo calibration.
 
-- `content_loaders`: Functions to load and validate calibration data from files.
+- `content_loaders`: Functions to load and validate calibration data from files and load the ground truth `.pgm` file or save the disparity map.
 
 - `custom_exceptions`: Custom exceptions for error handling.
 
-- `image_processing`: Utilities for image rectification and distortion removal.
+- `image_processing`: Utilities for image rectification, distortion removal and disparity map calculation and color difference map calculation.
 
-- `tools`: Additional tools, such as ArUco dictionary identification.
+- `tools`: Additional tools, such as ArUco dictionary identification, performance measurement or image cropping.
 
 Status: Development
 
@@ -58,16 +58,24 @@ from .content_loaders import (
     load_calibration, # load calibration parameters for single camera
     load_stereo_calibration, # load stereo calibration
     load_rectification_maps, # load rectification maps
+    save_disparity_map, # save disparity map
+    load_pgm_file, # load the ground truth .pgm file
 )
 
 from . import image_processing
 from .image_processing import (
     remove_distortion, # remove distortion from single image
     stereo_rectify, # rectify stereo image after stereo calibration
+    calculate_disparity_map, # calculate disparity map using StereoBM, StereoSGBM, Custom Block Matching
+    calculate_color_difference_map, # calculate color difference map
+    plot_disparity_map_comparison, # plot disparity map comparison
 )
 
 from . import tools
 from .tools import (
     find_aruco_dict, # find aruco dictionary if we don't know
     measure_perf, # measure performance
+    calculate_mse_disparity, # calculate MSE between two disparity maps
+    calculate_ssim_disparity, # calculate SSIM between two disparity maps
+    crop_image, # crop image to retain only the center part (specified by percentage)
 )

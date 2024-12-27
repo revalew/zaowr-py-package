@@ -1,6 +1,7 @@
 import cv2
 from cv2 import aruco
 from tqdm import tqdm # progress bar
+
 def find_aruco_dict(imgPath) -> None:
     ARUCO_DICT = {
         "DICT_4X4_50": aruco.DICT_4X4_50,
