@@ -3,7 +3,12 @@
 
 # 1. Enable GitHub Actions and GitHub Pages for your project.
 # 2. In the GitHub Pages settings, select GitHub Actions as your build and deployment source.
-# 3. Add the following workflow to your repository:
+# 3. Change github-pages protection rules to allow pushes on all tags (
+#         Repo "Settings" -> "Environments" -> "github-pages"
+#         -> "Add deployment branch or tag rule" -> "Ref type: Tag" (dropdown)
+#         -> "*" (without quotes, wildcard match all tags) -> "Add rule"
+#    ).
+# 4. Add the following workflow to your repository:
 
 name: Generate documentation using pdoc
 
