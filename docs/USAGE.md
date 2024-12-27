@@ -18,6 +18,14 @@
 11. [`load_rectification_maps()`](#load_rectification_maps)
 12. [`load_stereo_calibration()`](#load_stereo_calibration)
 13. [`save_calibration()`](#save_calibration)
+14. [`load_pgm_file()`](#load_pgm_file)
+15. [`calculate_disparity_map()`](#calculate_disparity_map)
+16. [`save_disparity_map()`](#save_disparity_map)
+17. [`calculate_color_difference_map()`](#calculate_color_difference_map)
+18. [`crop_image()`](#crop_image)
+19. [`calculate_mse_disparity()`](#calculate_mse_disparity)
+20. [`calculate_ssim_disparity()`](#calculate_ssim_disparity)
+21. [`plot_disparity_map_comparison()`](#plot_disparity_map_comparison) 
 
 <br/>
 <br/>
@@ -58,6 +66,8 @@ help(zw.calibrate_camera)
 
 ### `@measure_perf` decorator
 
+[Back to the top (TOC)](#table-of-contents)
+
 <ol>
 <li> Example usage
 
@@ -89,6 +99,8 @@ my_function()
 <br/>
 
 ### `calibrate_camera()`
+
+[Back to the top (TOC)](#table-of-contents)
 
 <ol>
 <li> Function definition
@@ -164,6 +176,8 @@ zw.calibrate_camera(
 
 ### `are_params_valid()`
 
+[Back to the top (TOC)](#table-of-contents)
+
 <ol>
 <li> Function definition
 
@@ -229,6 +243,8 @@ if not sub_valid:
 
 ### `remove_distortion()`
 
+[Back to the top (TOC)](#table-of-contents)
+
 <ol>
 <li> Function definition
 
@@ -292,6 +308,8 @@ if sub_valid:
 <br/>
 
 ### `stereo_calibration()`
+
+[Back to the top (TOC)](#table-of-contents)
 
 <ol>
 <li> Function definition
@@ -396,6 +414,8 @@ if not left_valid or not right_valid or not stereo_valid:
 
 ### `calculate_fov()`
 
+[Back to the top (TOC)](#table-of-contents)
+
 <ol>
 <li> Function definition
 
@@ -449,6 +469,8 @@ if sub_valid:
 <br/>
 
 ### `stereo_rectify()`
+
+[Back to the top (TOC))](#table-of-contents)
 
 <ol>
 <li> Function definition
@@ -545,6 +567,8 @@ if left_valid and right_valid and stereo_valid:
 
 ### `find_aruco_dict()`
 
+[Back to the top (TOC)](#table-of-contents)
+
 <ol>
 <li> Function definition
 
@@ -593,6 +617,8 @@ zw.find_aruco_dict(imgPath)
 <br/>
 
 ### `load_calibration()`
+
+[Back to the top (TOC))](#table-of-contents)
 
 <ol>
 <li> Function definition
@@ -649,6 +675,8 @@ rms = calibrationParams1["rms"]
 
 ### `load_rectification_maps()`
 
+[Back to the top (TOC)](#table-of-contents)
+
 <ol>
 <li> Function definition
 
@@ -699,6 +727,8 @@ map2_left = rectificationMaps["map2_left"]
 <br/>
 
 ### `load_stereo_calibration()`
+
+[Back to the top (TOC)](#table-of-contents)
 
 <ol>
 <li> Function definition
@@ -759,6 +789,8 @@ fov_left = stereoParams["fov_left"]
 
 ### `save_calibration()`
 
+[Back to the top (TOC)](#table-of-contents)
+
 <ol>
 <li> Function definition
 
@@ -802,6 +834,479 @@ distorted_params = {
 }
 
 zw.save_calibration(distorted_params, "./tests/distorted_params/distorted_params.json")
+```
+
+<br/>
+</li>
+<li> Other params are optional and have default values. Each of them can be found in the function definition, and their descriptions are provided in the docstrings (hover over the function name).
+
+</li>
+</ol>
+<br/>
+<br/>
+
+### `load_pgm_file()`
+
+[Back to the top (TOC)](#table-of-contents)
+
+<ol>
+<li> Function definition
+
+<br/>
+<br/>
+
+```python
+def load_pgm_file(
+        pgmPath: str,
+        targetShape: tuple[int, int]
+) -> np.ndarray
+```
+
+</li>
+<br/>
+<li> Example usage
+
+After importing the package we can use the function to load a PGM file and return it as a numpy array. The function also resizes the image to the specified shape (usually the shape of the calculated disparity map).
+
+<br/>
+<br/>
+
+```python
+import zaowr_polsl_kisiel as zw
+
+pgmPath = "./tests/disparity_maps/ground_truth.pgm"
+
+groundTruth = zw.load_pgm_file(pgmPath, targetShape=(512, 512))
+```
+
+<br/>
+</li>
+<li> Other params are optional and have default values. Each of them can be found in the function definition, and their descriptions are provided in the docstrings (hover over the function name).
+
+</li>
+</ol>
+<br/>
+<br/>
+
+### `calculate_disparity_map()`
+
+[Back to the top (TOC)](#table-of-contents)
+
+<ol>
+<li> Function definition
+
+<br/>
+<br/>
+
+```python
+def calculate_disparity_map(
+    leftImagePath: str,
+    rightImagePath: str,
+    blockSize: int = 9, # for StereoBM, StereoSGBM & Custom 2
+    numDisparities: int = 16, # for StereoBM & StereoSGBM
+    minDisparity: int = 0, # for StereoSGBM
+    maxDisparity: int = 64, # for Custom 1 & Custom 2
+    windowSize: tuple[int, int] = (11, 11), # for Custom 1
+    disparityCalculationMethod: str = "bm",
+    saveDisparityMap: bool = False,
+    saveDisparityMapPath: str = None,
+    showDisparityMap: bool = False
+) -> np.ndarray
+```
+
+</li>
+<br/>
+<li> Example usage
+
+After importing the package we can use the function to calculate the disparity map and optionally save it and/or show it. We have to specify the path to the left and right images (**already rectified images!**), the block size, the number of disparities, the minimum disparity, the maximum disparity, the window size, the disparity calculation method, the save disparity map and/or show disparity map parameters.
+
+We can choose the disparity calculation method between StereoBM, StereoSGBM, Custom 1 and Custom 2. Depending on the disparity calculation method, we have to specify different parameters.
+
+We can also show the map using the `showDisparityMap` parameter with or without saving.
+
+<br/>
+<br/>
+
+```python
+import os
+import zaowr_polsl_kisiel as zw
+
+disparityMapSGBM = zw.calculate_disparity_map(
+            leftImagePath="left.png", # path to the left image
+            rightImagePath="right.png", # path to the right image
+            blockSize=9, # block size for StereoBM & StereoSGBM
+            numDisparities=16, # number of disparities for StereoBM & StereoSGBM
+            minDisparity=0, # minimum disparity for StereoSGBM
+            disparityCalculationMethod="sgbm", # use StereoSGBM for disparity calculation
+            saveDisparityMap=True, # save the disparity map
+            saveDisparityMapPath=os.path.join("./tests/disparity_maps", "disparity_map_SGBM.png"), # path to save the disparity map
+            showDisparityMap=True # show the disparity map
+        )
+```
+
+<br/>
+</li>
+<li> Other params are optional and have default values. Each of them can be found in the function definition, and their descriptions are provided in the docstrings (hover over the function name).
+
+</li>
+</ol>
+<br/>
+<br/>
+
+### `save_disparity_map()`
+
+[Back to the top (TOC)](#table-of-contents)
+
+<ol>
+<li> Function definition
+
+<br/>
+<br/>
+
+```python
+def save_disparity_map(
+    disparityMap: np.ndarray,
+    savePath: str,
+    show: bool = False,
+) -> None
+```
+
+</li>
+<br/>
+<li> Example usage
+
+After importing the package we can use the function to save a disparity map as a PNG file and optionally show it.
+
+We can save the disparity map to a file using the `saveDisparityMap` parameter (and `saveDisparityMapPath`) directly in the function `calculate_disparity_map()` (**recommended**). 
+
+We can also show the map using the `show` parameter with or without saving.
+
+<br/>
+<br/>
+
+```python
+import zaowr_polsl_kisiel as zw
+
+disparityMap = zw.calculate_disparity_map(
+    leftImagePath="./tests/disparity_maps/left.png",
+    rightImagePath="./tests/disparity_maps/right.png",
+)
+
+zw.save_disparity_map(
+    disparityMap=disparityMap,
+    savePath="./tests/disparity_maps/disparity_map.png",
+    show=True
+)
+
+#######################
+# OR (RECOMMENDED)
+#######################
+
+disparityMap = zw.calculate_disparity_map(
+    leftImagePath="./tests/disparity_maps/left.png",
+    rightImagePath="./tests/disparity_maps/right.png",
+    saveDisparityMap=True, # set saveDisparityMap to True
+    saveDisparityMapPath="./tests/disparity_maps/disparity_map.png", # desired path to save
+)
+```
+
+<br/>
+</li>
+<li> Other params are optional and have default values. Each of them can be found in the function definition, and their descriptions are provided in the docstrings (hover over the function name).
+
+</li>
+</ol>
+<br/>
+<br/>
+
+### `calculate_color_difference_map()`
+
+[Back to the top (TOC)](#table-of-contents)
+
+<ol>
+<li> Function definition
+
+<br/>
+<br/>
+
+```python
+def calculate_color_difference_map(
+        disparityMap: np.ndarray,
+        groundTruth: np.ndarray
+) -> np.ndarray
+```
+
+</li>
+<br/>
+<li> Example usage
+
+After importing the package we can use the function to calculate the color difference map and return it as a numpy array. We have to specify the disparity map and the ground truth image. The disparity map is calculated using the `calculate_disparity_map()` function and the ground truth image is loaded using the `load_pgm_file()` function.
+
+<br/>
+<br/>
+
+```python
+import zaowr_polsl_kisiel as zw
+import os
+
+disparityMapBM = zw.calculate_disparity_map(
+            leftImagePath=img_left,
+            rightImagePath=img_right,
+            blockSize=9,
+            numDisparities=16,
+            disparityCalculationMethod="bm",
+            saveDisparityMap=saveDisparityMap,
+            saveDisparityMapPath=os.path.join(saveDisparityMapPath, "disparity_map_BM.png"),
+            showDisparityMap=showMaps
+        )
+groundTruth = zw.load_pgm_file(groundTruthPath, disparityMapBM.shape)
+colorDiffBM = zw.calculate_color_difference_map(disparityMapBM, groundTruth)
+```
+
+<br/>
+</li>
+<li> Other params are optional and have default values. Each of them can be found in the function definition, and their descriptions are provided in the docstrings (hover over the function name).
+
+</li>
+</ol>
+<br/>
+<br/>
+
+### `crop_image()`
+
+[Back to the top (TOC)](#table-of-contents)
+
+<ol>
+<li> Function definition
+
+<br/>
+<br/>
+
+```python
+def crop_image(
+        img: np.ndarray,
+        cropPercentage: float = 0.75
+) -> np.ndarray
+```
+
+</li>
+<br/>
+<li> Example usage
+
+After importing the package we can use the function to crop an image and return it as a numpy array. We have to specify the image and the percentage of the image to crop.
+
+Image is cropped from the top, bottom, left and right to retain only a certain percentage of the original image (75% by default).
+
+<br/>
+<br/>
+
+```python
+import zaowr_polsl_kisiel as zw
+import os
+
+groundTruth = zw.load_pgm_file("./tests/disparity_maps/ground_truth.pgm")
+groundTruth = zw.crop_image(groundTruth, cropPercentage=0.75)
+
+# AND
+
+disparityMapBM = zw.calculate_disparity_map(
+            leftImagePath=img_left,
+            rightImagePath=img_right,
+            blockSize=9,
+            numDisparities=16,
+            disparityCalculationMethod="bm",
+            saveDisparityMap=saveDisparityMap,
+            saveDisparityMapPath=os.path.join(saveDisparityMapPath, "disparity_map_BM.png"),
+            showDisparityMap=showMaps
+        )
+disparityMapBM = zw.crop_image(disparityMapBM, cropPercentage=0.75)
+```
+
+<br/>
+</li>
+<li> Other params are optional and have default values. Each of them can be found in the function definition, and their descriptions are provided in the docstrings (hover over the function name).
+
+</li>
+</ol>
+<br/>
+<br/>
+
+### `calculate_mse_disparity()`
+
+[Back to the top (TOC)](#table-of-contents)
+
+<ol>
+<li> Function definition
+
+<br/>
+<br/>
+
+```python
+def calculate_mse_disparity(
+        map1: np.ndarray,
+        map2: np.ndarray
+) -> float
+```
+
+</li>
+<br/>
+<li> Example usage
+
+After importing the package we can use the function to calculate the **Mean Squared Error (MSE)** of two disparity maps and return it as a float. We have to specify the two disparity maps to compare - the ground truth and the calculated disparity map. Images are cropped before calculating the MSE.
+
+<br/>
+<br/>
+
+```python
+import zaowr_polsl_kisiel as zw
+import os
+
+disparityMapBM = zw.calculate_disparity_map(
+            leftImagePath=img_left,
+            rightImagePath=img_right,
+            blockSize=9,
+            numDisparities=16,
+            disparityCalculationMethod="bm",
+            saveDisparityMap=saveDisparityMap,
+            saveDisparityMapPath=os.path.join(saveDisparityMapPath, "disparity_map_BM.png"),
+            showDisparityMap=showMaps
+        )
+groundTruth = zw.load_pgm_file("./tests/disparity_maps/ground_truth.pgm", disparityMapBM.shape)
+
+groundTruth = zw.crop_image(groundTruth, cropPercentage=0.75)
+disparityMapBM = zw.crop_image(disparityMapBM, cropPercentage=0.75)
+
+mseBM = zw.calculate_mse_disparity(disparityMapBM, groundTruth)
+```
+
+<br/>
+</li>
+<li> Other params are optional and have default values. Each of them can be found in the function definition, and their descriptions are provided in the docstrings (hover over the function name).
+
+</li>
+</ol>
+<br/>
+<br/>
+
+### `calculate_ssim_disparity()`
+
+[Back to the top (TOC)](#table-of-contents)
+
+<ol>
+<li> Function definition
+
+<br/>
+<br/>
+
+```python
+def calculate_ssim_disparity(
+        map1: np.ndarray,
+        map2: np.ndarray
+) -> float
+```
+
+</li>
+<br/>
+<li> Example usage
+
+After importing the package we can use the function to calculate the **Structural Similarity Index (SSIM)** of two disparity maps and return it as a float. We have to specify the two disparity maps to compare - the ground truth and the calculated disparity map. Images are cropped before calculating the SSIM.
+
+<br/>
+<br/>
+
+```python
+import zaowr_polsl_kisiel as zw
+import os
+
+disparityMapBM = zw.calculate_disparity_map(
+            leftImagePath=img_left,
+            rightImagePath=img_right,
+            blockSize=9,
+            numDisparities=16,
+            disparityCalculationMethod="bm",
+            saveDisparityMap=saveDisparityMap,
+            saveDisparityMapPath=os.path.join(saveDisparityMapPath, "disparity_map_BM.png"),
+            showDisparityMap=showMaps
+        )
+groundTruth = zw.load_pgm_file("./tests/disparity_maps/ground_truth.pgm", disparityMapBM.shape)
+
+groundTruth = zw.crop_image(groundTruth, cropPercentage=0.75)
+disparityMapBM = zw.crop_image(disparityMapBM, cropPercentage=0.75)
+
+ssimBM = zw.calculate_ssim_disparity(disparityMapBM, groundTruth)
+```
+
+<br/>
+</li>
+<li> Other params are optional and have default values. Each of them can be found in the function definition, and their descriptions are provided in the docstrings (hover over the function name).
+
+</li>
+</ol>
+<br/>
+<br/>
+
+### `plot_disparity_map_comparison()`
+
+[Back to the top (TOC)](#table-of-contents)
+
+<ol>
+<li> Function definition
+
+<br/>
+<br/>
+
+```python
+def plot_disparity_map_comparison(
+    disparityMapBM: np.ndarray,
+    disparityMapSGBM: np.ndarray,
+    disparityMapCustom: np.ndarray,
+    groundTruth: np.ndarray,
+    colorDiffMapBM: np.ndarray = None,
+    colorDiffMapSGBM: np.ndarray = None,
+    colorDiffMapCustom: np.ndarray = None,
+    showComparison: bool = False,
+    saveComparison: bool = False,
+    savePath: str = None
+) -> None
+```
+
+</li>
+<br/>
+<li> Example usage
+
+After importing the package we can use the function to plot the comparison of three disparity maps and the ground truth. Before plotting we have to calculate the disparity maps and the color difference maps.
+
+We can save the comparison to a file using the `saveComparison` parameter (and `savePath`) directly in the function `plot_disparity_map_comparison()` (**recommended**).
+
+We can also show the comparison using the `showComparison` parameter with or without saving.
+
+<br/>
+<br/>
+
+```python
+import zaowr_polsl_kisiel as zw
+import os
+
+disparityMapBM = zw.calculate_disparity_map(...)
+disparityMapSGBM = zw.calculate_disparity_map(...)
+disparityMapCustom = zw.calculate_disparity_map(...)
+
+groundTruth = zw.load_pgm_file("./ground_truth.pgm", disparityMapBM.shape)
+
+colorDiffMapBM = zw.calculate_color_difference_map(disparityMapBM, groundTruth)
+colorDiffMapSGBM = zw.calculate_color_difference_map(disparityMapSGBM, groundTruth)
+colorDiffMapCustom = zw.calculate_color_difference_map(disparityMapCustom, groundTruth)
+
+zw.plot_disparity_map_comparison(
+    disparityMapBM=disparityMapBM,
+    disparityMapSGBM=disparityMapSGBM,
+    disparityMapCustom=disparityMapCustom,
+    groundTruth=groundTruth,
+    colorDiffMapBM=colorDiffMapBM,
+    colorDiffMapSGBM=colorDiffMapSGBM,
+    colorDiffMapCustom=colorDiffMapCustom,
+    showComparison=True
+)
 ```
 
 <br/>

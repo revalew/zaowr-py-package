@@ -7,7 +7,8 @@ from tqdm import tqdm  # progress bar
 
 colorama_init(autoreset=True)
 
-if __name__ == '__main__':
+@zw.measure_perf
+def main():
     # Paths to the images
     img_left = "data/left.pgm"
     img_right = "data/right.pgm"
@@ -20,7 +21,6 @@ if __name__ == '__main__':
 
     saveComparison = True
     saveComparisonPath = "data/comparison.png"
-
 
     tasks = [
         "Calculating disparity map using BM",
@@ -36,13 +36,13 @@ if __name__ == '__main__':
     ]
 
     with tqdm(
-        total=len(tasks),
-        desc="Processing Steps...",
-        bar_format="{l_bar}{bar}| {n_fmt}/{total_fmt}", # Processing Steps ██████-----| 45/100
-        # bar_format="{l_bar}{bar}{r_bar}", # Processing Steps ██████----- 45%| ETA: 00:10
-        dynamic_ncols=True,
-        colour="green",
-        file=stdout
+            total=len(tasks),
+            desc="Processing Steps...",
+            bar_format="{l_bar}{bar}| {n_fmt}/{total_fmt}",  # Processing Steps ██████-----| 45/100
+            # bar_format="{l_bar}{bar}{r_bar}", # Processing Steps ██████----- 45%| ETA: 00:10
+            dynamic_ncols=True,
+            colour="green",
+            file=stdout
     ) as pbar:
         # Calculate the disparity map using BM
         pbar.set_description(tasks[0])
@@ -140,3 +140,7 @@ if __name__ == '__main__':
         pbar.set_description(tasks[9])
 
     print(Fore.GREEN + "\n\nAll steps completed successfully")
+
+
+if __name__ == '__main__':
+    main()

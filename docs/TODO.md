@@ -17,9 +17,17 @@
    - [x] Add different interpolation methods and option to save those images,
 
 3. Disparity maps:
-   - [] UPDATE THE DOCS!
    - [] Check for bugs,
    - [] Check if anything can be simplified,
+   - [x] UPDATE THE DOCS!
+     - [x] load_pgm_file(),
+     - [x] calculate_disparity_map(),
+     - [x] save_disparity_map(),
+     - [x] calculate_color_difference_map(),
+     - [x] crop_image(),
+     - [x] calculate_mse_disparity(),
+     - [x] calculate_ssim_disparity(),
+     - [x] plot_disparity_map_comparison(),
    - [x] Calculate disparity map,
    - [x] Add different algorithms for disparity map calculation,
    - [x] Calculate color difference map,
