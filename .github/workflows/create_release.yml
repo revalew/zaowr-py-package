@@ -118,7 +118,7 @@ jobs:
           echo "PREVIOUS_TAG=$PREVIOUS_TAG" >> $GITHUB_ENV
           
           # Fetch commit messages only, excluding commit IDs
-          COMMITS=$(git log $PREVIOUS_TAG..HEAD --pretty=format:"%s")
+          COMMITS=$(git log $PREVIOUS_TAG..HEAD --pretty=format:"%s" --reverse)
           echo "Commit messages between $PREVIOUS_TAG and current tag:"
           echo "$COMMITS"
           

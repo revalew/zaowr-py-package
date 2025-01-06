@@ -144,7 +144,8 @@ def stereo_calibration(
                         dynamic_ncols=True,
                         bar_format="{l_bar}{bar}{r_bar}",
                         colour="green",
-                        file=stdout
+                        file=stdout,
+                        position=0
                 )):
                     baseFileName_left = basename(images_left[i])
                     img_left = cv.imread(images_left[i])
@@ -378,7 +379,8 @@ def stereo_calibration(
                     dynamic_ncols=True,
                     bar_format="{l_bar}{bar}{r_bar}",
                     colour="green",
-                    file=stdout
+                    file=stdout,
+                    position=0
             )):
                 baseFileName_left = basename(images_left[i])
                 img_left = cv.imread(images_left[i])

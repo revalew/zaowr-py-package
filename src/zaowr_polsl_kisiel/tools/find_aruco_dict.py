@@ -1,6 +1,7 @@
 import cv2
 from cv2 import aruco
 from tqdm import tqdm # progress bar
+from sys import stdout
 
 def find_aruco_dict(imgPath) -> None:
     ARUCO_DICT = {
@@ -30,7 +31,7 @@ def find_aruco_dict(imgPath) -> None:
     image = cv2.imread(imgPath)
     dictsFound = []
     # loop over the types of ArUco dictionaries
-    for arucoName, arucoDict in tqdm(ARUCO_DICT.items(), desc="Processing ArUco dictionaries...", dynamic_ncols=True, bar_format="{l_bar}{bar}{r_bar}", colour="green"):
+    for arucoName, arucoDict in tqdm(ARUCO_DICT.items(), desc="Processing ArUco dictionaries...", dynamic_ncols=True, bar_format="{l_bar}{bar}{r_bar}", colour="green", file=stdout, position=0):
         # load the ArUCo dictionary, grab the ArUCo parameters, and attempt to detect the markers for the current dictionary
         arucoDict = aruco.getPredefinedDictionary(arucoDict)
         arucoParams = aruco.DetectorParameters()
@@ -43,4 +44,4 @@ def find_aruco_dict(imgPath) -> None:
             # tqdm.write("[INFO] detected {} markers for '{}'".format(len(corners), arucoName), nolock=True)
 
     for dictFound in dictsFound:
-        tqdm.write(dictFound, nolock=True)
+        tqdm.write(dictFound, nolock=True, file=stdout)

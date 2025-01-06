@@ -4,4 +4,7 @@
     <option name="sdkName" value="Python 3.13 virtualenv at /run/media/maks/Dokumenty 2/Studia/Infa Magister/Infa sem 2/ZAOWR Zaawansowana Analiza Obrazu, Wideo i Ruchu/zaowr_cv_venv" />
   </component>
   <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.13 (zaowr_py_package)" project-jdk-type="Python SDK" />
+  <component name="PythonCompatibilityInspectionAdvertiser">
+    <option name="version" value="3" />
+  </component>
 </project>

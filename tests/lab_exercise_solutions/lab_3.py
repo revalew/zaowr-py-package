@@ -1,37 +1,46 @@
+import cv2
 import zaowr_polsl_kisiel as zw
 
-from sys import stdout
+from sys import stderr
 import os
 from colorama import Fore, Style, init as colorama_init  # , Back
 from tqdm import tqdm  # progress bar
 
 colorama_init(autoreset=True)
 
-@zw.measure_perf
-def main():
+@zw.measure_perf()
+def main() -> None:
     # Paths to the images
-    img_left = "data/left.pgm"
-    img_right = "data/right.pgm"
+    img_left = "/run/media/maks/Dokumenty 2/Studia/Infa Magister/Infa sem 2/ZAOWR Zaawansowana Analiza Obrazu, Wideo i Ruchu/zaowr_py_package/tests/misc/disparity_maps/cones/im0.ppm"
+    img_right = "/run/media/maks/Dokumenty 2/Studia/Infa Magister/Infa sem 2/ZAOWR Zaawansowana Analiza Obrazu, Wideo i Ruchu/zaowr_py_package/tests/misc/disparity_maps/cones/im1.ppm"
 
-    groundTruthPath = "data/disp2.pgm"
+    img_left_real_life = "/run/media/maks/Dokumenty 2/Studia/Infa Magister/Infa sem 2/ZAOWR Zaawansowana Analiza Obrazu, Wideo i Ruchu/zaowr_py_package/tests/misc/rectified_images/rectified_left.png"
+    img_right_real_life = "/run/media/maks/Dokumenty 2/Studia/Infa Magister/Infa sem 2/ZAOWR Zaawansowana Analiza Obrazu, Wideo i Ruchu/zaowr_py_package/tests/misc/rectified_images/rectified_right.png"
 
-    showMaps = True
+    groundTruthPath = "/run/media/maks/Dokumenty 2/Studia/Infa Magister/Infa sem 2/ZAOWR Zaawansowana Analiza Obrazu, Wideo i Ruchu/zaowr_py_package/tests/misc/disparity_maps/cones/disp2.pgm"
+
+    showMaps = False
     saveDisparityMap = True
-    saveDisparityMapPath = "data/"
+    saveDisparityMapPath = "/run/media/maks/Dokumenty 2/Studia/Infa Magister/Infa sem 2/ZAOWR Zaawansowana Analiza Obrazu, Wideo i Ruchu/zaowr_py_package/tests/misc/disparity_maps/"
 
     saveComparison = True
-    saveComparisonPath = "data/comparison.png"
+    saveComparisonPath = "/run/media/maks/Dokumenty 2/Studia/Infa Magister/Infa sem 2/ZAOWR Zaawansowana Analiza Obrazu, Wideo i Ruchu/zaowr_py_package/tests/misc/disparity_maps/comparison_ppm.png"
+    saveComparisonPath_RL = "/run/media/maks/Dokumenty 2/Studia/Infa Magister/Infa sem 2/ZAOWR Zaawansowana Analiza Obrazu, Wideo i Ruchu/zaowr_py_package/tests/misc/disparity_maps/comparison_rl.png"
 
     tasks = [
-        "Calculating disparity map using BM",
-        "Calculating disparity map using SGBM",
-        "Calculating disparity map using custom method",
-        "Loading ground truth",
-        "Cropping images",
-        "Calculating color difference maps",
-        "Calculating MSE",
-        "Calculating SSIM",
-        "Plotting disparity map comparison"
+        "Calculating disparity map using BM (PPM dataset)",
+        "Calculating disparity map using SGBM (PPM dataset)",
+        "Calculating disparity map using custom method (PPM dataset)",
+        "Loading ground truth (PGM)",
+        "Cropping images (PPM & PGM)",
+        "Calculating color difference maps (PPM)",
+        "Calculating MSE (PPM)",
+        "Calculating SSIM (PPM)",
+        "Plotting disparity map comparison (PPM)",
+        "Calculating disparity map using SGBM (real life dataset)",
+        "Calculating disparity map using custom method (real life dataset)",
+        "Cropping images (real life dataset)",
+        "Plotting disparity map comparison (real life dataset)",
         "Cleaning up"
     ]
 
@@ -42,7 +51,7 @@ def main():
             # bar_format="{l_bar}{bar}{r_bar}", # Processing Steps ██████----- 45%| ETA: 00:10
             dynamic_ncols=True,
             colour="green",
-            file=stdout
+            file=stderr,
     ) as pbar:
         # Calculate the disparity map using BM
         pbar.set_description(tasks[0])
@@ -114,6 +123,13 @@ def main():
         mseBM = zw.calculate_mse_disparity(disparityMapBM, groundTruth)
         mseSGBM = zw.calculate_mse_disparity(disparityMapSGBM, groundTruth)
         mseCustom = zw.calculate_mse_disparity(disparityMapCustom, groundTruth)
+
+        print(
+            "\n\nMSE:\n"
+            f"\t{'mseBM':<10} = {mseBM:^10.2f}\n"
+            f"\t{'mseSGBM':<10} = {mseSGBM:^10.2f}\n"
+            f"\t{'mseCustom':<10} = {mseCustom:^10.2f}"
+        )
         pbar.update(1)
 
         # Calculate SSIM
@@ -121,6 +137,13 @@ def main():
         ssimBM = zw.calculate_ssim_disparity(disparityMapBM, groundTruth)
         ssimSGBM = zw.calculate_ssim_disparity(disparityMapSGBM, groundTruth)
         ssimCustom = zw.calculate_ssim_disparity(disparityMapCustom, groundTruth)
+
+        print(
+            "\n\nSSIM:\n"
+            f"\t{'ssimBM':<10} = {ssimBM:^10.2f}\n"
+            f"\t{'ssimSGBM':<10} = {ssimSGBM:^10.2f}\n"
+            f"\t{'ssimCustom':<10} = {ssimCustom:^10.2f}"
+        )
         pbar.update(1)
 
         # Plot the comparison
@@ -137,7 +160,62 @@ def main():
             savePath=saveComparisonPath
         )
         pbar.update(1)
+
+        # Calculate the disparity map using SGBM
         pbar.set_description(tasks[9])
+        disparityMapSGBM = zw.calculate_disparity_map(
+            leftImagePath=img_left_real_life,
+            rightImagePath=img_right_real_life,
+            blockSize=7,
+            numDisparities=16,
+            minDisparity=8,
+            disparityCalculationMethod="sgbm",
+            saveDisparityMap=saveDisparityMap,
+            saveDisparityMapPath=os.path.join(saveDisparityMapPath, "disparity_map_SGBM_RL.png"),
+            showDisparityMap=showMaps
+        )
+        pbar.update(1)
+
+        # Calculate the disparity map using custom block matching
+        pbar.set_description(tasks[10])
+        disparityMapCustom = zw.calculate_disparity_map(
+            leftImagePath=img_left_real_life,
+            rightImagePath=img_right_real_life,
+            maxDisparity=16,
+            windowSize=(9, 9),
+            disparityCalculationMethod="custom",
+            saveDisparityMap=saveDisparityMap,
+            saveDisparityMapPath=os.path.join(saveDisparityMapPath, "disparity_map_custom_RL.png"),
+            showDisparityMap=showMaps
+        )
+        pbar.update(1)
+
+        # Crop the images
+        pbar.set_description(tasks[11])
+        croppingPercentage = 0.75
+
+        disparityMapSGBM = zw.crop_image(disparityMapSGBM, cropPercentage=croppingPercentage)
+        disparityMapCustom = zw.crop_image(disparityMapCustom, cropPercentage=croppingPercentage)
+        pbar.update(1)
+
+        # Plot the comparison
+        pbar.set_description(tasks[12])
+        zw.plot_disparity_map_comparison(
+            disparityMapBM=cv2.imread(img_left_real_life, cv2.IMREAD_GRAYSCALE), # top left
+            disparityMapSGBM=cv2.imread(img_right_real_life, cv2.IMREAD_GRAYSCALE), # top right
+            disparityMapCustom=disparityMapSGBM, # bottom left
+            groundTruth=disparityMapCustom, # bottom right
+            saveComparison=saveComparison,
+            savePath=saveComparisonPath_RL,
+            titleMain="Real Life Dataset Disparity Map Comparison",
+            title1="Left Image",
+            title2="Right Image",
+            title3="Disparity Map using StereoSGBM",
+            title4="Disparity Map using Custom Block Matching",
+        )
+        pbar.update(1)
+
+        pbar.set_description(tasks[13])
 
     print(Fore.GREEN + "\n\nAll steps completed successfully")
 

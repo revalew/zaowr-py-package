@@ -37,10 +37,11 @@ def save_disparity_map(
 
     # Save the disparity map to the specified path
     cv.imwrite(savePath, disparityMap)
-    print(Fore.GREEN + f"Disparity map '{baseName}' successfully saved at '{savePath}'")
+    print(Fore.GREEN + f"\nDisparity map '{baseName}' successfully saved at '{savePath}'")
 
     # Optionally display the disparity map
     if show:
         cv.imshow('Disparity Map', disparityMap)
+        print(Fore.CYAN + "Press any key to close the window...")
         cv.waitKey(0)
         cv.destroyAllWindows()

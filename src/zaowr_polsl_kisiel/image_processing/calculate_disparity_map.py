@@ -90,7 +90,7 @@ def calculate_disparity_map(
     # Load the stereo images as grayscale
     base_left = os.path.basename(leftImagePath)
     base_right = os.path.basename(rightImagePath)
-    print(Fore.GREEN + f"Loading images {base_left} and {base_right}...")
+    print(Fore.GREEN + f"\nLoading images {base_left} and {base_right}...")
 
     img_left = None
     img_right = None
@@ -107,7 +107,7 @@ def calculate_disparity_map(
     calculationMethod = None
     if disparityCalculationMethod == "bm":
         calculationMethod = "StereoBM"
-        print(Fore.GREEN + f"Computing disparity map using '{calculationMethod}'...")
+        print(Fore.GREEN + f"\nComputing disparity map using '{calculationMethod}'...")
 
         # Create StereoBM object
         stereoBM = cv.StereoBM.create(numDisparities=numDisparities, blockSize=blockSize)
@@ -117,7 +117,7 @@ def calculate_disparity_map(
 
     elif disparityCalculationMethod == "sgbm":
         calculationMethod = "StereoSGBM"
-        print(Fore.GREEN + f"Computing disparity map using '{calculationMethod}'...")
+        print(Fore.GREEN + f"\nComputing disparity map using '{calculationMethod}'...")
 
         # Create StereoSGBM object with initial/default parameters
         stereoSGBM = cv.StereoSGBM.create(
@@ -139,7 +139,7 @@ def calculate_disparity_map(
 
     elif disparityCalculationMethod == "custom": # SSD
         calculationMethod = "Custom Method (SSD, left to right)"
-        print(Fore.GREEN + f"Computing disparity map using '{calculationMethod}'...")
+        print(Fore.GREEN + f"\nComputing disparity map using '{calculationMethod}'...")
 
         windowHeight, windowWidth = windowSize
         height, width = img_left.shape
@@ -155,7 +155,8 @@ def calculate_disparity_map(
                 dynamic_ncols=True,
                 bar_format="{l_bar}{bar}{r_bar}",
                 colour="green",
-                file=stdout
+                file=stdout,
+                position=0
         ):
             # tqdm.write(
             #     Fore.GREEN
@@ -189,19 +190,19 @@ def calculate_disparity_map(
                     if ssd < minSsd:
                         minSsd = ssd
                         bestDisparity = offset
-                        tqdm.write(
-                            Fore.GREEN
-                            + f"Found new best SSD match at disparity {bestDisparity} (SSD: {minSsd})...",
-                            nolock=True,
-                            file=stdout,
-                        )
+                        # tqdm.write(
+                        #     Fore.GREEN
+                        #     + f"Found new best SSD match at disparity {bestDisparity} (SSD: {minSsd})...",
+                        #     nolock=True,
+                        #     file=stdout,
+                        # )
 
                 # Store the best disparity
                 disparityMap[dy, dx] = bestDisparity
 
     elif disparityCalculationMethod == "custom2":
         calculationMethod = "Custom Method 2 (SSD, stereo block matching)"
-        print(Fore.GREEN + f"Computing disparity map using '{calculationMethod}'...")
+        print(Fore.GREEN + f"\nComputing disparity map using '{calculationMethod}'...")
 
         # Initialize disparity map
         height, width = img_left.shape
@@ -221,7 +222,8 @@ def calculate_disparity_map(
             dynamic_ncols=True,
             bar_format="{l_bar}{bar}{r_bar}",
             colour="green",
-            file=stdout
+            file=stdout,
+            position=0
         ):
             # tqdm.write(
             #     Fore.GREEN
@@ -233,11 +235,13 @@ def calculate_disparity_map(
                 # Extract block from left image
                 block_left = padded_left[y - halfBlock:y + halfBlock + 1, x - halfBlock:x + halfBlock + 1]
 
+                # Initialize variables to find the best match
                 minSsd = float('inf')
                 bestDisparity = 0
 
                 # Search for best match in disparity range
                 for d in range(maxDisparity):
+                    # Compute the position in the right image
                     x_shifted = x - d
                     if x_shifted - halfBlock < 0:
                         continue
@@ -246,19 +250,19 @@ def calculate_disparity_map(
                     right_block = padded_right[y - halfBlock:y + halfBlock + 1,
                                   x_shifted - halfBlock:x_shifted + halfBlock + 1]
 
-                    # Compute SSD
+                    # Compute the sum of squared differences (SSD)
                     ssd = np.sum((block_left - right_block) ** 2)
 
                     # Update best match
                     if ssd < minSsd:
                         minSsd = ssd
                         bestDisparity = d
-                        tqdm.write(
-                            Fore.GREEN
-                            + f"Found new best SSD match at disparity {bestDisparity} (SSD: {minSsd})...",
-                            nolock=True,
-                            file=stdout,
-                        )
+                        # tqdm.write(
+                        #     Fore.GREEN
+                        #     + f"Found new best SSD match at disparity {bestDisparity} (SSD: {minSsd})...",
+                        #     nolock=True,
+                        #     file=stdout,
+                        # )
 
                 # Store best disparity
                 disparityMap[y - halfBlock, x - halfBlock] = bestDisparity
@@ -271,10 +275,11 @@ def calculate_disparity_map(
     disparityMap = cv.normalize(disparityMap, None, alpha=0, beta=255, norm_type=cv.NORM_MINMAX)
     disparityMap = np.uint8(disparityMap)  # Convert to 8-bit unsigned integer
 
-    print(Fore.GREEN + f"Disparity map successfully calculated using '{calculationMethod}'")
+    print(Fore.GREEN + f"\nDisparity map successfully calculated using '{calculationMethod}'")
 
     if showDisparityMap and not saveDisparityMap:
         cv.imshow(f"Disparity Map '{calculationMethod}'", disparityMap)
+        print(Fore.CYAN + "\nPress any key to close the window...")
         cv.waitKey(0)
         cv.destroyAllWindows()
 
@@ -307,6 +312,14 @@ def plot_disparity_map_comparison(
     colorDiffMapBM: np.ndarray = None,
     colorDiffMapSGBM: np.ndarray = None,
     colorDiffMapCustom: np.ndarray = None,
+    titleMain: str = 'Disparity Map Comparison',
+    title1: str = 'Disparity Map using StereoBM',
+    title2: str = 'Disparity Map using StereoSGBM',
+    title3: str = 'Disparity Map using Custom Block Matching',
+    title4: str = 'Ground Truth Disparity Map',
+    title5: str = 'Color Difference Map (StereoBM vs Ground Truth)',
+    title6: str = 'Color Difference Map (StereoSGBM vs Ground Truth)',
+    title7: str = 'Color Difference Map (Custom vs Ground Truth)',
     showComparison: bool = False,
     saveComparison: bool = False,
     savePath: str = None
@@ -321,6 +334,14 @@ def plot_disparity_map_comparison(
     :param np.ndarray colorDiffMapBM: Color difference map for the disparity map calculated using BM.
     :param np.ndarray colorDiffMapSGBM: Color difference map for the disparity map calculated using SGBM.
     :param np.ndarray colorDiffMapCustom: Color difference map for the disparity map calculated using custom block matching.
+    :param str titleMain: Main title of the plot that describes the overall comparison.
+    :param str title1: Title for the subplot displaying the StereoBM disparity map.
+    :param str title2: Title for the subplot displaying the StereoSGBM disparity map.
+    :param str title3: Title for the subplot displaying the custom disparity map.
+    :param str title4: Title for the subplot displaying the ground truth disparity map.
+    :param str title5: Title for the subplot displaying the color difference map for StereoBM (optional).
+    :param str title6: Title for the subplot displaying the color difference map for StereoSGBM (optional).
+    :param str title7: Title for the subplot displaying the color difference map for the custom algorithm (optional).
     :param bool showComparison: Whether to show the comparison plot.
     :param bool saveComparison: Whether to save the comparison plot.
     :param str savePath: Path to save the comparison plot.
@@ -342,50 +363,54 @@ def plot_disparity_map_comparison(
         colorMaps = False
         plotSize = (2, 2)
 
+    # Main title
+    plt.suptitle(titleMain, fontsize=16, fontweight='bold')
+
     plt.subplot(plotSize[0], plotSize[1], 1)
     plt.imshow(disparityMapBM, cmap='gray')
-    plt.title('Disparity Map using StereoBM')
+    plt.title(title1)
     plt.axis('off')
 
     plt.subplot(plotSize[0], plotSize[1], 2)
     plt.imshow(disparityMapSGBM, cmap='gray')
-    plt.title('Disparity Map using StereoSGBM')
+    plt.title(title2)
     plt.axis('off')
 
     plt.subplot(plotSize[0], plotSize[1], 3)
     plt.imshow(disparityMapCustom, cmap='gray')
-    plt.title('Disparity Map using Custom Block Matching')
+    plt.title(title3)
     plt.axis('off')
 
     plt.subplot(plotSize[0], plotSize[1], 4)
     plt.imshow(groundTruth, cmap='gray')
-    plt.title('Ground Truth Disparity Map')
+    plt.title(title4)
     plt.axis('off')
 
     if colorMaps:
         plt.subplot(plotSize[0], plotSize[1], 5)
         plt.imshow(colorDiffMapBM, cmap='gray')
-        plt.title('Color Difference Map (StereoBM vs Ground Truth)')
+        plt.title(title5)
         plt.axis('off')
 
         plt.subplot(plotSize[0], plotSize[1], 6)
         plt.imshow(colorDiffMapSGBM, cmap='gray')
-        plt.title('Color Difference Map (StereoSGBM vs Ground Truth)')
+        plt.title(title6)
         plt.axis('off')
 
         plt.subplot(plotSize[0], plotSize[1], 7)
         plt.imshow(colorDiffMapCustom, cmap='gray')
-        plt.title('Color Difference Map (Custom vs Ground Truth)')
+        plt.title(title7)
         plt.axis('off')
 
-    plt.tight_layout()
+    # Adjust layout to fit everything, including the main title
+    plt.tight_layout(rect=(0, 0, 1, 0.95))  # Leaves space for the main title
 
     if saveComparison:
         if savePath is None:
             raise ValueError(Fore.RED + "\n`savePath` must be provided if `saveComparison` is set to True\n")
 
         plt.savefig(savePath, format='png', bbox_inches='tight')
-        print(Fore.GREEN + f"Plot successfully saved at {savePath}")
+        print(Fore.GREEN + f"\nPlot successfully saved at {savePath}")
 
     if showComparison:
         plt.show()

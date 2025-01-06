@@ -288,7 +288,8 @@ def stereo_rectify(
                     dynamic_ncols=True,
                     bar_format="{l_bar}{bar}{r_bar}",
                     colour="green",
-                    file=stdout
+                    file=stdout,
+                    position=0
         )):
             tic_1 = perf_counter()
             rectified_left = cv.remap(img_left, map1_left, map2_left, interpolationType)

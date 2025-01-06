@@ -6,7 +6,7 @@
 ## Table of Contents
 
 1. [`Docstrings`](#docstrings)
-2. [`@measure_perf decorator`](#measure_perf-decorator)
+2. [`@measure_perf() decorator`](#measure_perf-decorator)
 3. [`calibrate_camera()`](#calibrate_camera)
 4. [`are_params_valid()`](#are_params_valid)
 5. [`remove_distortion()`](#remove_distortion)
@@ -64,14 +64,14 @@ help(zw.calibrate_camera)
 <br/>
 <br/>
 
-### `@measure_perf` decorator
+### `@measure_perf()` decorator
 
 [Back to the top (TOC)](#table-of-contents)
 
 <ol>
 <li> Example usage
 
-After importing the package we can use the `@measure_perf` decorator to measure the performance of a function. The decorator will print the function name and the time it takes to run.
+After importing the package we can use the `@measure_perf()` decorator to measure the performance of a function. The decorator will print the function name and the time it takes to run.
 
 We can also save the results to a file using the `output_file` parameter (`@measure_perf(output_file="perf_results.txt")`).
 
@@ -81,7 +81,7 @@ We can also save the results to a file using the `output_file` parameter (`@meas
 ```python
 import zaowr_polsl_kisiel as zw
 
-@zw.measure_perf
+@zw.measure_perf()
 def my_function():
     pass
 

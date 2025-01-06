@@ -121,7 +121,8 @@ def calibrate_camera(
                     dynamic_ncols=True,
                     bar_format="{l_bar}{bar}{r_bar}",
                     colour="green",
-                    file=stdout
+                    file=stdout,
+                    position=0
             ):
 
                 baseFileName = basename(fileName)
@@ -254,7 +255,7 @@ def calibrate_camera(
         chessboardFound = [] # list of images with chessboard detected properly
         chessboardSkipped = []
 
-        for fileName in tqdm(images, desc=Style.RESET_ALL + "Processing images...", dynamic_ncols=True, bar_format="{l_bar}{bar}{r_bar}", colour="green", file=stdout):
+        for fileName in tqdm(images, desc=Style.RESET_ALL + "Processing images...", dynamic_ncols=True, bar_format="{l_bar}{bar}{r_bar}", colour="green", file=stdout, position=0):
 
             baseFileName = basename(fileName)
             img = cv.imread(fileName)
