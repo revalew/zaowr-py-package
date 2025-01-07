@@ -11,7 +11,8 @@ Functions:
 - `calculate_fov`: Calculates the horizontal and vertical field of view of a camera.
 
 Usage:
-Import this module to perform calibration-related operations on camera systems.
+    - Import this module to perform calibration-related operations on camera systems.
+    - Use the functions provided to calibrate single cameras and stereo camera systems for depth estimation.
 """
 
 __all__ = [

@@ -4,15 +4,15 @@ image processing, and related operations.
 
 Modules:
 
-- `calibration`: Tools for camera and stereo calibration.
+- `calibration`: Tools for single and stereo camera calibration.
 
-- `content_loaders`: Functions to load and validate calibration data from files and load the ground truth `.pgm` file or save the disparity map.
+- `content_loaders`: Functions to load and validate calibration data from files, load the ground truth `.pgm` or `.pfm` file,  save the disparity map, write a .ply file and load depth map calibration.
 
 - `custom_exceptions`: Custom exceptions for error handling.
 
-- `image_processing`: Utilities for image rectification, distortion removal and disparity map calculation and color difference map calculation.
+- `image_processing`: Utilities for image rectification, distortion removal, disparity map calculation, color difference map calculation, disparity map comparison, depth map conversion (disparity to depth), disparity map normalization, depth map normalization, depth map to disparity map conversion and depth map decoding.
 
-- `tools`: Additional tools, such as ArUco dictionary identification, performance measurement or image cropping.
+- `tools`: Additional tools, such as ArUco dictionary identification, performance measurement, image cropping, and image display using matplotlib.
 
 Status: Development
 
@@ -60,6 +60,9 @@ from .content_loaders import (
     load_rectification_maps, # load rectification maps
     save_disparity_map, # save disparity map
     load_pgm_file, # load the ground truth .pgm file
+    load_pfm_file, # load the ground truth .pfm file
+    write_ply_file, # write .ply file
+    load_dept_map_calibration, # load depth map calibration
 )
 
 from . import image_processing
@@ -69,6 +72,11 @@ from .image_processing import (
     calculate_disparity_map, # calculate disparity map using StereoBM, StereoSGBM, Custom Block Matching
     calculate_color_difference_map, # calculate color difference map
     plot_disparity_map_comparison, # plot disparity map comparison
+    disparity_to_depth_map, # convert disparity map to depth map
+    disparity_map_normalize, # normalize disparity map to a specified range
+    depth_map_normalize, # normalize depth map to a specified range
+    depth_to_disparity_map, # convert depth map to disparity map
+    decode_depth_map, # decode depth map
 )
 
 from . import tools
@@ -78,4 +86,5 @@ from .tools import (
     calculate_mse_disparity, # calculate MSE between two disparity maps
     calculate_ssim_disparity, # calculate SSIM between two disparity maps
     crop_image, # crop image to retain only the center part (specified by percentage)
+    display_img_plt, # display the image using matplotlib
 )

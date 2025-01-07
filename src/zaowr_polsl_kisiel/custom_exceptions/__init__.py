@@ -24,9 +24,7 @@ Exceptions:
 - `CharucoCalibrationError`: Raised when there is an error during ChArUco board calibration.
 
 Usage:
-These exceptions are designed to provide clear and specific error messages for
-common issues encountered while using the package. They should be caught and
-handled appropriately to ensure a smooth user experience.
+    - These exceptions are designed to provide clear and specific error messages for common issues encountered while using the package. They should be caught and handled appropriately to ensure a smooth user experience.
 """
 
 __all__ = [

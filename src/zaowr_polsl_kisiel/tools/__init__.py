@@ -13,8 +13,10 @@ Functions:
 
 - `crop_image`: Crops an image to retain only the center part (specified by percentage).
 
+- `display_img_plt`: Displays an image using matplotlib.
+
 Usage:
-Use this module for miscellaneous tools that enhance functionality.
+    - Use this module for miscellaneous tools that enhance functionality.
 """
 
 __all__ = [
@@ -23,6 +25,7 @@ __all__ = [
     "calculate_mse_disparity",
     "calculate_ssim_disparity",
     "crop_image",
+    "display_img_plt",
 ]
 
 from .find_aruco_dict import find_aruco_dict # find aruco dictionary if we don't know it
@@ -30,3 +33,4 @@ from .measure_perf import measure_perf # measure performance (time) of a functio
 from .calculate_mse_disparity import calculate_mse_disparity # calculate MSE between two disparity maps
 from .calculate_ssim_disparity import calculate_ssim_disparity # calculate Structural Similarity Index (SSIM) between two disparity maps
 from .crop_image import crop_image # crop image to retain only the center part (specified by percentage)
+from .display_img_plt import display_img_plt # display the image using matplotlib

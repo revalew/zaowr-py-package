@@ -4,6 +4,7 @@ from sys import stdout
 import cv2 as cv
 import numpy as np
 from colorama import Fore, Style, init as colorama_init  # , Back
+from numpy.f2py.symbolic import normalize
 from tqdm import tqdm  # progress bar
 import matplotlib.pyplot as plt # for plotting
 
@@ -20,7 +21,9 @@ def calculate_disparity_map(
     disparityCalculationMethod: str = "bm",
     saveDisparityMap: bool = False,
     saveDisparityMapPath: str = None,
-    showDisparityMap: bool = False
+    showDisparityMap: bool = False,
+    normalizeDisparityMap: bool = True,
+    normalizeDisparityMapRange: str = "8-bit",
 ) -> np.ndarray:
     """
     Calculate the disparity map using **StereoBM**, **StereoSGBM** or **custom block matching using SSD** as the matching criterion (left to right).
@@ -35,6 +38,8 @@ def calculate_disparity_map(
     :param int minDisparity: (**Used by StereoSGBM**) Minimum disparity (typically 0 or a small positive value).
     :param int maxDisparity: (**Used by Custom Block Matching 1 & 2**) Maximum disparity range to search.
     :param tuple[int, int] windowSize: (**Used by Custom Block Matching 1**) Tuple specifying the (height, width) of the matching window.
+    :param bool normalizeDisparityMap: Whether to normalize the disparity map.
+    :param str normalizeDisparityMapRange: Range to use for normalization (**8-bit**, **16-bit**, **24-bit**, **32-bit**).
 
     :param str disparityCalculationMethod: Method to use for disparity calculation provided as a string (bm, sgbm, custom, custom2; custom2 is **NOT** recommended).:
         - **bm**: Use **StereoBM** for disparity calculation,
@@ -51,7 +56,7 @@ def calculate_disparity_map(
     :raises IOError: Raises an error if the images could not be read.
     :raises RuntimeError: Raises an error if the disparity calculation fails.
 
-    :return: **Disparity map** as a normalized numpy array of type uint8.
+    :return: **Disparity map** as a normalized 8-bit numpy array of type uint8.
     """
     if (
         not os.path.exists(leftImagePath)
@@ -271,9 +276,20 @@ def calculate_disparity_map(
     if disparityMap is None:
         raise RuntimeError(Fore.RED + "\nDisparity map calculation failed!\n")
 
-    # Normalize the disparity map for visualization
-    disparityMap = cv.normalize(disparityMap, None, alpha=0, beta=255, norm_type=cv.NORM_MINMAX)
-    disparityMap = np.uint8(disparityMap)  # Convert to 8-bit unsigned integer
+    if normalizeDisparityMap:
+        # Normalize the disparity map for visualization
+        if normalizeDisparityMapRange == "8-bit":
+            disparityMap = cv.normalize(disparityMap, None, alpha=0, beta=255, norm_type=cv.NORM_MINMAX)
+            disparityMap = np.uint8(disparityMap)  # Convert to 8-bit unsigned integer
+        elif normalizeDisparityMapRange == "16-bit":
+            disparityMap = cv.normalize(disparityMap, None, alpha=0, beta=65535, norm_type=cv.NORM_MINMAX)
+            disparityMap = np.uint16(disparityMap)  # Convert to 16-bit unsigned integer
+        elif normalizeDisparityMapRange == "24-bit":
+            disparityMap = cv.normalize(disparityMap, None, alpha=0, beta=16777215, norm_type=cv.NORM_MINMAX)
+            disparityMap = np.uint32(disparityMap)  # Convert to 24-bit unsigned integer
+        elif normalizeDisparityMapRange == "32-bit":
+            disparityMap = cv.normalize(disparityMap, None, alpha=0, beta=4294967295, norm_type=cv.NORM_MINMAX)
+            disparityMap = np.uint32(disparityMap)  # Convert to 32-bit unsigned integer
 
     print(Fore.GREEN + f"\nDisparity map successfully calculated using '{calculationMethod}'")
 

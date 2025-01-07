@@ -910,8 +910,10 @@ def calculate_disparity_map(
     disparityCalculationMethod: str = "bm",
     saveDisparityMap: bool = False,
     saveDisparityMapPath: str = None,
-    showDisparityMap: bool = False
-) -> np.ndarray
+    showDisparityMap: bool = False,
+    normalizeDisparityMap: bool = True,
+    normalizeDisparityMapRange: str = "8-bit",
+) -> np.ndarray:
 ```
 
 </li>
@@ -921,6 +923,8 @@ def calculate_disparity_map(
 After importing the package we can use the function to calculate the disparity map and optionally save it and/or show it. We have to specify the path to the left and right images (**already rectified images!**), the block size, the number of disparities, the minimum disparity, the maximum disparity, the window size, the disparity calculation method, the save disparity map and/or show disparity map parameters.
 
 We can choose the disparity calculation method between StereoBM, StereoSGBM, Custom 1 and Custom 2. Depending on the disparity calculation method, we have to specify different parameters.
+
+We can normalize the disparity map using the `normalizeDisparityMap` and `normalizeDisparityMapRange` parameters (8-bit, 16-bit, 24-bit, 32-bit). 
 
 We can also show the map using the `showDisparityMap` parameter with or without saving.
 
@@ -940,7 +944,9 @@ disparityMapSGBM = zw.calculate_disparity_map(
             disparityCalculationMethod="sgbm", # use StereoSGBM for disparity calculation
             saveDisparityMap=True, # save the disparity map
             saveDisparityMapPath=os.path.join("./tests/disparity_maps", "disparity_map_SGBM.png"), # path to save the disparity map
-            showDisparityMap=True # show the disparity map
+            showDisparityMap=True, # show the disparity map
+            normalizeDisparityMap=True, # normalize the disparity map
+            normalizeDisparityMapRange="8-bit", # normalize the disparity map to 8-bit
         )
 ```
 

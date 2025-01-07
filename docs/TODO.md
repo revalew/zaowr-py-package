@@ -17,8 +17,8 @@
    - [x] Add different interpolation methods and option to save those images,
 
 3. Disparity maps:
-   - [] Check for bugs,
-   - [] Check if anything can be simplified,
+   - [x] Check for bugs,
+   - [x] Check if anything can be simplified,
    - [x] UPDATE THE DOCS!
      - [x] load_pgm_file(),
      - [x] calculate_disparity_map(),
@@ -36,7 +36,29 @@
    - [x] Save / Load configuration,
    - [x] Add code requirements,
 
-4. Misc.:
+4. Depth maps:
+   - [x] Prepare the outline of the code,
+   - [x] Add docstrings,
+   - [x] Add exception handling,
+   - [x] Load provided configuration (and validate it),
+   - [x] Add code requirements,
+   - [] Check the `__init__` files,
+   - [] Check for bugs,
+   - [] Check if anything can be simplified,
+   - [] Check if the code is correct,
+   - [] Check if any new functions have to be added,
+   - [] UPDATE THE DOCS!
+     - [] load_depth_map_calibration(),
+     - [] load_pfm_file(),
+     - [] write_ply_file(),
+     - [] decode_depth_map(),
+     - [] depth_map_normalize(),
+     - [] depth_to_disparity_map(),
+     - [] disparity_map_normalize(),
+     - [] disparity_to_depth_map(),
+     - [] display_img_plt(),
+
+5. Misc.:
    - [x] Add function to validate / load params stored in files,
    - [x] Add requirements based on the tasks provided,
    - [x] Add directory with lab solutions,
