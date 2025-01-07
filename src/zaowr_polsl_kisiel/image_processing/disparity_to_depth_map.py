@@ -7,7 +7,7 @@ def disparity_to_depth_map(
         disparityMap: np.ndarray,
         baseline: float,
         focalLength: float,
-        aspect: float = 1.0
+        aspect: float = 1000.0
 ) -> np.ndarray:
     """
     Convert disparity map to depth map.

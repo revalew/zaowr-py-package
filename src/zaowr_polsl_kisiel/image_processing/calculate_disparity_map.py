@@ -2,11 +2,10 @@ import os
 from sys import stdout
 
 import cv2 as cv
+import matplotlib.pyplot as plt  # for plotting
 import numpy as np
 from colorama import Fore, Style, init as colorama_init  # , Back
-from numpy.f2py.symbolic import normalize
 from tqdm import tqdm  # progress bar
-import matplotlib.pyplot as plt # for plotting
 
 colorama_init(autoreset=True)
 
@@ -272,6 +271,9 @@ def calculate_disparity_map(
                 # Store best disparity
                 disparityMap[y - halfBlock, x - halfBlock] = bestDisparity
 
+    else:
+        raise ValueError(Fore.RED + f"\nInvalid disparity calculation method: {disparityCalculationMethod} (must be 'bm', 'sgbm' or 'custom1' or 'custom2')\n")
+
 
     if disparityMap is None:
         raise RuntimeError(Fore.RED + "\nDisparity map calculation failed!\n")
@@ -379,9 +381,6 @@ def plot_disparity_map_comparison(
         colorMaps = False
         plotSize = (2, 2)
 
-    # Main title
-    plt.suptitle(titleMain, fontsize=16, fontweight='bold')
-
     plt.subplot(plotSize[0], plotSize[1], 1)
     plt.imshow(disparityMapBM, cmap='gray')
     plt.title(title1)
@@ -420,6 +419,8 @@ def plot_disparity_map_comparison(
 
     # Adjust layout to fit everything, including the main title
     plt.tight_layout(rect=(0, 0, 1, 0.95))  # Leaves space for the main title
+    # Main title
+    plt.suptitle(titleMain, fontsize=16, fontweight='bold')
 
     if saveComparison:
         if savePath is None:

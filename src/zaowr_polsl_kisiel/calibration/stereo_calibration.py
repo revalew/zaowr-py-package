@@ -13,7 +13,7 @@ from ..custom_exceptions.exceptions import CalibrationImagesNotFound, Calibratio
 
 colorama_init(autoreset=True)
 
-def calculate_fov(cameraMatrix: np.ndarray, imageSize: tuple[float, float]):
+def calculate_fov(cameraMatrix: np.ndarray, imageSize: tuple[float, float]) -> tuple[float, float]:
     """
     Calculate the horizontal and vertical FOV for a given camera.
 

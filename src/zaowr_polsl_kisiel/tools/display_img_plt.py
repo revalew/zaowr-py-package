@@ -1,3 +1,4 @@
+import os
 import matplotlib.pyplot as plt
 import numpy as np
 from colorama import Fore, Style, init as colorama_init  # , Back
@@ -12,7 +13,7 @@ def display_img_plt(
         savePath: str = None
 ) -> None:
     """
-    Display the image using matplotlib
+    Display the image using matplotlib and optionally save it (single image).
 
     :param np.ndarray img: The image to be displayed
     :param str pltLabel: The label for the plot
@@ -41,6 +42,16 @@ def display_img_plt(
     if not isinstance(save, bool):
         raise TypeError(Fore.RED + "\n`save` must be a boolean!\n")
 
+    if savePath is None or not isinstance(savePath, str) or len(savePath) == 0:
+        raise ValueError(Fore.RED + "\n`savePath` must be a non-empty string!\n")
+
+    # Create the parent directory if it does not exist
+    saveDir = os.path.dirname(savePath)
+    # baseName = os.path.basename(savePath)
+    if saveDir and not os.path.exists(saveDir):
+        os.makedirs(saveDir)
+        print(Fore.BLUE + f"Directory '{saveDir}' created.")
+
     # Create the plot
     plt.figure(figsize=(10, 8))
     plt.imshow(img, cmap='grey')
@@ -57,3 +68,5 @@ def display_img_plt(
 
     if show:
         plt.show()
+
+    plt.close()

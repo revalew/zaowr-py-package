@@ -16,7 +16,7 @@ Modules:
 
 Status: Development
 
-Year of development: 2024
+Year of development: 2024/2025
 
 Author: Maksymilian Kisiel
 
@@ -87,4 +87,5 @@ from .tools import (
     calculate_ssim_disparity, # calculate SSIM between two disparity maps
     crop_image, # crop image to retain only the center part (specified by percentage)
     display_img_plt, # display the image using matplotlib
+    compare_images, # compare multiple images
 )

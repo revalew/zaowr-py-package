@@ -18,7 +18,7 @@ Functions:
 
 - `depth_map_normalize`: Normalizes a depth map to a specified range.
 
-- `disparity_map_normalize`: Normalizes a disparity map to a specified range.
+- `disparity_map_normalize`: Normalizes a disparity map to a specified range (e.g. "8-bit", "16-bit", "24-bit", "32-bit". ONLY USE THE 8-BIT AND 24-BIT RANGES).
 
 - `depth_to_disparity_map`: Converts a depth map to a disparity map.
 

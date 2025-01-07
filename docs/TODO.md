@@ -57,6 +57,7 @@
      - [] disparity_map_normalize(),
      - [] disparity_to_depth_map(),
      - [] display_img_plt(),
+     - [] compare_images(),
 
 5. Misc.:
    - [x] Add function to validate / load params stored in files,

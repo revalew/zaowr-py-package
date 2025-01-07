@@ -33,6 +33,7 @@ def draw_epilines_aligned(
     :param roi_right: ROI tuple for the right image (x, y, width, height).
     :param line_thickness: Thickness of the epipolar lines.
     :param roi_thickness: Thickness of the ROI rectangle lines.
+
     :return: Tuple of images with horizontal epipolar lines and optional ROIs.
     """
     if img_left[0].shape != img_right[0].shape:
@@ -101,7 +102,7 @@ def stereo_rectify(
     rectificationMapsPath: str = "",
     testInterpolationMethods: bool = False,
     drawEpipolarLinesParams: tuple[int, int, int] = (15, 2, 2),
-):
+) -> None:
     """
         Perform stereo rectification on a pair of stereo images and visualize epipolar lines.
 

@@ -15,6 +15,8 @@ Functions:
 
 - `display_img_plt`: Displays an image using matplotlib.
 
+- `compare_images`: Compares multiple images.
+
 Usage:
     - Use this module for miscellaneous tools that enhance functionality.
 """
@@ -26,6 +28,7 @@ __all__ = [
     "calculate_ssim_disparity",
     "crop_image",
     "display_img_plt",
+    "compare_images",
 ]
 
 from .find_aruco_dict import find_aruco_dict # find aruco dictionary if we don't know it
@@ -34,3 +37,4 @@ from .calculate_mse_disparity import calculate_mse_disparity # calculate MSE bet
 from .calculate_ssim_disparity import calculate_ssim_disparity # calculate Structural Similarity Index (SSIM) between two disparity maps
 from .crop_image import crop_image # crop image to retain only the center part (specified by percentage)
 from .display_img_plt import display_img_plt # display the image using matplotlib
+from .compare_images import compare_images # compare multiple images

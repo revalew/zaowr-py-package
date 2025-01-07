@@ -3,7 +3,14 @@ from cv2 import aruco
 from tqdm import tqdm # progress bar
 from sys import stdout
 
-def find_aruco_dict(imgPath) -> None:
+def find_aruco_dict(imgPath: str) -> None:
+    """
+    This function finds the aruco dictionary used by the calibration board. The dictionary names and the number of markers found in that dictionary are printed to the console.
+
+    :param str imgPath: Path to the image to be processed.
+
+    :return: None
+    """
     ARUCO_DICT = {
         "DICT_4X4_50": aruco.DICT_4X4_50,
         "DICT_4X4_100": aruco.DICT_4X4_100,
@@ -31,7 +38,15 @@ def find_aruco_dict(imgPath) -> None:
     image = cv2.imread(imgPath)
     dictsFound = []
     # loop over the types of ArUco dictionaries
-    for arucoName, arucoDict in tqdm(ARUCO_DICT.items(), desc="Processing ArUco dictionaries...", dynamic_ncols=True, bar_format="{l_bar}{bar}{r_bar}", colour="green", file=stdout, position=0):
+    for arucoName, arucoDict in tqdm(
+            ARUCO_DICT.items(),
+            desc="Processing ArUco dictionaries...",
+            dynamic_ncols=True,
+            bar_format="{l_bar}{bar}{r_bar}",
+            colour="green",
+            file=stdout,
+            position=0
+    ):
         # load the ArUCo dictionary, grab the ArUCo parameters, and attempt to detect the markers for the current dictionary
         arucoDict = aruco.getPredefinedDictionary(arucoDict)
         arucoParams = aruco.DetectorParameters()
