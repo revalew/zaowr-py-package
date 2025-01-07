@@ -38,13 +38,16 @@ def disparity_map_normalize(
     if normalizeDisparityMapRange == "8-bit":
         # Normalize disparity map to 8-bit grayscale (0-255)
         disparityMapNormalized = cv.normalize(disparityMap, None, 0, 255, cv.NORM_MINMAX)
+
     elif normalizeDisparityMapRange == "16-bit":
         # Normalize disparity map to 16-bit grayscale (0-65535)
         disparityMapNormalized = cv.normalize(disparityMap, None, 0, 65535, cv.NORM_MINMAX)
+
     elif normalizeDisparityMapRange == "24-bit":
         # Normalize disparity map to 24-bit RGB (0-255, 0-255, 0-255)
         disparityMapNormalized = cv.normalize(disparityMap, None, 0, 255, cv.NORM_MINMAX)
         disparityMapNormalized = cv.cvtColor(disparityMapNormalized, cv.COLOR_GRAY2RGB)
+
     elif normalizeDisparityMapRange == "32-bit":
         # Normalize disparity map to 32-bit RGB (0-255, 0-255, 0-255)
         disparityMapNormalized = cv.normalize(disparityMap, None, 0, 255, cv.NORM_MINMAX)

@@ -52,7 +52,7 @@ The Linux tutorial can be found [here](../README.md)
 <li>
 <div style="font-size: 22px">
 
-[RTFM v2 here](https://revalew.github.io/zaowr-py-package) (auto-generated documentation with `pdoc`)
+[RTFM v2 here (GitHub Pages)](https://revalew.github.io/zaowr-py-package) (auto-generated documentation with `pdoc`)
 
 </div>
 </li>

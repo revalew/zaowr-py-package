@@ -27,7 +27,7 @@ def main():
         disparityMap=disparityMap,
         baseline=calibrationParams["baseline"],
         focalLength=calibrationParams["focalLength"],
-        aspect=1000.0
+        aspect=1000.0 # return depth in meters
     )
 
     depthMap_8bit = zw.depth_map_normalize(

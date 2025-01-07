@@ -29,7 +29,7 @@ Major: Informatics, master degree
 Specialization: Interactive Three-Dimensional Graphics (IGT, pol. Interaktywna Grafika Trójwymiarowa, https://www.polsl.pl/rau6/en/igt-specjalization/)
 """
 
-__version__ = "0.0.29"
+__version__ = "0.0.30"
 __status__ = "Development"  # Allowed: "Prototype", "Beta", "Stable"
 
 __all__ = [

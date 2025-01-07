@@ -18,7 +18,7 @@ def depth_to_disparity_map(
     :param float baseline: Baseline
     :param float focalLength: Focal length
     :param float minDepth: Minimum depth
-    :param str normalizeDisparityMapRange: Range to normalize disparity map to (e.g. "8-bit", "16-bit", "24-bit")
+    :param str normalizeDisparityMapRange: Range to normalize disparity map to (e.g. "8-bit", "16-bit", "24-bit", "32-bit")
 
     :raises ValueError: Raises ValueError if:
         - **`depthMap`** is not a numpy array

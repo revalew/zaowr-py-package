@@ -15,7 +15,7 @@ def disparity_to_depth_map(
     :param np.ndarray disparityMap: Disparity map
     :param float baseline: Baseline
     :param float focalLength: Focal length
-    :param float aspect: Aspect ratio
+    :param float aspect: Aspect ratio. Default value is 1000 which returns the depth in meters.
 
     :raises ValueError: Raises ValueError if:
         - **`disparityMap`** is not a numpy array
@@ -43,11 +43,11 @@ def disparity_to_depth_map(
     disparityMap = np.float32(disparityMap)
 
     # Adjust disparity with offset
-    valid_disparity = disparityMap > 0  # Only consider valid disparity values
-    adjusted_disparity = disparityMap
-    depth_map = np.zeros_like(disparityMap)
-    depth_map[valid_disparity] = baseline * focalLength / adjusted_disparity[valid_disparity]
+    validDisparity = disparityMap > 0  # Only consider valid disparity values
+    adjustedDisparity = disparityMap
+    depthMap = np.zeros_like(disparityMap)
+    depthMap[validDisparity] = baseline * focalLength / adjustedDisparity[validDisparity]
 
-    depth_map = depth_map / aspect # to meters
+    depthMap = depthMap / aspect # to meters
 
-    return depth_map
+    return depthMap

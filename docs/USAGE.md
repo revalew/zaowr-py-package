@@ -3,6 +3,15 @@
 <br/>
 <br/>
 
+<div style="font-size: 22px">
+
+[RTFM v2 here (GitHub Pages)](https://revalew.github.io/zaowr-py-package) (auto-generated documentation with `pdoc`)
+
+</div>
+
+<br/>
+<br/>
+
 ## Table of Contents
 
 1. [`Docstrings`](#docstrings)
@@ -25,7 +34,17 @@
 18. [`crop_image()`](#crop_image)
 19. [`calculate_mse_disparity()`](#calculate_mse_disparity)
 20. [`calculate_ssim_disparity()`](#calculate_ssim_disparity)
-21. [`plot_disparity_map_comparison()`](#plot_disparity_map_comparison) 
+21. [`plot_disparity_map_comparison()`](#plot_disparity_map_comparison)
+22. [`load_depth_map_calibration()`](#load_depth_map_calibration)
+23. [`load_pfm_file()`](#load_pfm_file)
+24. [`write_ply_file()`](#write_ply_file)
+25. [`decode_depth_map()`](#decode_depth_map)
+26. [`depth_map_normalize()`](#depth_map_normalize)
+27. [`depth_to_disparity_map()`](#depth_to_disparity_map)
+28. [`disparity_map_normalize()`](#disparity_map_normalize)
+29. [`disparity_to_depth_map()`](#disparity_to_depth_map)
+30. [`display_img_plt()`](#display_img_plt)
+31. [`compare_images()`](#compare_images). 
 
 <br/>
 <br/>
@@ -1312,6 +1331,576 @@ zw.plot_disparity_map_comparison(
     colorDiffMapSGBM=colorDiffMapSGBM,
     colorDiffMapCustom=colorDiffMapCustom,
     showComparison=True
+)
+```
+
+<br/>
+</li>
+<li> Other params are optional and have default values. Each of them can be found in the function definition, and their descriptions are provided in the docstrings (hover over the function name).
+
+</li>
+</ol>
+<br/>
+<br/>
+
+### `load_depth_map_calibration()`
+
+[Back to the top (TOC)](#table-of-contents)
+
+<ol>
+<li> Function definition
+
+<br/>
+<br/>
+
+```python
+class DepthCalibrationParams(TypedDict):
+    cam0: list[list[float]]
+    cam1: list[list[float]]
+    doffs: float
+    baseline: float
+    dyavg: float
+    dymax: float
+    vmin: float
+    vmax: float
+    width: int
+    height: int
+    ndisp: int
+    isint: int
+    focalLength: float
+
+    
+def load_dept_map_calibration(calibFile: str) -> DepthCalibrationParams
+```
+
+</li>
+<br/>
+<li> Example usage
+
+After importing the package we can use the function to load the calibration parameters from a TXT file. The function returns a dictionary with the calibration parameters as a `dict[str, Any]`.
+
+This function will provide type hints for the returned dictionary.
+
+<br/>
+<br/>
+
+```python
+import zaowr_polsl_kisiel as zw
+
+calibrationParams = zw.load_depth_map_calibration("./calibration_params.txt")
+
+print(calibrationParams["cam0"])
+```
+
+<br/>
+</li>
+<li> Other params are optional and have default values. Each of them can be found in the function definition, and their descriptions are provided in the docstrings (hover over the function name).
+
+</li>
+</ol>
+<br/>
+<br/>
+
+### `load_pfm_file()`
+
+[Back to the top (TOC)](#table-of-contents)
+
+<ol>
+<li> Function definition
+
+<br/>
+<br/>
+
+```python
+def load_pfm_file(
+        filePath: str = None
+) -> tuple[np.ndarray, float]
+```
+
+</li>
+<br/>
+<li> Example usage
+
+After importing the package we can use the function to load a PFM file and return it as a numpy array and a float (the image and the scale factor). We have to specify the path to the file.
+
+<br/>
+<br/>
+
+```python
+import zaowr_polsl_kisiel as zw
+
+image, scale = zw.load_pfm_file("./image.pfm")
+```
+
+<br/>
+</li>
+<li> Other params are optional and have default values. Each of them can be found in the function definition, and their descriptions are provided in the docstrings (hover over the function name).
+
+</li>
+</ol>
+<br/>
+<br/>
+
+### `write_ply_file()`
+
+[Back to the top (TOC)](#table-of-contents)
+
+<ol>
+<li> Function definition
+
+<br/>
+<br/>
+
+```python
+def write_ply_file(
+        fileName: str,
+        verts: np.ndarray,
+        colors: np.ndarray
+) -> None
+```
+
+</li>
+<br/>
+<li> Example usage
+
+After importing the package we can use the function to write a PLY file. We have to specify the name of the file, the vertices and the colors.
+
+To get the vertices and colors from an image, we can use the `cv2.reprojectImageTo3D()` and `cv2.cvtColor()` functions. Then we can apply a mask to the vertices and colors to remove the points that are too far from the camera.
+
+<br/>
+<br/>
+
+```python
+import zaowr_polsl_kisiel as zw
+import cv2
+import numpy as np
+
+img = cv2.imread("./image.png", 0)
+disparityMap = cv2.imread("./disparity_map.png", 0)
+depthMap = cv2.imread("./depth_map.png", 0)
+
+h, w = img.shape[:2]
+f = 0.8 * w # focal length
+Q = np.float32([[1, 0, 0, -0.5 * w],
+                [0, -1, 0, 0.5 * h], # turn points 180 deg around x-axis,
+                [0, 0, 0, -f], # so that y-axis looks up
+                [0, 0, 1, 0]])
+
+points = cv2.reprojectImageTo3D(disparityMap, Q)
+colors = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+mask = depthMap < 50
+
+outPoints = points[mask]
+outColors = colors[mask]
+
+zw.write_ply_file(
+    fileName="./image.ply",
+    verts=outPoints,
+    colors=outColors,
+)
+```
+
+<br/>
+</li>
+<li> Other params are optional and have default values. Each of them can be found in the function definition, and their descriptions are provided in the docstrings (hover over the function name).
+
+</li>
+</ol>
+<br/>
+<br/>
+
+### `decode_depth_map()`
+
+[Back to the top (TOC)](#table-of-contents)
+
+<ol>
+<li> Function definition
+
+<br/>
+<br/>
+
+```python
+def decode_depth_map(
+        depthMap: np.ndarray,
+        maxDepth: float = 1000.0,
+        decodeDepthMapRange: str = "24-bit"
+) -> np.ndarray
+```
+
+</li>
+<br/>
+<li> Example usage
+
+After importing the package we can use the function to decode a depth map. We have to specify the depth map, the maximum depth and the range of the depth map to decode (e.g. **"8-bit"**, **"16-bit"**, **"24-bit"**. **ONLY USE THE 24-BIT RANGE - OTHER RANGES MAY BE INCORRECT**, check the docstring for more info).
+
+<br/>
+<br/>
+
+```python
+import zaowr_polsl_kisiel as zw
+import cv2
+
+depthMap_uint24 = cv2.imread("./depth_map.png", cv2.IMREAD_UNCHANGED)
+maxDepth = 1000.0 # meters
+
+depthMap_decoded = zw.decode_depth_map(
+    depthMap=depthMap_uint24,
+    maxDepth=maxDepth,
+    decodeDepthMapRange="24-bit",
+)
+```
+
+<br/>
+</li>
+<li> Other params are optional and have default values. Each of them can be found in the function definition, and their descriptions are provided in the docstrings (hover over the function name).
+
+</li>
+</ol>
+<br/>
+<br/>
+
+### `depth_map_normalize()`
+
+[Back to the top (TOC)](#table-of-contents)
+
+<ol>
+<li> Function definition
+
+<br/>
+<br/>
+
+```python
+def depth_map_normalize(
+        depthMap: np.ndarray,
+        normalizeDepthMapRange: str = "8-bit"
+) -> np.ndarray
+```
+
+</li>
+<br/>
+<li> Example usage
+
+After importing the package, we can use the function to normalize a depth map. The function requires the depth map and the desired range for normalization (e.g. **"8-bit"**, **"16-bit"**, **"24-bit"**. **ONLY USE THE 8-BIT AND 24-BIT RANGES - OTHER RANGES MAY BE INCORRECT**, check the docstring for more info).
+
+<br/>
+<br/>
+
+```python
+import zaowr_polsl_kisiel as zw
+
+calibrationParams = zw.load_depth_map_calibration(calibFile="./calibration_params.txt")
+
+disparityMap, scale = zw.load_pfm_file(filePath="./disparity_map.pfm")
+
+depthMap = zw.disparity_to_depth_map(
+    disparityMap=disparityMap,
+    baseline=calibrationParams["baseline"],
+    focalLength=calibrationParams["focalLength"],
+    aspect=1000.0
+)
+
+depthMap_8bit = zw.depth_map_normalize(
+    depthMap=depthMap,
+    normalizeDepthMapRange="8-bit"
+)
+```
+
+<br/>
+</li>
+<li> Other params are optional and have default values. Each of them can be found in the function definition, and their descriptions are provided in the docstrings (hover over the function name).
+
+</li>
+</ol>
+<br/>
+<br/>
+
+### `depth_to_disparity_map()`
+
+[Back to the top (TOC)](#table-of-contents)
+
+<ol>
+<li> Function definition
+
+<br/>
+<br/>
+
+```python
+def depth_to_disparity_map(
+        depthMap: np.ndarray,
+        baseline: float,
+        focalLength: float,
+        minDepth: float = 0.001,
+        normalizeDisparityMapRange: str = "8-bit"
+) -> np.ndarray
+```
+
+</li>
+<br/>
+<li> Example usage
+
+After importing the package, we can use the function to convert a depth map to a disparity map. We have to specify the depth map, the baseline and the focal length of the camera. The function returns the disparity map.
+
+<br/>
+<br/>
+
+```python
+import zaowr_polsl_kisiel as zw
+import cv2
+import numpy as np
+
+hFOV = 60
+baseline = 0.1 # meters
+maxDepth = 1000.0 # meters
+depthMap_uint24 = cv2.imread("./depth_map.png", cv2.IMREAD_UNCHANGED) # load the 24-bit depth map
+focalLength = (depthMap_uint24[0] / 2) / np.tan(np.radians(hFOV / 2))
+
+depthMap = zw.decode_depth_map(
+    depthMap=depthMap_uint24,
+    maxDepth=maxDepth,
+    decodeDepthMapRange="24-bit",
+)
+
+disparityMap = zw.depth_to_disparity_map(
+    depthMap=depthMap,
+    baseline=baseline,
+    focalLength=focalLength,
+)
+```
+
+<br/>
+</li>
+<li> Other params are optional and have default values. Each of them can be found in the function definition, and their descriptions are provided in the docstrings (hover over the function name).
+
+</li>
+</ol>
+<br/>
+<br/>
+
+### `disparity_map_normalize()`
+
+[Back to the top (TOC)](#table-of-contents)
+
+<ol>
+<li> Function definition
+
+<br/>
+<br/>
+
+```python
+def disparity_map_normalize(
+        disparityMap: np.ndarray,
+        normalizeDisparityMapRange: str = "8-bit"
+) -> np.ndarray
+```
+
+</li>
+<br/>
+<li> Example usage
+
+This function is used only internally by the `depth_to_disparity_map()` function to normalize the disparity map after conversion, but it can also be used to normalize a disparity map on its own if we use the `calculate_disparity_map()` function with the `normalizeDisparityMap` parameter set to `False`.
+
+After importing the package, we can use the function to normalize the calculated disparity map to the desired range.
+
+<br/>
+<br/>
+
+```python
+import zaowr_polsl_kisiel as zw
+
+disparityMapSGBM = zw.calculate_disparity_map(
+    leftImagePath="./left.png",
+    rightImagePath="./right.png",
+    blockSize=9,
+    numDisparities=256,
+    minDisparity=0,
+    disparityCalculationMethod="sgbm",
+    normalizeDisparityMap=False,
+)
+
+disparityMap_8bit = zw.disparity_map_normalize(
+    disparityMap=disparityMapSGBM,
+    normalizeDisparityMapRange="8-bit", # normalize the disparity map to 8-bit range (default)
+)
+```
+
+<br/>
+</li>
+<li> Other params are optional and have default values. Each of them can be found in the function definition, and their descriptions are provided in the docstrings (hover over the function name).
+
+</li>
+</ol>
+<br/>
+<br/>
+
+### `disparity_to_depth_map()`
+
+[Back to the top (TOC)](#table-of-contents)
+
+<ol>
+<li> Function definition
+
+<br/>
+<br/>
+
+```python
+def disparity_to_depth_map(
+        disparityMap: np.ndarray,
+        baseline: float,
+        focalLength: float,
+        aspect: float = 1000.0
+) -> np.ndarray
+```
+
+</li>
+<br/>
+<li> Example usage
+
+After importing the package, we can use the function to convert a disparity map into a depth map. The function requires the disparity map, the baseline (distance between the two cameras), the focal length, and an optional aspect ratio for scaling (default is 1000, which returns the depth in meters).
+
+<br/>
+<br/>
+
+```python
+import zaowr_polsl_kisiel as zw
+
+calibrationParams = zw.load_depth_map_calibration(calibFile="./depth_calibration.txt")
+
+disparityMap, _ = zw.load_pfm_file(filePath="./disparity_map.pfm")
+
+depthMap = zw.disparity_to_depth_map(
+    disparityMap=disparityMap,
+    baseline=calibrationParams["baseline"],
+    focalLength=calibrationParams["focalLength"],
+    aspect=1000.0 # return depth in meters
+)
+```
+
+<br/>
+</li>
+<li> Other params are optional and have default values. Each of them can be found in the function definition, and their descriptions are provided in the docstrings (hover over the function name).
+
+</li>
+</ol>
+<br/>
+<br/>
+
+### `display_img_plt()`
+
+[Back to the top (TOC)](#table-of-contents)
+
+<ol>
+<li> Function definition
+
+<br/>
+<br/>
+
+```python
+def display_img_plt(
+        img: np.ndarray,
+        pltLabel: str = 'Map',
+        show: bool = False,
+        save: bool = False,
+        savePath: str = None
+) -> None
+```
+
+</li>
+<br/>
+<li> Example usage
+
+After importing the package, we can use the function to display an image using Matplotlib. The function requires the image and an optional plot label.
+
+If the `show` parameter is set to `True`, the image will be displayed in a new window.
+
+It can also save the image to a file if a `savePath` is provided and the `save` parameter is set to `True`. 
+
+<br/>
+<br/>
+
+```python
+import zaowr_polsl_kisiel as zw
+
+disparityMap, _ = zw.load_pfm_file(filePath="./disparity_map.pfm")
+
+zw.display_img_plt(
+    img=disparityMap,
+    pltLabel="Disparity map (Ground Truth PFM)",
+    show=True,
+    save=True,
+    savePath="./disparity_map.png"
+)
+```
+
+<br/>
+</li>
+<li> Other params are optional and have default values. Each of them can be found in the function definition, and their descriptions are provided in the docstrings (hover over the function name).
+
+</li>
+</ol>
+<br/>
+<br/>
+
+### `compare_images()`
+
+[Back to the top (TOC)](#table-of-contents)
+
+<ol>
+<li> Function definition
+
+<br/>
+<br/>
+
+```python
+def compare_images(
+        images: list[np.ndarray],
+        cmaps: list[str] = None,
+        pltLabel: str = 'Comparison',
+        titles: list[str] = None,
+        nrows: int = None,
+        ncols: int = None,
+        show: bool = False,
+        save: bool = False,
+        savePath: str = None
+) -> None
+```
+
+</li>
+<br/>
+<li> Example usage
+
+After importing the package, we can use the function to compare multiple images. The function accepts a list of images, their corresponding colormaps, and titles. You can also specify the number of rows and columns for the layout. Optionally, the resulting comparison can be saved to a file.
+
+The function displays the images using Matplotlib and plots them in a grid layout. If `nrows` and `ncols` are not provided, the grid layout will be determined automatically based on the number of images (1 row and `n` columns, where `n` is the number of images).
+
+<br/>
+<br/>
+
+```python
+import zaowr_polsl_kisiel as zw
+import cv2
+
+# Load multiple images (e.g., disparity maps or depth maps)
+disparityMap1, _ = cv2.imread("./disparity_map1.png", cv2.IMREAD_GRAYSCALE)
+disparityMap2, _ = cv2.imread("./disparity_map2.png", cv2.IMREAD_GRAYSCALE)
+disparityMap3, _ = cv2.imread("./disparity_map3.png", cv2.IMREAD_GRAYSCALE)
+disparityMap4, _ = cv2.imread("./disparity_map4.png", cv2.IMREAD_GRAYSCALE)
+
+# Prepare the images and their corresponding colormaps
+images = [disparityMap1, disparityMap2, disparityMap3, disparityMap4]
+cmaps = ['gray', 'hot', 'viridis', 'plasma']  # Different colormaps for each image
+titles = ['Disparity Map 1', 'Disparity Map 2', 'Disparity Map 3', 'Disparity Map 4']
+
+# Display and compare the images using a grid layout
+zw.compare_images(
+    images=images,
+    cmaps=cmaps,
+    pltLabel='Comparison of Disparity and Depth Maps',
+    titles=titles,
+    nrows=2,  # 2 rows in the grid
+    ncols=2,  # 2 columns in the grid
+    show=True,  # Display the plot
+    save=True,  # Save the plot to a file
+    savePath='./output/comparison_plot.png'  # File path for saving
 )
 ```
 
