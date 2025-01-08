@@ -29,7 +29,7 @@ Major: Informatics, master degree
 Specialization: Interactive Three-Dimensional Graphics (IGT, pol. Interaktywna Grafika Trójwymiarowa, https://www.polsl.pl/rau6/en/igt-specjalization/)
 """
 
-__version__ = "0.0.30"
+__version__ = "0.0.31"
 __status__ = "Development"  # Allowed: "Prototype", "Beta", "Stable"
 
 __all__ = [
@@ -62,7 +62,7 @@ from .content_loaders import (
     load_pgm_file, # load the ground truth .pgm file
     load_pfm_file, # load the ground truth .pfm file
     write_ply_file, # write .ply file
-    load_dept_map_calibration, # load depth map calibration
+    load_depth_map_calibration, # load depth map calibration
 )
 
 from . import image_processing

@@ -38,10 +38,12 @@ def disparity_map_normalize(
     if normalizeDisparityMapRange == "8-bit":
         # Normalize disparity map to 8-bit grayscale (0-255)
         disparityMapNormalized = cv.normalize(disparityMap, None, 0, 255, cv.NORM_MINMAX)
+        disparityMapNormalized = disparityMapNormalized.astype(np.uint8)
 
     elif normalizeDisparityMapRange == "16-bit":
         # Normalize disparity map to 16-bit grayscale (0-65535)
         disparityMapNormalized = cv.normalize(disparityMap, None, 0, 65535, cv.NORM_MINMAX)
+        disparityMapNormalized = disparityMapNormalized.astype(np.uint16)
 
     elif normalizeDisparityMapRange == "24-bit":
         # Normalize disparity map to 24-bit RGB (0-255, 0-255, 0-255)
@@ -52,12 +54,14 @@ def disparity_map_normalize(
         # Normalize disparity map to 32-bit RGB (0-255, 0-255, 0-255)
         disparityMapNormalized = cv.normalize(disparityMap, None, 0, 255, cv.NORM_MINMAX)
         disparityMapNormalized = cv.cvtColor(disparityMapNormalized, cv.COLOR_GRAY2RGB)
+
     else:
         raise ValueError(Fore.RED + "\nInvalid range for disparity map normalization!\n")
 
     if disparityMapNormalized is None:
         raise RuntimeError(Fore.RED + "\nFailed to normalize disparity map!\n")
+
     else:
-        print(Fore.GREEN + "\nDisparity map normalized successfully!\n")
+        print(Fore.GREEN + "\nDisparity map normalized successfully")
 
     return disparityMapNormalized

@@ -14,6 +14,7 @@ def load_pfm_file(
     :raises ValueError: Raises ValueError if:
         - **`filePath`** is not provided or is not a string.
         - **`filePath`** is not a PFM file.
+        - **`filePath`** is not a valid PFM file.
 
     :return: tuple[np.ndarray, float] - A tuple containing the data and scale.
     """
@@ -44,5 +45,11 @@ def load_pfm_file(
         data = np.flipud(data)  # Flip vertically due to PFM format
         data = np.array(data)
         data[np.isinf(data)] = 0
+
+        if data is None or data.size == 0 or np.isnan(data).any() or scale == 0:
+            raise ValueError(Fore.RED + "\nInvalid PFM file.\n")
+
+        else:
+            print(Fore.GREEN + "\nPFM file loaded successfully")
 
         return data, scale

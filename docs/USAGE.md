@@ -1800,7 +1800,8 @@ def display_img_plt(
         pltLabel: str = 'Map',
         show: bool = False,
         save: bool = False,
-        savePath: str = None
+        savePath: str = None,
+        cmap: str = 'gray'
 ) -> None
 ```
 
@@ -1812,7 +1813,9 @@ After importing the package, we can use the function to display an image using M
 
 If the `show` parameter is set to `True`, the image will be displayed in a new window.
 
-It can also save the image to a file if a `savePath` is provided and the `save` parameter is set to `True`. 
+It can also save the image to a file if a `savePath` is provided and the `save` parameter is set to `True`.
+
+You can also specify a custom color map using the `cmap` parameter (default is `'gray'`).
 
 <br/>
 <br/>
@@ -1827,7 +1830,8 @@ zw.display_img_plt(
     pltLabel="Disparity map (Ground Truth PFM)",
     show=True,
     save=True,
-    savePath="./disparity_map.png"
+    savePath="./disparity_map.png",
+    cmap=None
 )
 ```
 

@@ -1,17 +1,22 @@
+import os
 import time
 from typing import Callable, Any, Optional #, TypeVar
 from functools import wraps
+from colorama import Fore, Style, init as colorama_init  # , Back
+
+colorama_init(autoreset=True)
 
 # Define a generic type variable for the function
 # F = TypeVar("F", bound=Callable[..., Any])
 
-def measure_perf(output_file: Optional[str] = None) -> Callable[[Callable[..., Any]], Callable[..., Any]]:
+def measure_perf(outputFile: Optional[str] = None) -> Callable[[Callable[..., Any]], Callable[..., Any]]:
     """
     A decorator to measure the execution time of a function.
 
-    :param output_file: The path to a file where performance results should be saved.
+    :param str outputFile: The path to a file where performance results should be saved.
                         If None, results will only be printed to the console.
-    :type output_file: str, optional
+                        If specified, the file will be opened in **append mode**.
+    :type outputFile: str, optional
     :return: A decorator that logs or saves the execution time of a function.
     :rtype: Callable
     """
@@ -38,10 +43,15 @@ def measure_perf(output_file: Optional[str] = None) -> Callable[[Callable[..., A
             result = func(*args, **kwargs)
             end_time = time.perf_counter()
             elapsed_time = end_time - start_time
-            message = f"[PERFORMANCE] Function '{func.__name__}' executed in {elapsed_time:.4f} seconds."
+            message = Fore.MAGENTA + "\n\n[PERFORMANCE] " + Fore.CYAN + f"Function '{func.__name__}' executed in {elapsed_time:.2f} seconds\n"
             print(message)
-            if output_file:
-                with open(output_file, "a") as f:
+            if outputFile:
+                # Ensure the directory exists
+                directory = os.path.dirname(outputFile)
+                if not os.path.exists(directory):
+                    os.makedirs(directory)
+
+                with open(outputFile, "a") as f:
                     f.write(message + "\n")
             return result
         return wrapper

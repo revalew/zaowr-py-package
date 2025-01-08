@@ -42,7 +42,7 @@ __all__ = [
     "load_pgm_file",
     "load_pfm_file",
     "write_ply_file",
-    "load_dept_map_calibration",
+    "load_depth_map_calibration",
 ]
 
 from .are_params_valid import are_params_valid # validate calibration parameters stored in files and return them if valid
@@ -54,4 +54,4 @@ from .save_disparity_map import save_disparity_map # save disparity map
 from .load_pgm_file import load_pgm_file # load the ground truth `.pgm` file
 from .load_pfm_file import load_pfm_file # load the ground truth `.pfm` file
 from .write_ply_file import write_ply_file # write .ply file
-from .load_dept_map_calibration import load_dept_map_calibration # load depth map calibration
+from .load_depth_map_calibration import load_depth_map_calibration # load depth map calibration

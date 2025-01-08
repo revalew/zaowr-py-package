@@ -25,6 +25,9 @@ def disparity_to_depth_map(
     :raises TypeError: Raises TypeError if:
         - **`baseline`** or **`focalLength`** or **`aspect`** is not a float
 
+    :raises RuntimeError: Raises RuntimeError if:
+        - **`depthMap`** is None
+
     :return: Depth map as a numpy array
     """
     if disparityMap is None or not isinstance(disparityMap, np.ndarray):
@@ -49,5 +52,11 @@ def disparity_to_depth_map(
     depthMap[validDisparity] = baseline * focalLength / adjustedDisparity[validDisparity]
 
     depthMap = depthMap / aspect # to meters
+
+    if depthMap is None:
+        raise RuntimeError(Fore.RED + "\nDepth map is None!\n")
+
+    else:
+        print(Fore.GREEN + "\nDisparity map successfully converted to depth map")
 
     return depthMap

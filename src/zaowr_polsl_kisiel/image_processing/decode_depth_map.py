@@ -80,4 +80,7 @@ def decode_depth_map(
     if depthMapDecoded is None:
         raise RuntimeError(Fore.RED + "\nDepth map decoding failed!\n")
 
+    else:
+        print(Fore.GREEN + f"\nDepth map successfully decoded ({decodeDepthMapRange})")
+
     return depthMapDecoded

@@ -57,3 +57,5 @@ def write_ply_file(
     with open(fileName, 'wb') as f:
         f.write((ply_header % dict(vert_num=len(verts))).encode('utf-8'))
         np.savetxt(f, verts, fmt='%f %f %f %d %d %d ')
+
+    print(Fore.GREEN + f"\nPoint cloud saved to {fileName}")

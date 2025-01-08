@@ -52,10 +52,10 @@ def depth_to_disparity_map(
     if focalLength is None or focalLength <= 0.0:
         raise ValueError(Fore.RED + "\nFocal length must be provided as a positive number!\n")
 
-    if minDepth is None or minDepth <= 0.0:
+    if minDepth is None or minDepth < 0.0:
         raise ValueError(Fore.RED + "\nMinimum depth must be provided as a positive number!\n")
 
-    depthMap = np.nan_to_num(depthMap)
+    # depthMap = np.nan_to_num(depthMap)
     depthMap = np.maximum(depthMap, minDepth)
 
     disparityMap = (baseline * focalLength) / depthMap
@@ -63,5 +63,8 @@ def depth_to_disparity_map(
 
     if disparityMapNormalized is None:
         raise RuntimeError(Fore.RED + "\nDisparity map could not be normalized!\n")
+
+    else:
+        print(Fore.GREEN + "\nDepth map successfully converted to disparity map")
 
     return disparityMapNormalized

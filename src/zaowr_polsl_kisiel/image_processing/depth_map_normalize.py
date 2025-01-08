@@ -77,6 +77,7 @@ def depth_map_normalize(
 
     if depthMapNormalized is None:
         raise RuntimeError(Fore.RED + "\nDepth map normalization failed!\n")
+
     else:
         print(Fore.GREEN + "\nDepth map successfully normalized")
 

@@ -37,8 +37,8 @@
    - [x] Add code requirements,
 
 4. Depth maps:
-   - [] Check for bugs,
-   - [] Check if anything can be simplified ???,
+   - [x] Check for bugs,
+   - [x] Check if anything can be simplified ???,
    - [x] Prepare the outline of the code,
    - [x] Add docstrings,
    - [x] Add exception handling,

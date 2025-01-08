@@ -6,7 +6,8 @@ import numpy as np
 def main():
     calibrationFile = "/run/media/maks/Dokumenty 2/Studia/Infa Magister/Infa sem 2/ZAOWR Zaawansowana Analiza Obrazu, Wideo i Ruchu/zaowr_py_package/tests/misc/depth_maps/calib.txt"
 
-    calibrationParams = zw.load_depth_map_calibration(
+    calibrationParams = zw.load_depth_map_calibration( # this is the correct function
+    # calibrationParams = zw.load_dept_map_calibration( # this one has a typo, but it works (will be fixed in 0.0.31)
         calibFile=calibrationFile
     )
 
@@ -184,7 +185,8 @@ def main():
     baseline = 0.1 # meters
     maxDepth = 1000.0 # meters
     depthMap_uint24 = cv2.imread(deptMapRef_24bit, cv2.IMREAD_UNCHANGED)
-    focalLength = (depthMap_uint24[0] / 2) / np.tan(np.radians(hFOV / 2))
+    focalLength = (depthMap_uint24.shape[0] / 2) / np.tan(np.radians(hFOV) / 2)
+    # print(f"{type(focalLength) = }") # <class 'numpy.float64'>
 
     depthMap_ex4 = zw.decode_depth_map(
         depthMap=depthMap_uint24,
@@ -196,21 +198,24 @@ def main():
         depthMap=depthMap_ex4,
         baseline=baseline,
         focalLength=focalLength,
+        minDepth=0.0,
     )
 
-    zw.display_img_plt(
-        img=disparityMap_ex4,
-        pltLabel="Disparity map",
-        save=True,
-        savePath=ex_4_disparityMapPath
-    )
+    cv2.imwrite(ex_4_disparityMapPath, disparityMap_ex4)
+    # zw.display_img_plt(
+    #     img=disparityMap_ex4,
+    #     pltLabel="Disparity map",
+    #     save=True,
+    #     savePath=ex_4_disparityMapPath
+    # )
 
-    zw.display_img_plt(
-        img=depthMap_ex4,
-        pltLabel="Depth map",
-        save=True,
-        savePath=ex_4_depthMapPath,
-    )
+    cv2.imwrite(ex_4_depthMapPath, depthMap_ex4)
+    # zw.display_img_plt(
+    #     img=depthMap_ex4,
+    #     pltLabel="Depth map",
+    #     save=True,
+    #     savePath=ex_4_depthMapPath,
+    # )
 
     zw.compare_images(
         images=[
@@ -234,11 +239,25 @@ def main():
 
     plyPath = "/run/media/maks/Dokumenty 2/Studia/Infa Magister/Infa sem 2/ZAOWR Zaawansowana Analiza Obrazu, Wideo i Ruchu/zaowr_py_package/tests/misc/depth_maps/results/ex_5.ply"
 
-    img = cv2.imread(imgPath, 0)
-    disparityMap_ex5 = cv2.imread(ex_4_disparityMapPath, 0)
-    depthMap_ex5 = cv2.imread(ex_4_depthMapPath, 0)
+    img = cv2.imread(imgPath, cv2.IMREAD_COLOR)
+    disparityMap_ex5 = cv2.imread(ex_4_disparityMapPath, cv2.IMREAD_GRAYSCALE)
+    depthMap_ex5 = cv2.imread(ex_4_depthMapPath, cv2.IMREAD_GRAYSCALE)
 
-    h, w = img.shape[:2]
+    h, w = depthMap_ex5.shape[:2]
+    if img.shape[:2] != (h, w):
+        img = cv2.resize(
+            img,
+            (w, h),
+            interpolation=cv2.INTER_AREA
+        )
+
+    if disparityMap_ex5.shape[:2] != (h, w):
+        disparityMap_ex5 = cv2.resize(
+            disparityMap_ex5,
+            (w, h),
+            interpolation=cv2.INTER_AREA
+        )
+
     f = 0.8 * w # focal length
     Q = np.float32([[1, 0, 0, -0.5 * w],
                     [0, -1, 0, 0.5 * h], # turn points 180 deg around x-axis,
