@@ -2,12 +2,13 @@ import cv2
 import zaowr_polsl_kisiel as zw
 import numpy as np
 
+
 @zw.measure_perf()
 def main():
     calibrationFile = "/run/media/maks/Dokumenty 2/Studia/Infa Magister/Infa sem 2/ZAOWR Zaawansowana Analiza Obrazu, Wideo i Ruchu/zaowr_py_package/tests/misc/depth_maps/calib.txt"
 
-    calibrationParams = zw.load_depth_map_calibration( # this is the correct function
-    # calibrationParams = zw.load_dept_map_calibration( # this one has a typo, but it works (will be fixed in 0.0.31)
+    calibrationParams = zw.load_depth_map_calibration(  # this is the correct function
+        # calibrationParams = zw.load_dept_map_calibration( # this one has a typo, but it works (will be fixed in 0.0.31)
         calibFile=calibrationFile
     )
 
@@ -20,27 +21,24 @@ def main():
 
     ex_1_depthMapPath = "/run/media/maks/Dokumenty 2/Studia/Infa Magister/Infa sem 2/ZAOWR Zaawansowana Analiza Obrazu, Wideo i Ruchu/zaowr_py_package/tests/misc/depth_maps/results/ex_1_depth.png"
 
-    disparityMap, scale = zw.load_pfm_file(
-        filePath=disparityMapPath
-    )
+    disparityMap, scale = zw.load_pfm_file(filePath=disparityMapPath)
 
     depthMap = zw.disparity_to_depth_map(
         disparityMap=disparityMap,
         baseline=calibrationParams["baseline"],
         focalLength=calibrationParams["focalLength"],
-        aspect=1000.0 # return depth in meters
+        aspect=1000.0,  # return depth in meters
     )
 
     depthMap_8bit = zw.depth_map_normalize(
-        depthMap=depthMap,
-        normalizeDepthMapRange="8-bit"
+        depthMap=depthMap, normalizeDepthMapRange="8-bit"
     )
 
     zw.display_img_plt(
         img=disparityMap,
         pltLabel="Disparity map",
         save=True,
-        savePath=ex_1_disparityMapPath
+        savePath=ex_1_disparityMapPath,
     )
 
     zw.display_img_plt(
@@ -81,19 +79,18 @@ def main():
         disparityMap=disparityMapSGBM,
         baseline=calibrationParams["baseline"],
         focalLength=calibrationParams["focalLength"],
-        aspect=1000.0
+        aspect=1000.0,
     )
 
     depthMapSGBM_8bit = zw.depth_map_normalize(
-        depthMap=depthMapSGBM,
-        normalizeDepthMapRange="8-bit"
+        depthMap=depthMapSGBM, normalizeDepthMapRange="8-bit"
     )
 
     zw.display_img_plt(
         img=disparityMapSGBM,
         pltLabel="Disparity map",
         save=True,
-        savePath=ex_2_disparityMapPath
+        savePath=ex_2_disparityMapPath,
     )
 
     zw.display_img_plt(
@@ -111,7 +108,7 @@ def main():
         nrows=1,
         ncols=2,
         save=True,
-        savePath=ex_2_disparityMapComparisonPath
+        savePath=ex_2_disparityMapComparisonPath,
     )
 
     zw.compare_images(
@@ -122,7 +119,7 @@ def main():
         nrows=1,
         ncols=2,
         save=True,
-        savePath=ex_2_depthMapComparisonPath
+        savePath=ex_2_depthMapComparisonPath,
     )
 
     ##################################
@@ -135,13 +132,11 @@ def main():
     ex_3_depthMapComparisonPath = "/run/media/maks/Dokumenty 2/Studia/Infa Magister/Infa sem 2/ZAOWR Zaawansowana Analiza Obrazu, Wideo i Ruchu/zaowr_py_package/tests/misc/depth_maps/results/ex_3_depth_comparison.png"
 
     depthMap_24bit = zw.depth_map_normalize(
-        depthMap=depthMap,
-        normalizeDepthMapRange="24-bit"
+        depthMap=depthMap, normalizeDepthMapRange="24-bit"
     )
 
     depthMapSGBM_24bit = zw.depth_map_normalize(
-        depthMap=depthMapSGBM,
-        normalizeDepthMapRange="24-bit"
+        depthMap=depthMapSGBM, normalizeDepthMapRange="24-bit"
     )
 
     zw.display_img_plt(
@@ -166,7 +161,7 @@ def main():
         nrows=1,
         ncols=2,
         save=True,
-        savePath=ex_3_depthMapComparisonPath
+        savePath=ex_3_depthMapComparisonPath,
     )
 
     ##################################
@@ -178,12 +173,13 @@ def main():
 
     ex_4_comparisonPath = "/run/media/maks/Dokumenty 2/Studia/Infa Magister/Infa sem 2/ZAOWR Zaawansowana Analiza Obrazu, Wideo i Ruchu/zaowr_py_package/tests/misc/depth_maps/results/ex_4_comparison.png"
 
+    ex_4_comparisonPath2 = "/run/media/maks/Dokumenty 2/Studia/Infa Magister/Infa sem 2/ZAOWR Zaawansowana Analiza Obrazu, Wideo i Ruchu/zaowr_py_package/tests/misc/depth_maps/results/ex_4_comparison_2.png"
+
     deptMapRef_24bit = "/run/media/maks/Dokumenty 2/Studia/Infa Magister/Infa sem 2/ZAOWR Zaawansowana Analiza Obrazu, Wideo i Ruchu/zaowr_py_package/tests/misc/depth_maps/depth.png"
 
     hFOV = 60
-    imgWidth = 1920
-    baseline = 0.1 # meters
-    maxDepth = 1000.0 # meters
+    baseline = 0.1  # meters
+    maxDepth = 1000.0  # meters
     depthMap_uint24 = cv2.imread(deptMapRef_24bit, cv2.IMREAD_UNCHANGED)
     focalLength = (depthMap_uint24.shape[0] / 2) / np.tan(np.radians(hFOV) / 2)
     # print(f"{type(focalLength) = }") # <class 'numpy.float64'>
@@ -225,11 +221,31 @@ def main():
         ],
         cmaps=[None, "gray", "gray"],
         pltLabel="Depth and disparity map comparison",
-        titles=["Ground truth depth map (24-bit)", "Ground truth depth map Normalized", "Decoded disparity map"],
+        titles=[
+            "Ground truth depth map (24-bit)",
+            "Ground truth depth map Normalized",
+            "Decoded disparity map",
+        ],
         nrows=1,
         ncols=3,
         save=True,
         savePath=ex_4_comparisonPath,
+    )
+
+    disparityMap = cv2.imread(ex_4_disparityMapPath, cv2.IMREAD_GRAYSCALE)
+    depthMap = cv2.imread(ex_4_depthMapPath, cv2.IMREAD_GRAYSCALE)
+    zw.compare_images(
+        images=[
+            depthMap,
+            disparityMap,
+        ],
+        cmaps=["gray", "gray"],
+        pltLabel="Depth and disparity map comparison",
+        titles=["Ground truth depth map Normalized", "Decoded disparity map"],
+        nrows=1,
+        ncols=2,
+        save=True,
+        savePath=ex_4_comparisonPath2,
     )
 
     ##################################
@@ -239,30 +255,29 @@ def main():
 
     plyPath = "/run/media/maks/Dokumenty 2/Studia/Infa Magister/Infa sem 2/ZAOWR Zaawansowana Analiza Obrazu, Wideo i Ruchu/zaowr_py_package/tests/misc/depth_maps/results/ex_5.ply"
 
+    # img = cv2.imread(imgPath, cv2.IMREAD_GRAYSCALE) # produces grayscale cloud
     img = cv2.imread(imgPath, cv2.IMREAD_COLOR)
     disparityMap_ex5 = cv2.imread(ex_4_disparityMapPath, cv2.IMREAD_GRAYSCALE)
     depthMap_ex5 = cv2.imread(ex_4_depthMapPath, cv2.IMREAD_GRAYSCALE)
 
     h, w = depthMap_ex5.shape[:2]
     if img.shape[:2] != (h, w):
-        img = cv2.resize(
-            img,
-            (w, h),
-            interpolation=cv2.INTER_AREA
-        )
+        img = cv2.resize(img, (w, h), interpolation=cv2.INTER_AREA)
 
     if disparityMap_ex5.shape[:2] != (h, w):
         disparityMap_ex5 = cv2.resize(
-            disparityMap_ex5,
-            (w, h),
-            interpolation=cv2.INTER_AREA
+            disparityMap_ex5, (w, h), interpolation=cv2.INTER_AREA
         )
 
-    f = 0.8 * w # focal length
-    Q = np.float32([[1, 0, 0, -0.5 * w],
-                    [0, -1, 0, 0.5 * h], # turn points 180 deg around x-axis,
-                    [0, 0, 0, -f], # so that y-axis looks up
-                    [0, 0, 1, 0]])
+    f = 0.8 * w  # focal length
+    Q = np.float32(
+        [
+            [1, 0, 0, -0.5 * w],
+            [0, -1, 0, 0.5 * h],  # turn points 180 deg around x-axis,
+            [0, 0, 0, -f],  # so that y-axis looks up
+            [0, 0, 1, 0],
+        ]
+    )
 
     points = cv2.reprojectImageTo3D(disparityMap_ex5, Q)
     colors = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
@@ -278,5 +293,5 @@ def main():
     )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
