@@ -7,6 +7,7 @@ def disparity_to_depth_map(
         disparityMap: np.ndarray,
         baseline: float,
         focalLength: float,
+        doffs: float = 0.0,
         aspect: float = 1000.0
 ) -> np.ndarray:
     """
@@ -15,7 +16,9 @@ def disparity_to_depth_map(
     :param np.ndarray disparityMap: Disparity map
     :param float baseline: Baseline
     :param float focalLength: Focal length
+    :param float doffs: Disparity offset
     :param float aspect: Aspect ratio. Default value is 1000 which returns the depth in meters.
+
 
     :raises ValueError: Raises ValueError if:
         - **`disparityMap`** is not a numpy array
@@ -23,7 +26,7 @@ def disparity_to_depth_map(
         - **`focalLength`** is not a positive number
 
     :raises TypeError: Raises TypeError if:
-        - **`baseline`** or **`focalLength`** or **`aspect`** is not a float
+        - **`baseline`** or **`focalLength`** or **`doffs`** or **`aspect`** is not a float
 
     :raises RuntimeError: Raises RuntimeError if:
         - **`depthMap`** is None
@@ -39,8 +42,8 @@ def disparity_to_depth_map(
     if focalLength is None or focalLength <= 0.0:
         raise ValueError(Fore.RED + "\nFocal length must be provided!\n")
 
-    if not isinstance(baseline, float) or not isinstance(focalLength, float) or not isinstance(aspect, float):
-        raise ValueError(Fore.RED + "\nBaseline, focal length and aspect ratio must be floats!\n")
+    if not isinstance(baseline, float) or not isinstance(focalLength, float) or not isinstance(aspect, float) or not isinstance(doffs, float):
+        raise TypeError(Fore.RED + "\nBaseline, focal length, doffs and aspect ratio must be floats!\n")
 
     # Convert disparity to depth
     disparityMap = np.float32(disparityMap)
@@ -49,7 +52,7 @@ def disparity_to_depth_map(
     validDisparity = disparityMap > 0  # Only consider valid disparity values
     adjustedDisparity = disparityMap
     depthMap = np.zeros_like(disparityMap)
-    depthMap[validDisparity] = baseline * focalLength / adjustedDisparity[validDisparity]
+    depthMap[validDisparity] = baseline * focalLength / (adjustedDisparity[validDisparity] + doffs)
 
     depthMap = depthMap / aspect # to meters
 

@@ -1,0 +1,12 @@
+{
+  "opis": "Opis wyznaczonych parametrów kalibracji kamery (na podstawie dokumentacji OpenCV i dokumentacji mojej paczki - https://github.com/revalew/zaowr-py-package/blob/master/src/zaowr_polsl_kisiel/load_calibration.py): Podczas kalibracji kamery uzyskujemy następujące wartości w postaci słownika",
+  "mse":  "`mse` (float): Średni błąd kwadratowy (*Mean Square Error*), który określa ogólną dokładność dopasowania modelu kalibracji do punktów obrazu.",
+  "rms": "`rms` (float): Całkowity błąd RMS (*Root Mean Square*) rzutowania w formacie liczby zmiennoprzecinkowej. Im mniejszy ten błąd, tym lepsze dopasowanie.",
+  "objPoints": "`objPoints` (np.ndarray): Trójwymiarowe punkty w przestrzeni rzeczywistej, czyli współrzędne wzorca kalibracyjnego (np. rogi szachownicy) w układzie współrzędnych rzeczywistych.",
+  "imgPoints": "`imgPoints` (np.ndarray): Dwuwymiarowe punkty w płaszczyźnie obrazu, które odpowiadają rzutowi punktów rzeczywistych na obraz.",
+  "cameraMatrix": "`cameraMatrix` (np.ndarray): Macierz kamery (*Camera Matrix*), która zawiera parametry ogniskowej i położenia środka optycznego:  [[f_x & 0 & c_x], [0 & f_y & c_y], [0 & 0 & 1]] Gdzie: ( f_x, f_y ) – ogniskowe w pikselach (dla osi X i Y), ( c_x, c_y ) – współrzędne środka optycznego w układzie obrazu.",
+  "distortionCoefficients": "`distortionCoefficients` (np.ndarray): Współczynniki zniekształceń (*Distortion Coefficients*):  k_1, k_2, p_1, p_2, k_3).  Obejmują one: - Zniekształcenia radialne ( k_1, k_2, k_3 ), - Zniekształcenia styczne ( p_1, p_2 ).",
+  "rotationVectors": "`rotationVectors` (list): Wektory obrotu, które opisują orientację kamery względem wzorca kalibracyjnego, przeliczone metodą Rodriguesa.",
+  "translationVectors": "`translationVectors` (list): Wektory translacji, które określają przesunięcie kamery względem wzorca kalibracyjnego w przestrzeni 3D (wzdłuż osi X, Y i Z).",
+  "opis_2": "Znaczenie parametrów wewnętrznych kamery: 1. Macierz kamery (*Camera Matrix*): Opisuje właściwości optyczne kamery, w tym ogniskową oraz położenie środka obrazu. Jest kluczowa do przekształcenia punktów 3D w przestrzeni na punkty 2D na obrazie. 2. Współczynniki zniekształceń (*Distortion Coefficients*): Reprezentują nieliniowe deformacje obrazu spowodowane przez soczewki kamery, takie jak beczkowate lub poduszkowe zniekształcenia. Są one używane do ich korekcji. 3. Wektory rotacji i translacji: Opisują położenie i orientację kamery w przestrzeni względem wzorca kalibracyjnego. Są istotne przy odtwarzaniu układu przestrzennego sceny z wielu kamer."
+}
