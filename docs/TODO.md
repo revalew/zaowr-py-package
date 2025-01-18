@@ -68,12 +68,18 @@
      - [] create_color_point_cloud(),
 w
 6. Optical flow:
-   - [] sparse optical flow,
-   - [] dense optical flow,
+   - [x] sparse optical flow,
+   - [x] dense optical flow,
+   - [x] list available camera ports,
+   - [x] read images from folder,
    - [] detect movement and its direction,
    - [] detect movement from camera feed,
    - [] UPDATE THE DOCS!
-     - [] asd
+     - [] list_camera_ports_available()
+     - [] read_images_from_folder()
+     - [] sparse_optical_flow()
+     - [] dense_optical_flow()
+     - [] configure_qt_platform()
 
 7. Misc.:
    - [] Clean the USAGE.md file !!!,

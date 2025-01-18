@@ -21,6 +21,8 @@ Functions:
 
 - `get_map_value_for_points`: Gets map value for points (e.g. disparity, depth value at a specific point).
 
+- `configure_qt_platform`: Configures the `QT_QPA_PLATFORM` environment variable to 'xcb' on Linux (suppress warnings about Wayland plugins).
+
 Usage:
     - Use this module for miscellaneous tools that enhance functionality.
 """
@@ -35,6 +37,7 @@ __all__ = [
     "compare_images",
     "get_image_points",
     "get_map_value_for_points",
+    "configure_qt_platform",
 ]
 
 from .find_aruco_dict import find_aruco_dict # find aruco dictionary if we don't know it
@@ -46,3 +49,4 @@ from .display_img_plt import display_img_plt # display the image using matplotli
 from .compare_images import compare_images # compare multiple images
 from .get_image_points import get_image_points # get points form photo using mouse click (pixel coordinates)
 from .get_map_value_for_points import get_map_value_for_points # get map value for points (e.g. disparity, depth)
+from .configure_qt_platform import configure_qt_platform # configure the `QT_QPA_PLATFORM` environment variable to 'xcb' on Linux (suppress warnings about Wayland plugins)

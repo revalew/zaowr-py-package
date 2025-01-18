@@ -12,6 +12,8 @@ Modules:
 
 - `image_processing`: Utilities for image rectification, distortion removal, disparity map calculation, color difference map calculation, disparity map comparison, depth map conversion (disparity to depth), disparity map normalization, depth map normalization, depth map to disparity map conversion, depth map decoding, color point cloud creation.
 
+- `optical_flow`: Tools to calculate the Optical Flow using **Sparse** (Shi-Tomasi corner detection and Lucas-Kanade optical flow) and **Dense** (Farneback optical flow) Optical Flow** algorithms. Tool to list available camera ports and the ones that are working (and can be used as a feed fot the optical flow algorithms).
+
 - `tools`: Additional tools, such as ArUco dictionary identification, performance measurement, image cropping, image display using matplotlib, get points form photo using mouse click (pixel coordinates), get map value for points (e.g. disparity, depth).
 
 Status: Development
@@ -81,14 +83,14 @@ from .image_processing import (
     create_color_point_cloud, # create color point cloud with specified max depth
 )
 
-from . import optical_flow
 # TODO !!!!
-# from .optical_flow import (
-#     calculate_optical_flow, # calculate optical flow
-#     draw_optical_flow, # draw optical flow
-#     calculate_flow_magnitude, # calculate flow magnitude
-#     calculate_flow_angle, # calculate flow angle
-# )
+from . import optical_flow
+from .optical_flow import (
+    list_camera_ports_available, # list available camera ports and the ones that are working
+    read_images_from_folder, # read images from a folder and sort them alphabetically
+    sparse_optical_flow, # calculate sparse optical flow with Shi-Tomasi corner detection and Lucas-Kanade optical flow
+    dense_optical_flow, # calculate dense optical flow with Farneback optical flow algorithm
+)
 # TODO !!!!
 
 from . import tools
@@ -102,4 +104,5 @@ from .tools import (
     compare_images, # compare multiple images
     get_image_points, # get points form photo using mouse click (pixel coordinates)
     get_map_value_for_points, # get map value for points (e.g. disparity, depth)
+    configure_qt_platform, # configure the `QT_QPA_PLATFORM` environment variable to 'xcb' on Linux (suppress warnings about Wayland plugins)
 )

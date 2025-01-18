@@ -3,14 +3,26 @@ The `optical_flow` module provides functions for computing optical flow using di
 
 Functions:
 
-- `compute_optical_flow`: Computes the optical flow using different algorithms.
+- `list_camera_ports_available`: Lists available camera ports and the ones that are working.
+
+- `read_images_from_folder`: Reads images from a folder and sorts them alphabetically.
+
+- `sparse_optical_flow`: Calculates sparse optical flow using Shi-Tomasi corner detection and Lucas-Kanade optical flow.
+
+- `dense_optical_flow`: Calculates dense optical flow using Farneback optical flow algorithm.
 
 Usage:
     - Use this module to perform optical flow computation.
 """
 
 __all__ = [
-    # "compute_optical_flow",
+    "list_camera_ports_available",
+    "read_images_from_folder",
+    "sparse_optical_flow",
+    "dense_optical_flow",
 ]
 
-# from .compute_optical_flow import compute_optical_flow
+from .list_camera_ports_available import list_camera_ports_available # list available camera ports and the ones that are working
+from .read_images_from_folder import read_images_from_folder # read images from a folder and sort them alphabetically, returns sorted list
+from .sparse_optical_flow import sparse_optical_flow  # calculate sparse optical flow with Shi-Tomasi corner detection and Lucas-Kanade optical flow
+from .dense_optical_flow import dense_optical_flow  # calculate dense optical flow with Farneback optical flow algorithm
