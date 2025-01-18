@@ -58,7 +58,25 @@
      - [x] display_img_plt(),
      - [x] compare_images(),
 
-5. Misc.:
+5. Exam fixes:
+   - [x] Function to get pixel coordinates from an image,
+   - [x] Function to get map value for points (e.g. disparity, depth) (get pixel coordinates -> get map value for that pixel),
+   - [x] Function to create a point cloud,
+   - [] UPDATE THE DOCS!
+     - [] get_image_points(),
+     - [] get_map_value_for_points(),
+     - [] create_color_point_cloud(),
+
+6. Optical flow:
+   - [] sparse optical flow,
+   - [] dense optical flow,
+   - [] detect movement and its direction,
+   - [] detect movement from camera feed,
+   - [] UPDATE THE DOCS!
+     - [] asd
+
+7. Misc.:
+   - [] Clean the USAGE.md file !!!,
    - [x] Add function to validate / load params stored in files,
    - [x] Add requirements based on the tasks provided,
    - [x] Add directory with lab solutions,

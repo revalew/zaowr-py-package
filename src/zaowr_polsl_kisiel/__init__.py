@@ -1,6 +1,6 @@
 """
 This package provides tools and utilities for camera calibration, stereo calibration,
-image processing, and related operations.
+image processing, calculation of disparity/depth maps, calculation of optical flow and related operations.
 
 Modules:
 
@@ -10,9 +10,9 @@ Modules:
 
 - `custom_exceptions`: Custom exceptions for error handling.
 
-- `image_processing`: Utilities for image rectification, distortion removal, disparity map calculation, color difference map calculation, disparity map comparison, depth map conversion (disparity to depth), disparity map normalization, depth map normalization, depth map to disparity map conversion and depth map decoding.
+- `image_processing`: Utilities for image rectification, distortion removal, disparity map calculation, color difference map calculation, disparity map comparison, depth map conversion (disparity to depth), disparity map normalization, depth map normalization, depth map to disparity map conversion, depth map decoding, color point cloud creation.
 
-- `tools`: Additional tools, such as ArUco dictionary identification, performance measurement, image cropping, and image display using matplotlib.
+- `tools`: Additional tools, such as ArUco dictionary identification, performance measurement, image cropping, image display using matplotlib, get points form photo using mouse click (pixel coordinates), get map value for points (e.g. disparity, depth).
 
 Status: Development
 
@@ -37,6 +37,7 @@ __all__ = [
     "content_loaders",
     "exceptions",
     "image_processing",
+    "optical_flow",
     "tools",
 ]
 
@@ -54,7 +55,7 @@ from .custom_exceptions import exceptions # custom_exceptions
 from . import content_loaders
 from .content_loaders import (
     are_params_valid, # validate calibration parameters stored in files and return them if valid
-    save_calibration, # save calibration parameters (used for all types of params - single, stereo, rectification)
+    save_calibration, # save calibration parameters (used for all types of params - single, stereo, rectification, etc.)
     load_calibration, # load calibration parameters for single camera
     load_stereo_calibration, # load stereo calibration
     load_rectification_maps, # load rectification maps
@@ -77,7 +78,18 @@ from .image_processing import (
     depth_map_normalize, # normalize depth map to a specified range
     depth_to_disparity_map, # convert depth map to disparity map
     decode_depth_map, # decode depth map
+    create_color_point_cloud, # create color point cloud with specified max depth
 )
+
+from . import optical_flow
+# TODO !!!!
+# from .optical_flow import (
+#     calculate_optical_flow, # calculate optical flow
+#     draw_optical_flow, # draw optical flow
+#     calculate_flow_magnitude, # calculate flow magnitude
+#     calculate_flow_angle, # calculate flow angle
+# )
+# TODO !!!!
 
 from . import tools
 from .tools import (
@@ -88,4 +100,6 @@ from .tools import (
     crop_image, # crop image to retain only the center part (specified by percentage)
     display_img_plt, # display the image using matplotlib
     compare_images, # compare multiple images
+    get_image_points, # get points form photo using mouse click (pixel coordinates)
+    get_map_value_for_points, # get map value for points (e.g. disparity, depth)
 )

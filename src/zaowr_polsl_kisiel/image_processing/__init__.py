@@ -24,6 +24,8 @@ Functions:
 
 - `decode_depth_map`: Decodes a depth map to a specified range (e.g. 8-bit, 16-bit, 24-bit. ONLY USE THE 24-BIT RANGE).
 
+- `create_color_point_cloud`: Creates a color point cloud from disparity map, depth map and color image and limit max depth.
+
 Usage:
     - Import this module for image distortion correction,
     - stereo rectification,
@@ -46,6 +48,7 @@ __all__ = [
     "disparity_map_normalize",
     "depth_to_disparity_map",
     "decode_depth_map",
+    "create_color_point_cloud",
 ]
 
 from .remove_distortion import remove_distortion # remove distortion from single image
@@ -57,3 +60,4 @@ from .depth_map_normalize import depth_map_normalize # normalize depth map to a 
 from .disparity_map_normalize import disparity_map_normalize # normalize disparity map to a specified range
 from .depth_to_disparity_map import depth_to_disparity_map # convert depth map to disparity map
 from .decode_depth_map import decode_depth_map # decode depth map
+from .create_color_point_cloud import create_color_point_cloud # create color point cloud from disparity map, depth map and color image and limit max depth

@@ -17,6 +17,10 @@ Functions:
 
 - `compare_images`: Compares multiple images.
 
+- `get_image_points`: Gets points form photo using mouse click (pixel coordinates).
+
+- `get_map_value_for_points`: Gets map value for points (e.g. disparity, depth value at a specific point).
+
 Usage:
     - Use this module for miscellaneous tools that enhance functionality.
 """
@@ -29,6 +33,8 @@ __all__ = [
     "crop_image",
     "display_img_plt",
     "compare_images",
+    "get_image_points",
+    "get_map_value_for_points",
 ]
 
 from .find_aruco_dict import find_aruco_dict # find aruco dictionary if we don't know it
@@ -38,3 +44,5 @@ from .calculate_ssim_disparity import calculate_ssim_disparity # calculate Struc
 from .crop_image import crop_image # crop image to retain only the center part (specified by percentage)
 from .display_img_plt import display_img_plt # display the image using matplotlib
 from .compare_images import compare_images # compare multiple images
+from .get_image_points import get_image_points # get points form photo using mouse click (pixel coordinates)
+from .get_map_value_for_points import get_map_value_for_points # get map value for points (e.g. disparity, depth)

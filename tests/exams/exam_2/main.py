@@ -78,6 +78,14 @@ def main():
 
     inputInfoPath = inputFolder + "Z1Z2Z3/info.png"
 
+    # Available in zaowr_polsl_kisiel package version 0.0.32
+    # or higher (added because of the exam)
+    # points = zw.get_image_points(imgPath=inputInfoPath)
+    # results = zw.get_map_value_for_points(
+    #       imgPoints=points,
+    #       mapPoints=depthMap,
+    #       mapType="depth")
+
     points = [(804, 474), (1630, 273), (343, 171)]
     # points = get_points(inputInfoPath)
     # print(f"{points = }")
@@ -171,6 +179,15 @@ def main():
     outPoints = points[mask]
     outColors = colors[mask]
 
+    # Available in zaowr_polsl_kisiel package version 0.0.32
+    # or higher (added because of the exam)
+    # outPoints, outColors = zw.create_color_point_cloud(
+    #     colorImgPath=imgPath,
+    #     disparityMapPath=disparityMapPath,
+    #     depthMapPath=depthMapPath,
+    #     focalLengthFactor=0.8,
+    #     maxDepth=50.0)
+
     zw.write_ply_file(
         fileName=plyPath,
         verts=outPoints,
@@ -244,6 +261,19 @@ def main():
     )
 
     points = [(1550, 900)]
+
+    # Available in zaowr_polsl_kisiel package version 0.0.32
+    # or higher (added because of the exam)
+    #
+    # depth_gt = zw.get_map_value_for_points(
+    #       imgPoints=points,
+    #       mapPoints=depthMap,
+    #       mapType="depth")
+    #
+    # disparity_gt = zw.get_map_value_for_points(
+    #       imgPoints=points,
+    #       mapPoints=disparityMap,
+    #       mapType="disparity")
 
     print(f"\n\nX, Y = [{points[0][0]}, {points[0][1]}]\n\nGT:")
     depth_gt = get_depth_value_for_points(points, depthMap, unit="m")
@@ -320,6 +350,19 @@ def main():
     )
 
     points = [(1550, 900)]
+
+    # Available in zaowr_polsl_kisiel package version 0.0.32
+    # or higher (added because of the exam)
+    #
+    # depth_gt = zw.get_map_value_for_points(
+    #       imgPoints=points,
+    #       mapPoints=depthMap,
+    #       mapType="depth")
+    #
+    # disparity_gt = zw.get_map_value_for_points(
+    #       imgPoints=points,
+    #       mapPoints=disparityMap,
+    #       mapType="disparity")
 
     print(f"\n\nX, Y = [{points[0][0]}, {points[0][1]}]\n\nGT:")
     depth_gt = get_depth_value_for_points(points, depthMap, unit="m")
