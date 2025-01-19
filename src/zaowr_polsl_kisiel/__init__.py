@@ -83,7 +83,6 @@ from .image_processing import (
     create_color_point_cloud, # create color point cloud with specified max depth
 )
 
-# TODO !!!!
 from . import optical_flow
 from .optical_flow import (
     list_camera_ports_available, # list available camera ports and the ones that are working
@@ -91,7 +90,6 @@ from .optical_flow import (
     sparse_optical_flow, # calculate sparse optical flow with Shi-Tomasi corner detection and Lucas-Kanade optical flow
     dense_optical_flow, # calculate dense optical flow with Farneback optical flow algorithm
 )
-# TODO !!!!
 
 from . import tools
 from .tools import (

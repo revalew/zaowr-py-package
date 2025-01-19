@@ -7,9 +7,9 @@ Functions:
 
 - `read_images_from_folder`: Reads images from a folder and sorts them alphabetically.
 
-- `sparse_optical_flow`: Calculates sparse optical flow using Shi-Tomasi corner detection and Lucas-Kanade optical flow.
+- `sparse_optical_flow`: Calculates sparse optical flow using Shi-Tomasi corner detection and Lucas-Kanade optical flow. Options to draw bounding boxes around moving objects are provided (DBSCAN - Density-Based Spatial Clustering of Applications with Noise).
 
-- `dense_optical_flow`: Calculates dense optical flow using Farneback optical flow algorithm.
+- `dense_optical_flow`: Calculates dense optical flow using Farneback optical flow algorithm. Options to draw bounding boxes around moving objects are provided (DBSCAN - Density-Based Spatial Clustering of Applications with Noise).
 
 Usage:
     - Use this module to perform optical flow computation.
