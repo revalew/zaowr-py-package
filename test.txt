@@ -5,6 +5,7 @@ fonttools==4.55.3
 imageio==2.36.1
 iniconfig==2.0.0
 Jinja2==3.1.4
+joblib==1.4.2
 kiwisolver==1.4.8
 lazy_loader==0.4
 MarkupSafe==3.0.2
@@ -24,9 +25,11 @@ pytest==8.3.3
 pytest-mock==3.14.0
 python-dateutil==2.9.0.post0
 scikit-image==0.25.0
+scikit-learn==1.6.1
 scipy==1.14.1
 six==1.17.0
+threadpoolctl==3.5.0
 tifffile==2024.12.12
 tqdm==4.67.1
 typing_extensions==4.12.2
-zaowr_polsl_kisiel==0.0.26
+zaowr_polsl_kisiel==0.0.31

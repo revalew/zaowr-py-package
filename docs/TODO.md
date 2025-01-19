@@ -66,14 +66,14 @@
      - [] get_image_points(),
      - [] get_map_value_for_points(),
      - [] create_color_point_cloud(),
-w
+
 6. Optical flow:
    - [x] sparse optical flow,
    - [x] dense optical flow,
    - [x] list available camera ports,
    - [x] read images from folder,
-   - [] detect movement and its direction,
-   - [] detect movement from camera feed,
+   - [?] detect movement and its direction (DONE WITH SIMPLE CLUSTERING - NOT SURE IF CORRECT),
+   - [?] detect movement from camera feed (DONE WITH SIMPLE CLUSTERING - NOT SURE IF CORRECT),
    - [] UPDATE THE DOCS!
      - [] list_camera_ports_available()
      - [] read_images_from_folder()
@@ -89,4 +89,4 @@ w
    - [x] Divide code into modules,
    - [x] Add docstrings to all functions, classes and modules,
    - [x] Unit tests for core functions,
-   - [] Unit tests for content loaders ???,
+   - [NAH...] Unit tests for content loaders ???,

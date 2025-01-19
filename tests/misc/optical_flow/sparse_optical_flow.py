@@ -1,12 +1,126 @@
 import os
-from time import perf_counter
+
 import cv2 as cv
 import numpy as np
 from colorama import Fore, init as colorama_init
+from sklearn.cluster import DBSCAN
 
-from . import read_images_from_folder
+# from . import read_images_from_folder
+from read_images_from_folder import read_images_from_folder
 
 colorama_init(autoreset=True)
+
+def cluster_and_draw_boxes(
+        frame: np.ndarray,
+        pointsOld: np.ndarray,
+        pointsNew: np.ndarray,
+        eps: float = 50,
+        minSamples: int = 2,
+        movementThreshold: float = 1,
+        smoothing_factor: float = 0.5,  # Stabilizacja bounding-boxów
+        prev_boxes: list = None  # Przechowywanie poprzednich pozycji boxów
+) -> np.ndarray:
+    """
+    Cluster moving points and draw separate bounding boxes for each cluster.
+
+    :param frame: Current video frame.
+    :param pointsOld: Points from the previous frame.
+    :param pointsNew: Points from the current frame.
+    :param eps: Maximum distance between two points to be in the same cluster.
+    :param minSamples: Minimum number of points in a cluster.
+    :param float movementThreshold: Threshold for determining if an object is moving.
+    :param smoothing_factor: Factor for smoothing bounding-box positions.
+    :param prev_boxes: Previous bounding boxes for smoothing.
+
+    :return: Frame with bounding boxes.
+    """
+    # Calculate motion vectors
+    motion_vectors = pointsNew - pointsOld
+    magnitudes = np.linalg.norm(motion_vectors, axis=1)
+
+    # Filter points with significant movement
+    moving_points = pointsNew[magnitudes > movementThreshold]
+    moving_vectors = motion_vectors[magnitudes > movementThreshold]  # Filter corresponding motion vectors
+
+    if len(moving_points) > 0:
+        # Clustering using DBSCAN
+        clustering = DBSCAN(eps=eps, min_samples=minSamples).fit(moving_points)
+        labels = clustering.labels_
+
+        new_boxes = []
+        for label in set(labels):
+            if label == -1:  # Ignore noise points
+                continue
+
+            # Select points in the current cluster
+            cluster_points = moving_points[labels == label]
+            cluster_motion = moving_vectors[labels == label]
+
+            # Calculate bounding box for the cluster
+            x_min, y_min = np.min(cluster_points, axis=0).astype(int)
+            x_max, y_max = np.max(cluster_points, axis=0).astype(int)
+
+            # Stabilize bounding boxes with smoothing
+            if prev_boxes and len(prev_boxes) > label:
+                prev_box = prev_boxes[label]
+                x_min = int(smoothing_factor * prev_box[0] + (1 - smoothing_factor) * x_min)
+                y_min = int(smoothing_factor * prev_box[1] + (1 - smoothing_factor) * y_min)
+                x_max = int(smoothing_factor * prev_box[2] + (1 - smoothing_factor) * x_max)
+                y_max = int(smoothing_factor * prev_box[3] + (1 - smoothing_factor) * y_max)
+
+            # Save current box for the next frame
+            new_boxes.append((x_min, y_min, x_max, y_max))
+
+            # Draw the bounding box
+            cv.rectangle(frame, (x_min, y_min), (x_max, y_max), (0, 255, 0), 2)
+
+            # Calculate direction and speed
+            avg_vector = np.mean(cluster_motion, axis=0)
+            speed = np.linalg.norm(avg_vector)
+            direction = np.arctan2(avg_vector[1], avg_vector[0]) * 180 / np.pi
+
+            # Display speed and direction on the frame
+            label_text = f"Speed: {speed:.2f}, Dir: {direction:.1f}°"
+            cv.putText(frame, label_text, (x_min, y_min - 10), cv.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1)
+
+        # Update previous boxes
+        return frame, new_boxes
+
+    return frame, prev_boxes or []
+
+def draw_bounding_boxes(
+        frame: np.ndarray,
+        pointsOld: np.ndarray,
+        pointsNew: np.ndarray,
+        movementThreshold: float = 1,
+) -> np.ndarray:
+    """
+    Draw bounding boxes around moving objects based on optical flow points.
+
+    :param np.ndarray frame: Current video frame.
+    :param np.ndarray pointsOld: Previous frame points.
+    :param np.ndarray pointsNew: Current frame points.
+    :param float movementThreshold: Threshold for determining if an object is moving.
+
+    :return: Frame with bounding boxes.
+    """
+    # Calculate motion vectors
+    motionVectors = pointsNew - pointsOld
+
+    # Determine if motion is significant
+    magnitudes = np.linalg.norm(motionVectors, axis=1)
+    threshold = movementThreshold  # Minimum motion to consider as movement
+    movingPoints = pointsNew[magnitudes > threshold]
+
+    if len(movingPoints) > 0:
+        # Calculate bounding box around moving points
+        xMin, yMin = np.min(movingPoints, axis=0).astype(int)
+        xMax, yMax = np.max(movingPoints, axis=0).astype(int)
+
+        # Draw the bounding box
+        cv.rectangle(frame, (xMin, yMin), (xMax, yMax), (0, 255, 0), 2)
+
+    return frame
 
 def sparse_optical_flow(
         source: str | int = -1,  # -1 for 1st accessible webcam
@@ -18,33 +132,24 @@ def sparse_optical_flow(
         maxLevel: int = 2,
         criteria: tuple[int, int, float] = (cv.TERM_CRITERIA_EPS | cv.TERM_CRITERIA_COUNT, 10, 0.03),
         drawBboxes: bool = False,
-        clusteringEps: float = 40.0,
-        minClusterSize: int = 3,
-        clusteringMethod: str = "cityblock",
-        speedFilter: float = None,  # Minimal value of speed to be detected
-        directionFilter: tuple[float, float] = None,  # Range of angles to be detected
+        movementThreshold: float = 2,
         windowSize: tuple[int, int] = (1080, 720),
         windowName: str = "Sparse optical flow",
 ) -> None:
     """
-    Calculate sparse optical flow using Shi-Tomasi corner detection and Lucas-Kanade optical flow. Options to draw bounding boxes around moving objects are provided (**DBSCAN - Density-Based Spatial Clustering of Applications with Noise**).
+    Calculate sparse optical flow using Shi-Tomasi corner detection and Lucas-Kanade optical flow.
 
     :param source: The source of the video feed. Can be a camera number, video file path, or folder with images.
     :param maxCorners: The maximum number of corners to detect (**Shi-Tomasi**).
     :param qualityLevel: The quality level for corner detection (**Shi-Tomasi**).
     :param minDistance: The minimum distance between corners (**Shi-Tomasi**).
     :param blockSize: The block size for corner detection (**Shi-Tomasi**).
-    :param winSize: The window size for **Lucas-Kanade** optical flow.
-    :param maxLevel: The maximum pyramid level for **Lucas-Kanade** optical flow.
-    :param criteria: The termination criteria for **Lucas-Kanade** optical flow.
+    :param winSize: The window size for Lucas-Kanade optical flow.
+    :param maxLevel: The maximum pyramid level for Lucas-Kanade optical flow.
+    :param criteria: The termination criteria for Lucas-Kanade optical flow.
 
-    :param drawBboxes: Whether to draw bounding boxes around detected corners (**DBSCAN**).
-    :param clusteringEps: The epsilon value for clustering (**DBSCAN**).
-    :param minClusterSize: The minimum size of a cluster (**DBSCAN**).
-    :param clusteringMethod: The method for clustering (**DBSCAN**).
-
-    :param speedFilter: The minimal speed of the object to be detected.
-    :param directionFilter: The range of angles for the object to be detected.
+    :param drawBboxes: If True, draws bounding boxes around moving objects.
+    :param movementThreshold: Threshold for determining if an object is moving.
 
     :param windowSize: The size of the window to display the optical flow.
     :param windowName: The name of the window to display the optical flow.
@@ -65,33 +170,6 @@ def sparse_optical_flow(
         - **`source`** is a video file path and the file could not be loaded.
 
     :return: None
-
-    **DBSCAN clustering**:  _VALID_METRICS = [
-    "euclidean",
-    "l2",
-    "l1",
-    "manhattan",
-    "cityblock",
-    "braycurtis",
-    "canberra",
-    "chebyshev",
-    "correlation",
-    "cosine",
-    "dice",
-    "hamming",
-    "jaccard",
-    "mahalanobis",
-    "matching",
-    "minkowski",
-    "rogerstanimoto",
-    "russellrao",
-    "seuclidean",
-    "sokalsneath",
-    "sqeuclidean",
-    "yule",
-    "wminkowski",
-    "nan_euclidean",
-    "haversine",]
     """
     # Determine the type of source
     if isinstance(source, int) or (isinstance(source, str) and source.isdigit()):
@@ -160,12 +238,9 @@ def sparse_optical_flow(
     print(Fore.GREEN + "\nPress `Esc` or `q` to exit...\nPress `s` to save current frame...")
 
     frameCount = 0
-    frameTimes = []
     goodOld, goodNew = None, None
-    # out = cv.VideoWriter('output_sparse.avi', cv.VideoWriter_fourcc(*'XVID'), 20.0, (oldGray.shape[1], oldGray.shape[0]))
+    prev_boxes = []  # Initialize storage for previous boxes
     while True:
-        startTime = perf_counter()
-
         # Read next frame or image
         if sourceType == "images":
             try:
@@ -203,7 +278,7 @@ def sparse_optical_flow(
             # Selects good feature points for next position
             goodNew = p1[st == 1]
 
-        else:
+        if goodOld is None or goodNew is None:
             continue
 
         # draw the tracks
@@ -219,62 +294,15 @@ def sparse_optical_flow(
             frame = cv.circle(frame, (int(a), int(b)), 5, color[i].tolist(), -1)
             # frame = cv.circle(frame, (int(a), int(b)), 5, color, -1)
 
-        if drawBboxes and len(goodNew) > 0:
-            from sklearn.cluster import DBSCAN
 
-            # Clustering points using DBSCAN
-            if len(goodNew) > 0:
-                clustering = DBSCAN(eps=clusteringEps, min_samples=minClusterSize, metric=clusteringMethod, n_jobs=-1).fit(goodNew)
-                labels = clustering.labels_
-
-                uniqueLabels = set(labels)
-                for label in uniqueLabels:
-                    if label == -1: # Ignore noise
-                        continue
-
-                    # Check if any points belong to the current cluster
-                    clusterPoints = goodNew[labels == label]
-                    clusterOldPoints = goodOld[labels == label]
-
-                    # Calculate bounding box for the current cluster
-                    x, y, w, h = cv.boundingRect(clusterPoints)
-
-                    # Calculate average motion vector for the cluster
-                    motionVectors = clusterPoints - clusterOldPoints
-                    avgMotion = np.mean(motionVectors, axis=0)
-
-                    # Calculate speed and direction
-                    speed = np.linalg.norm(avgMotion)
-                    directionAngle = np.arctan2(avgMotion[1], avgMotion[0]) * 180 / np.pi  # Convert to degrees
-
-                    # Filter by speed and direction
-                    if directionFilter:
-                        cv.putText(frame, f"Direction filter: <{directionFilter[0]:.1f}, {directionFilter[1]:.1f}> deg", (frame.shape[0] // 2, 40), cv.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 1)
-                        lower, upper = directionFilter
-                        if not (lower <= directionAngle <= upper):
-                            continue
-
-                    if speedFilter:
-                        cv.putText(frame, f"Speed filter: {speedFilter:.2f} px/frame", (frame.shape[0] // 2, 20), cv.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 1)
-                        if speed < speedFilter:
-                            continue
-
-
-                    # Draw green bounding box around the cluster
-                    cv.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
-
-                    # Draw direction vector on the image
-                    startPoint = (int(x + w / 2), int(y + h / 2))  # Center of bounding box
-                    endPoint = (int(startPoint[0] + avgMotion[0] * 20), int(startPoint[1] + avgMotion[1] * 20))
-                    cv.arrowedLine(frame, startPoint, endPoint, (0, 0, 255), 2, tipLength=0.5)
-
-                    # Add speed and direction text
-                    txtColor = (0, 255, 0)
-                    speedText = f"Speed: {speed:.2f} px/frame"
-                    directionText = f"Dir: {directionAngle:.1f} deg"
-                    cv.putText(frame, speedText, (x, y - 20), cv.FONT_HERSHEY_SIMPLEX, 0.7, txtColor, 1)
-                    cv.putText(frame, directionText, (x, y - 40), cv.FONT_HERSHEY_SIMPLEX, 0.7, txtColor, 1)
-
+        # Draw bounding boxes around moving objects
+        if drawBboxes:
+            # frame2 = draw_bounding_boxes(frame, goodOld, goodNew)
+            # frame = cv.add(frame, frame2)
+            # frame = draw_bounding_boxes(frame, goodOld, goodNew, movementThreshold)
+            # frame = cluster_and_draw_boxes(frame, goodOld, goodNew, 200, 4, movementThreshold)
+            # Cluster points and draw bounding boxes with stabilization
+            frame, prev_boxes = cluster_and_draw_boxes(frame, goodOld, goodNew, 50, 2, movementThreshold, prev_boxes=prev_boxes)
 
         # Overlays the optical flow tracks on the original frame
         img = cv.add(frame, mask)
@@ -299,7 +327,6 @@ def sparse_optical_flow(
             break
 
         cv.imshow(windowName, img)
-        # out.write(img)
 
         # Frames are read by intervals of 30 milliseconds. The programs breaks out of the while loop when the user presses the 'Esc' or 'q' key
         k = cv.waitKey(30) & 0xff
@@ -321,16 +348,30 @@ def sparse_optical_flow(
         p0 = goodNew.reshape(-1, 1, 2)
 
         frameCount += 1
-        frameTimes.append(perf_counter() - startTime)
-        # print(f"Frame time: {frameTime:.2f} s")
-
-    # Calculate average time of operations per frame
-    avgTime = np.mean(frameTimes)
-    print(Fore.GREEN + f"\nAverage mean operation time per frame: {avgTime:.4f} sec/frame")
 
     # Release resources and close windows
-    # if out is not None:
-    #     out.release()
     if cap is not None:
         cap.release()
     cv.destroyAllWindows()
+
+
+if __name__ == '__main__':
+    # Provide the source: camera number, video path, or folder path
+    videoPath = "/run/media/maks/Dokumenty 2/Studia/Infa Magister/Infa sem 2/ZAOWR Zaawansowana Analiza Obrazu, Wideo i Ruchu/zaowr_py_package/tests/misc/optical_flow/slow_traffic_small.mp4"
+
+    # videoPath = None
+    # videoPath = 2
+    # videoPath = "/run/media/maks/Dokumenty 2/Studia/Infa Magister/Infa sem 2/ZAOWR Zaawansowana Analiza Obrazu, Wideo i Ruchu/ZAOWiR Image set - Calibration/Chessboard/Stereo 2/cam1/"
+
+    sparse_optical_flow(
+        source=videoPath,
+        maxCorners = 300,
+        qualityLevel = 0.2,
+        minDistance = 2,
+        blockSize = 7,
+        winSize = (13, 13),
+        maxLevel = 10,
+        drawBboxes=True,
+        movementThreshold = 1.1,
+        # movementThreshold = .7,
+    )
