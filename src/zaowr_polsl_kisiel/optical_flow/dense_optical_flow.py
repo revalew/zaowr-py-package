@@ -18,6 +18,8 @@ def dense_optical_flow(
         poly_sigma: float = 1.2,
         flags: int = 0,
         drawBboxes: bool = False,
+        bboxMethod: str = "threshold",
+        thresholdMagnitude: float = 15.0,
         clusteringEps: float = 15.0,
         minClusterSize: int = 100,
         clusteringMethod: str = "cityblock",
@@ -28,7 +30,7 @@ def dense_optical_flow(
         windowName: str = "Dense optical flow",
 ) -> None:
     """
-    Calculate dense optical flow using Farneback's algorithm. Options to draw bounding boxes around moving objects are provided (**DBSCAN - Density-Based Spatial Clustering of Applications with Noise**).
+    Calculate dense optical flow using Farneback's algorithm. Options to draw bounding boxes around moving objects are provided (**DBSCAN - Density-Based Spatial Clustering of Applications with Noise** and **threshold**).
 
     :param source: The source of the video feed. Can be a camera number, video file path, or folder with images.
     :param pyr_scale: The pyramid scale factor for Farneback's algorithm.
@@ -39,7 +41,11 @@ def dense_optical_flow(
     :param poly_sigma: The standard deviation for Farneback's algorithm.
     :param flags: The flags for Farneback's algorithm.
 
-    :param drawBboxes: Whether to draw bounding boxes around detected corners (**DBSCAN**).
+    :param drawBboxes: Whether to draw bounding boxes around detected corners.
+    :param bboxMethod: The method for drawing bounding boxes (**"dbscan"** or **"threshold"**).
+
+    :param thresholdMagnitude: The threshold magnitude for bounding boxes (**threshold**).
+
     :param clusteringEps: The epsilon value for clustering (**DBSCAN**).
     :param minClusterSize: The minimum size of a cluster (**DBSCAN**).
     :param clusteringMethod: The method for clustering (**DBSCAN**).
@@ -55,6 +61,7 @@ def dense_optical_flow(
     :raises ValueError: Raises ValueError if:
         - **`source`** is None.
         - **`source`** is **NOT** an integer, a string, or a folder path.
+        - **`bboxMethod`** not in ["dbscan", "threshold"].
 
     :raises IOError: Raises IOError if:
         - **`source`** is a video file path and the file could not be loaded.
@@ -214,47 +221,105 @@ def dense_optical_flow(
 
         # Clustering pixels with similar speed and direction
         if drawBboxes:
-            from sklearn.cluster import DBSCAN
+            if bboxMethod == "dbscan":
+                from sklearn.cluster import DBSCAN
 
-            h, w = mag.shape
-            motionPoints = np.column_stack((np.where(mag > 0)))  # Points with ANY motion
+                h, w = mag.shape
+                motionPoints = np.column_stack((np.where(mag > 0)))  # Points with ANY motion
 
-            if len(motionPoints) > 0:
-                # Get speed and direction for active pixels
-                motionVectors = np.column_stack((motionPoints, mag[motionPoints[:, 0], motionPoints[:, 1]]))
+                if len(motionPoints) > 0:
+                    # Get speed and direction for active pixels
+                    motionVectors = np.column_stack((motionPoints, mag[motionPoints[:, 0], motionPoints[:, 1]]))
 
-                # Clustering points using DBSCAN
-                clustering = DBSCAN(eps=clusteringEps, min_samples=minClusterSize, metric=clusteringMethod, n_jobs=-1).fit(motionPoints)
-                labels = clustering.labels_
+                    # Clustering points using DBSCAN
+                    clustering = DBSCAN(eps=clusteringEps, min_samples=minClusterSize, metric=clusteringMethod, n_jobs=-1).fit(motionPoints)
+                    labels = clustering.labels_
 
-                for label in set(labels):
-                    if label == -1: # Ignore noise
-                        continue
+                    for label in set(labels):
+                        if label == -1: # Ignore noise
+                            continue
 
-                    # Check if any points belong to the current cluster
-                    clusterPoints = motionPoints[labels == label]
+                        # Check if any points belong to the current cluster
+                        clusterPoints = motionPoints[labels == label]
 
-                    # Calculate bounding box for the current cluster
-                    x, y, w, h = cv.boundingRect(clusterPoints)
-                    x, y, w, h = [int(v / scaleFactor) for v in (x, y, w, h)]
+                        # Calculate bounding box for the current cluster
+                        x, y, w, h = cv.boundingRect(clusterPoints)
+                        x, y, w, h = [int(v / scaleFactor) for v in (x, y, w, h)]
 
-                    # Calculate average speed and direction
-                    avgSpeed = mag[clusterPoints[:, 0], clusterPoints[:, 1]].mean()
-                    avgAngle = np.degrees(ang[clusterPoints[:, 0], clusterPoints[:, 1]].mean())
+                        # Calculate average speed and direction
+                        avgSpeed = mag[clusterPoints[:, 0], clusterPoints[:, 1]].mean()
+                        avgAngle = np.degrees(ang[clusterPoints[:, 0], clusterPoints[:, 1]].mean())
 
-                    # Draw green bounding box around the cluster
-                    cv.rectangle(overlay, (x, y), (x + w, y + h), (0, 255, 0), 2)
+                        # Draw green bounding box around the cluster
+                        cv.rectangle(overlay, (x, y), (x + w, y + h), (0, 255, 0), 2)
 
-                    # Add speed and direction text
-                    txtColor = (0, 255, 0)
-                    speedText = f"Speed: {avgSpeed:.2f} px/frame"
-                    directionText = f"Dir: {avgAngle:.1f} deg"
-                    cv.putText(overlay, speedText, (x, y - 20), cv.FONT_HERSHEY_SIMPLEX, 0.5, txtColor, 1)
-                    cv.putText(overlay, directionText, (x, y - 40), cv.FONT_HERSHEY_SIMPLEX, 0.5, txtColor, 1)
+                        # Add speed and direction text
+                        txtColor = (0, 255, 0)
+                        speedText = f"Speed: {avgSpeed:.2f} px/frame"
+                        directionText = f"Dir: {avgAngle:.1f} deg"
+                        cv.putText(overlay, speedText, (x, y - 20), cv.FONT_HERSHEY_SIMPLEX, 0.5, txtColor, 1)
+                        cv.putText(overlay, directionText, (x, y - 40), cv.FONT_HERSHEY_SIMPLEX, 0.5, txtColor, 1)
 
-        # TODO !!!
-        # NOTE: ChatGPT may be stupid but so am I... -_-
-        # I don't even want to try anymore
+            elif bboxMethod == "threshold":
+                # Normalize and threshold the motion magnitude
+                motionMagnitude = cv.normalize(mag, None, 0, 255, cv.NORM_MINMAX)
+                _, motionMask = cv.threshold(motionMagnitude, thresholdMagnitude, 255, cv.THRESH_BINARY)
+                motionMask = motionMask.astype(np.uint8)
+
+                # Find contours on the motion mask
+                contours, _ = cv.findContours(motionMask, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)
+                for cnt in contours:
+                    if cv.contourArea(cnt) > 500:
+                        x, y, w, h = cv.boundingRect(cnt)
+                        x, y, w, h = [int(v / scaleFactor) for v in (x, y, w, h)]
+
+                        # Extract magnitudes and angles for points inside the contour
+                        tmpMask = np.zeros_like(motionMask, dtype=np.uint8)
+                        cv.drawContours(tmpMask, [cnt], -1, color=255, thickness=-1)  # Mask of the current contour
+
+                        # Get magnitudes and angles inside the mask
+                        mag_inside = mag[tmpMask > 0]  # Magnitudes of motion vectors
+                        ang_inside = ang[tmpMask > 0]  # Angles of motion vectors
+
+                        if mag_inside.size > 0:
+                            avgSpeed = np.mean(mag_inside)  # Average motion magnitude
+                            avgAngle = np.degrees(np.mean(ang_inside))  # Average motion angle in degrees
+                        else:
+                            avgSpeed, avgAngle = 0, 0
+
+                        # Draw green bounding box around the cluster
+                        cv.rectangle(overlay, (x, y), (x + w, y + h), (0, 255, 0), 2)
+
+                        # Calculate motion components
+                        avgMotionX = avgSpeed * np.cos(np.radians(avgAngle))  # X component
+                        avgMotionY = avgSpeed * np.sin(np.radians(avgAngle))  # Y component
+
+                        # Draw direction vector as an arrow
+                        startPoint = (int(x + w / 2), int(y + h / 2))  # Center of bounding box
+                        endPoint = (
+                            int(startPoint[0] + avgMotionX * 20),
+                            int(startPoint[1] + avgMotionY * 20),
+                        )
+                        cv.arrowedLine(overlay, startPoint, endPoint, (0, 0, 255), 2, tipLength=0.5)
+
+                        # Add speed and direction text
+                        txtColor = (0, 255, 0)
+                        speedText = f"Speed: {avgSpeed:.2f} px/frame"
+                        directionText = f"Dir: {avgAngle:.1f} deg"
+                        cv.putText(overlay, speedText, (x, y - 20), cv.FONT_HERSHEY_SIMPLEX, 0.5, txtColor, 1)
+                        cv.putText(overlay, directionText, (x, y - 40), cv.FONT_HERSHEY_SIMPLEX, 0.5, txtColor, 1)
+
+            else:
+                raise ValueError(f"Unknown clustering method: {bboxMethod}")
+
+
+        """
+        TODO !!!
+        NOTE: ChatGPT may be stupid but so am I... -_-
+        I don't even want to try anymore...
+        Clustering pixels based on HSV values
+        
+        
 
             # # Klasteryzacja na podstawie HSV
             # ang_copy = ang.copy()
@@ -313,6 +378,7 @@ def dense_optical_flow(
             #         angle_text = f"Dir: {np.degrees(avg_angle):.1f} deg"
             #         cv.putText(frame, speed_text, (x, y - 20), cv.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1)
             #         cv.putText(frame, angle_text, (x, y - 40), cv.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 1)
+        """
 
 
         if scaleFactor != 1.0:

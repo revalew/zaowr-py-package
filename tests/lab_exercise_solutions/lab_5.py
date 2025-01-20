@@ -25,7 +25,7 @@ def main():
     )
 
     ###############################
-    # EX 3 (sparse_optical_flow)
+    # EX 3 (sparse_optical_flow, DBSCAN)
     ###############################
     zw.sparse_optical_flow(
         source=videoPath,
@@ -36,10 +36,27 @@ def main():
         winSize=(15, 15),
         maxLevel=2,
         drawBboxes=True,
+        bboxMethod="dbscan",
     )
 
     ###############################
-    # EX 3 (dense_optical_flow)
+    # EX 3 (sparse_optical_flow, threshold)
+    ###############################
+    zw.sparse_optical_flow(
+        source=videoPath,
+        maxCorners=300,
+        qualityLevel=0.1,
+        minDistance=7,
+        blockSize=5,
+        winSize=(15, 15),
+        maxLevel=2,
+        drawBboxes=True,
+        bboxMethod="threshold",
+        thresholdMagnitude=0,
+    )
+
+    ###############################
+    # EX 3 (dense_optical_flow, DBSCAN)
     ###############################
     zw.dense_optical_flow(
         source=videoPath,
@@ -54,7 +71,20 @@ def main():
     )
 
     ###############################
-    # EX 4 (sparse_optical_flow)
+    # EX 3 (dense_optical_flow, threshold)
+    ###############################
+    zw.dense_optical_flow(
+        source=videoPath,
+        levels=3,
+        winsize=11,
+        iterations=4,
+        drawBboxes=True,
+        bboxMethod="threshold",
+        thresholdMagnitude=40.0,
+    )
+
+    ###############################
+    # EX 4 (sparse_optical_flow, DBSCAN)
     ###############################
     zw.sparse_optical_flow(
         source=videoPath,
@@ -65,12 +95,31 @@ def main():
         winSize=(15, 15),
         maxLevel=2,
         drawBboxes=True,
+        bboxMethod="dbscan",
         speedFilter=2,  # Minimalna prędkość ruchu
         directionFilter=(-45, 45)  # Reaguje tylko na ruch w poziomie
     )
 
     ###############################
-    # EX 4 (dense_optical_flow)
+    # EX 4 (sparse_optical_flow, threshold)
+    ###############################
+    zw.sparse_optical_flow(
+        source=videoPath,
+        maxCorners=300,
+        qualityLevel=0.1,
+        minDistance=7,
+        blockSize=5,
+        winSize=(15, 15),
+        maxLevel=2,
+        drawBboxes=True,
+        bboxMethod="threshold",
+        thresholdMagnitude=1,
+        speedFilter=2,  # Minimalna prędkość ruchu
+        directionFilter=(-45, 45)  # Reaguje tylko na ruch w poziomie
+    )
+
+    ###############################
+    # EX 4 (dense_optical_flow, DBSCAN)
     ###############################
     zw.dense_optical_flow(
         source=videoPath,
@@ -78,12 +127,28 @@ def main():
         winsize=9,
         iterations=2,
         drawBboxes=True,
+        bboxMethod="dbscan",
         scaleFactor=.5,
-        speedFilter=2,  # Minimalna prędkość
+        speedFilter=.7,  # Minimalna prędkość
         directionFilter=(45, 135),  # Ruch w zakresie 45° - 135°
         clusteringMethod="euclidean",
         clusteringEps=20,  # Promień dla klasteryzacji
         minClusterSize=50,  # Minimalna liczba pikseli w klastrze
+    )
+
+    ###############################
+    # EX 4 (dense_optical_flow, threshold)
+    ###############################
+    zw.dense_optical_flow(
+        source=videoPath,
+        levels=3,
+        winsize=11,
+        iterations=4,
+        drawBboxes=True,
+        bboxMethod="threshold",
+        thresholdMagnitude=40.0,
+        speedFilter=.6,  # Minimalna prędkość
+        directionFilter=(45, 135),  # Ruch w zakresie 45° - 135°
     )
 
 if __name__ == '__main__':
