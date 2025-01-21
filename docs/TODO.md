@@ -62,27 +62,27 @@
    - [x] Function to get pixel coordinates from an image,
    - [x] Function to get map value for points (e.g. disparity, depth) (get pixel coordinates -> get map value for that pixel),
    - [x] Function to create a point cloud,
-   - [] UPDATE THE DOCS!
-     - [] get_image_points(),
-     - [] get_map_value_for_points(),
-     - [] create_color_point_cloud(),
+   - [x] UPDATE THE DOCS!
+     - [x] get_image_points(),
+     - [x] get_map_value_for_points(),
+     - [x] create_color_point_cloud(),
 
 6. Optical flow:
    - [x] sparse optical flow,
    - [x] dense optical flow,
    - [x] list available camera ports,
    - [x] read images from folder,
-   - [?] detect movement and its direction (DONE WITH SIMPLE CLUSTERING - NOT SURE IF CORRECT),
-   - [?] detect movement from camera feed (DONE WITH SIMPLE CLUSTERING - NOT SURE IF CORRECT),
-   - [] UPDATE THE DOCS!
-     - [] list_camera_ports_available()
-     - [] read_images_from_folder()
-     - [] sparse_optical_flow()
-     - [] dense_optical_flow()
-     - [] configure_qt_platform()
+   - [x] detect movement and its direction (DONE WITH SIMPLE CLUSTERING - NOT SURE IF CORRECT; ADDED THRESHOLDING - NOW IT'S IGHT),
+   - [x] detect movement from camera feed (DONE WITH SIMPLE CLUSTERING - NOT SURE IF CORRECT; ADDED THRESHOLDING - NOW IT'S IGHT),
+   - [x] UPDATE THE DOCS!
+     - [x] list_camera_ports_available()
+     - [x] read_images_from_folder()
+     - [x] sparse_optical_flow()
+     - [x] dense_optical_flow()
+     - [x] configure_qt_platform()
 
 7. Misc.:
-   - [] Clean the USAGE.md file !!!,
+   - [x] Clean the USAGE.md file !!!,
    - [x] Add function to validate / load params stored in files,
    - [x] Add requirements based on the tasks provided,
    - [x] Add directory with lab solutions,

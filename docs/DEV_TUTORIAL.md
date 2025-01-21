@@ -108,6 +108,28 @@ dynamic = ["version", "readme", "dependencies", "optional-dependencies"]
 authors = [
   { name="Maksymilian Kisiel" },
 ]
+description = "A simple Python package used by me and my friends at university in the 'Advanced Image, Video and Motion Analysis' course."
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+keywords = ["polsl", "zaowr", "2024/2025", "IGT", "ZAOWR"]
+
+[tool.setuptools.dynamic]
+version = {attr = "zaowr_polsl_kisiel.__version__"}  # any module attribute compatible with ast.literal_eval
+readme = {file = ["README.md",[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "zaowr_polsl_kisiel"
+license = {file = "LICENSE"}
+dynamic = ["version", "readme", "dependencies", "optional-dependencies"]
+authors = [
+  { name="Maksymilian Kisiel" },
+]
 description = "A simple Python package used by me and a friend at the university in the course 'Advanced Image, Video and Motion Analysis'"
 requires-python = ">=3.8"
 classifiers = [
@@ -120,6 +142,14 @@ keywords = ["polsl", "zaowr", "2024", "IGT", "ZAOWR"]
 [tool.setuptools.dynamic]
 version = {attr = "zaowr_polsl_kisiel.__version__"}  # any module attribute compatible with ast.literal_eval
 readme = {file = ["README.md", "./docs/WINDOWS.md", "./docs/USAGE.md"], content-type = "text/markdown"}
+dependencies = {file = ["requirements.txt"]}
+optional-dependencies.dev = {file = ["dev-requirements.txt"]}
+
+[project.urls]
+Repository = "https://github.com/revalew/zaowr-py-package"
+Issues = "https://github.com/revalew/zaowr-py-package/issues"
+Changelog = "https://github.com/revalew/zaowr-py-package/releases"
+Documentation = "https://github.com/revalew/zaowr-py-package/blob/master/docs/USAGE.md" "./docs/USAGE.md"], content-type = "text/markdown"}
 dependencies = {file = ["requirements.txt"]}
 optional-dependencies.dev = {file = ["dev-requirements.txt"]}
 
@@ -371,7 +401,7 @@ python3
 <br/>
 
 ```python
-from zaowr_polsl_kisiel import load_calibration
+import zaowr_polsl_kisiel as zw
 ```
 
 </li>
@@ -394,13 +424,13 @@ from zaowr_polsl_kisiel import load_calibration
 
 ```python
 # remember to provide appropriate path to the calibration params
-calibrationParams = load_calibration("/path/to/calibration_params.json")
+calibrationParams = zw.load_calibration("/path/to/calibration_params.json")
 ```
 
 </li>
 <br/>
 
-<li> Display the <code>MSE</code> value to test if the load succeeded
+<li> Display the <code>MSE</code> value to test if the load succeeded (other keys should be suggested automatically)
 
 <br/>
 <br/>

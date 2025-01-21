@@ -30,18 +30,3 @@ def list_camera_ports_available() -> tuple[list[int], list[int], list[int]]:
                 availablePorts.append(devPort)
         devPort +=1
     return availablePorts, workingPorts, nonWorkingPorts
-
-
-if __name__ == '__main__':
-    availablePorts, workingPorts, nonWorkingPorts = list_camera_ports_available()
-
-    import os
-    def cls():
-        os.system('cls' if os.name == 'nt' else 'clear')
-    cls()
-
-    # print(f"\nAvailable ports: {availablePorts}")
-    print(Fore.GREEN + f"\nWorking ports: {workingPorts}")
-    # print(f"Non working ports: {nonWorkingPorts}")
-    # Port 0 is working and reads images (480.0 x 640.0)
-    # Port 2 is working and reads images (480.0 x 640.0)

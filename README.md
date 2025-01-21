@@ -353,4 +353,4 @@ The code fulfills all the requirements necessary to pass the course. Detailed de
 
 This package has been prepared following [this tutorial](https://packaging.python.org/en/latest/tutorials/packaging-projects/)
 
-The publishing to PyPI was created with [this tutorial](https://packaging.python.org/en/latest/guides/publishing-package-distribution-releases-using-github-actions-ci-cd-workflows/)
+Workflow for publishing to PyPI was created with [this tutorial](https://packaging.python.org/en/latest/guides/publishing-package-distribution-releases-using-github-actions-ci-cd-workflows/)

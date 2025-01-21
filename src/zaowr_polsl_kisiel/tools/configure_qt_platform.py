@@ -7,7 +7,7 @@ colorama_init(autoreset=True)
 
 def configure_qt_platform() -> None:
     """
-    Sets the `QT_QPA_PLATFORM` environment variable to 'xcb' on Linux.
+    Sets the `QT_QPA_PLATFORM` environment variable to 'xcb' on Linux systems to suppress warnings about Wayland plugins.
 
     :return: None
     """
