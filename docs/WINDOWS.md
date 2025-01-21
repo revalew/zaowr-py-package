@@ -15,12 +15,16 @@ Functions take too many arguments and offer too many options. Most functions are
 [//]: # (<div style="font-size: 22px; text-transform: uppercase; color: #ff0000;">)
 
 <div align="center">
-<div style="font-size: 16px; text-transform: uppercase; color: #ff0000;">
+  
+<div style="font-size: 22px;" color="red">
 I made a genuine effort to balance flexibility with usability. If something feels unnecessarily complex, chances are it is — but with a little patience, you'll likely find a straightforward way to achieve your goal.
+
 </div>
+
 <sub><sub>
 Take a look at solutions in <code>./tests/lab_exercise_solutions/</code> to understand how to use the package effectively (maybe). 
 </sub></sub>
+
 </div>
 
 <br/>
