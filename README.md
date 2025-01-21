@@ -298,7 +298,7 @@ python3
 <br/>
 
 ```python
-from zaowr_polsl_kisiel import load_calibration
+import zaowr_polsl_kisiel as zw
 ```
 
 </li>
@@ -321,13 +321,13 @@ from zaowr_polsl_kisiel import load_calibration
 
 ```python
 # remember to provide appropriate path to the calibration params
-calibrationParams = load_calibration("/path/to/calibration_params.json")
+calibrationParams = zw.load_calibration("/path/to/calibration_params.json")
 ```
 
 </li>
 <br/>
 
-<li> Display the <code>MSE</code> value to test if the load succeeded
+<li> Display the <code>MSE</code> value to test if the load succeeded (other keys should be suggested automatically)
 
 <br/>
 <br/>
