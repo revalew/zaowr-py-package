@@ -11,6 +11,25 @@ PyPI link to the package: <a href="https://pypi.org/project/zaowr-polsl-kisiel/"
 <br/>
 <br/>
 
+## Code quality disclaimer
+
+This package is not perfect. The code does everything it should, but that is the problem. It does everything...
+Functions take too many arguments and offer too many options. Most functions are not broken up into smaller chunks - they are long and sometimes complicated. However, it’s worth noting that most of these options are not mandatory—you can use the package effectively without specifying all of them.
+
+[//]: # (<div style="font-size: 22px; text-transform: uppercase; color: #ff0000;">)
+
+<div align="center">
+<div style="font-size: 16px; text-transform: uppercase; color: #ff0000;">
+I made a genuine effort to balance flexibility with usability. If something feels unnecessarily complex, chances are it is — but with a little patience, you'll likely find a straightforward way to achieve your goal.
+</div>
+<sub><sub>
+Take a look at solutions in <code>./tests/lab_exercise_solutions/</code> to understand how to use the package effectively (maybe). 
+</sub></sub>
+</div>
+
+<br/>
+<br/>
+
 ## Table of contents
 
 1. [Windows tutorial](./docs/WINDOWS.md)
