@@ -18,7 +18,7 @@ PyPI link to the package: <a href="https://pypi.org/project/zaowr-polsl-kisiel/"
 <div style="font-size: 36px;" color="red">
 It seems that the Optical Flow methods are not working on some Windows machines. I won't fix this. Use simple example code if you want to run this yourself - 
 
-[./tests/misc/optical_flow/simple_flow_complete.py](./tests/misc/optical_flow/simple_flow_complete.py).
+[../tests/misc/optical_flow/simple_flow_complete.py](./tests/misc/optical_flow/simple_flow_complete.py).
 
 </div>
 
