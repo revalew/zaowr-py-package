@@ -1,13 +1,26 @@
 # ZAOWR Package - Windows Tutorial
 
-This is a **ZAOWR** (Zaawansowana Analiza Obrazu, Wideo i Ruchu, eng. _Advanced Image, Video, and Motion Analysis_) Python package used by me and a friend at the university.
+<br/>
 
-PyPI link to the package: [MAIN PyPI](https://pypi.org/project/zaowr-polsl-kisiel/), [TEST PyPI](https://test.pypi.org/project/zaowr-polsl-kisiel/).
+This is a **ZAOWR** (Zaawansowana Analiza Obrazu, Wideo i Ruchu, eng. _Advanced Image, Video, and Motion Analysis_) Python package used by me and my friends at the university.
+
+<br/>
+
+PyPI link to the package: <a href="https://pypi.org/project/zaowr-polsl-kisiel/" target="_blank"><b>MAIN PyPI</b></a>, <a href="https://test.pypi.org/project/zaowr-polsl-kisiel/" target="_blank"><b>TEST PyPI</b></a>.
 
 <br/>
 <br/>
 
 ## Code quality disclaimer
+
+<div align="center">
+  
+<div style="font-size: 36px;" color="red">
+It seems that the Optical Flow methods are not working on some Windows machines. I won't fix this. Use simple example code if you want to run this yourself - 
+
+[./tests/misc/optical_flow/simple_flow_complete.py](./tests/misc/optical_flow/simple_flow_complete.py).
+
+</div>
 
 This package is not perfect. The code does everything it should, but that is the problem. It does everything...
 Functions take too many arguments and offer too many options. Most functions are not broken up into smaller chunks - they are long and sometimes complicated. However, it’s worth noting that most of these options are not mandatory—you can use the package effectively without specifying all of them.

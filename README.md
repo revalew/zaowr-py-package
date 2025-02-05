@@ -13,6 +13,15 @@ PyPI link to the package: <a href="https://pypi.org/project/zaowr-polsl-kisiel/"
 
 ## Code quality disclaimer
 
+<div align="center">
+  
+<div style="font-size: 36px;" color="red">
+It seems that the Optical Flow methods are not working on some Windows machines. I won't fix this. Use simple example code if you want to run this yourself - 
+
+[./tests/misc/optical_flow/simple_flow_complete.py](./tests/misc/optical_flow/simple_flow_complete.py).
+
+</div>
+
 This package is not perfect. The code does everything it should, but that is the problem. It does everything...
 Functions take too many arguments and offer too many options. Most functions are not broken up into smaller chunks - they are long and sometimes complicated. However, it’s worth noting that most of these options are not mandatory—you can use the package effectively without specifying all of them.
 
