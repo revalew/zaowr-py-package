@@ -21,6 +21,7 @@ It seems that the Optical Flow methods are not working on some Windows machines.
 [../tests/misc/optical_flow/simple_flow_complete.py](./tests/misc/optical_flow/simple_flow_complete.py).
 
 </div>
+</div>
 
 This package is not perfect. The code does everything it should, but that is the problem. It does everything...
 Functions take too many arguments and offer too many options. Most functions are not broken up into smaller chunks - they are long and sometimes complicated. However, it’s worth noting that most of these options are not mandatory—you can use the package effectively without specifying all of them.
